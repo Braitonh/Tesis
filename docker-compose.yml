@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Servicio de la aplicación Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tesis-laravel
+    container_name: tesis-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - tesis-network
+
+  # Servicio Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: tesis-webserver
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - tesis-network
+
+  # Servicio MySQL
+  db:
+    image: mysql:8.0
+    container_name: tesis-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tesis_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_PASSWORD: user_password
+      MYSQL_USER: tesis_user
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - tesis-network
+
+# Volúmenes
+volumes:
+  dbdata:
+    driver: local
+
+# Redes
+networks:
+  tesis-network:
+    driver: bridge

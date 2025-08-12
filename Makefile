@@ -16,7 +16,7 @@ help: ## Mostrar esta ayuda
 # Comandos Docker
 up: ## Levantar contenedores
 	@echo "$(GREEN)Levantando contenedores...$(NC)"
-	docker-compose up -d
+	docker-compose up
 
 down: ## Detener contenedores
 	@echo "$(RED)Deteniendo contenedores...$(NC)"

@@ -21,7 +21,7 @@ services:
     container_name: tesis-webserver
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - "4000:80"
     volumes:
       - ./:/var/www
       - ./docker/nginx:/etc/nginx/conf.d
@@ -41,7 +41,7 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3333:3306"
     networks:
       - tesis-network
 

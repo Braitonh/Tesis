@@ -6,7 +6,9 @@
       "Bash(mkdir:*)",
       "Bash(docker-compose up:*)",
       "Bash(sudo apt:*)",
-      "Bash(docker-compose exec:*)"
+      "Bash(docker-compose exec:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

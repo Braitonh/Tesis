@@ -72,6 +72,18 @@
         .bg-shape:nth-child(4) {
             animation-delay: 1s;
         }
+
+        .food-item {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .food-item:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .food-item:nth-child(3) {
+            animation-delay: 1s;
+        }
     </style>
 </head>
 <body class="font-sans antialiased">

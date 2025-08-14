@@ -98,7 +98,6 @@
                 <select wire:model.live="roleFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
                     <option value="">Todos los roles</option>
                     <option value="admin">Administrador</option>
-                    <option value="empleado">Empleado</option>
                     <option value="cocina">Cocina</option>
                     <option value="ventas">Ventas</option>
                     <option value="delivery">Delivery</option>
@@ -168,19 +167,19 @@
                                             'delivery' => 'fas fa-motorcycle'
                                         ];
                                     @endphp
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $roleColors[$empleado->role ?? 'empleado'] }}">
+                                    <span class="flex items-center px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $roleColors[$empleado->role ?? 'empleado'] }}">
                                         <i class="{{ $roleIcons[$empleado->role ?? 'empleado'] }} mr-1"></i>
                                         {{ ucfirst($empleado->role ?? 'Empleado') }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($empleado->email_verified_at)
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        <span class="flex items-center px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             <i class="fas fa-check-circle mr-1"></i>
                                             Activo
                                         </span>
                                     @else
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        <span class="flex items-center px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             <i class="fas fa-clock mr-1"></i>
                                             Pendiente
                                         </span>
@@ -197,10 +196,17 @@
                                         </button>
                                         
                                         @if($empleado->id !== auth()->id())
-                                            <button wire:click="deleteEmpleado({{ $empleado->id }})" 
-                                                    wire:confirm="¿Estás seguro de que quieres eliminar a {{ $empleado->name }}?"
+                                            <button wire:click="confirmDeleteEmpleado({{ $empleado->id }})" 
                                                     class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors">
-                                                <i class="fas fa-trash"></i>
+                                                <span wire:loading.remove wire:target="confirmDeleteEmpleado">
+                                                    <i class="fas fa-trash"></i>
+                                                </span>
+                                                <span wire:loading wire:target="confirmDeleteEmpleado">
+                                                    <svg class="animate-spin h-4 w-4 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                </span>
                                             </button>
                                         @else
                                             <span class="text-gray-400 p-2">
@@ -236,92 +242,24 @@
 
     <!-- Modal -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 " aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <!-- Background Overlay - Fully Transparent -->
-            <div class="fixed inset-0 bg-white/10 backdrop-blur-sm rounded-3xl"></div>
-            
-            <!-- Modal Content -->
-            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto transform transition-all p-4">
-                <!-- Close button outside modal -->
-                <button wire:click="closeModal" class="absolute -top-12 -right-2 text-white hover:text-gray-300 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-                    <form wire:submit.prevent="saveEmpleado">
-                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                            <div class="sm:flex sm:items-start">
-                                <div class="w-full">
-                                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">
-                                        {{ $modalTitle }}
-                                    </h3>
-                                    
-                                    <!-- Name Field -->
-                                    <div class="mb-4">
-                                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo</label>
-                                        <input type="text" 
-                                               id="name"
-                                               wire:model="name" 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 @error('name') border-red-500 @enderror"
-                                               placeholder="Ingresa el nombre completo">
-                                        @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    </div>
-
-                                    <!-- Email Field -->
-                                    <div class="mb-4">
-                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
-                                        <input type="email" 
-                                               id="email"
-                                               wire:model="email" 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 @error('email') border-red-500 @enderror"
-                                               placeholder="correo@ejemplo.com">
-                                        @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    </div>
-
-                                    <!-- Password Field -->
-                                    <div class="mb-4">
-                                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                                            Contraseña
-                                            @if($empleadoId) <span class="text-gray-500">(Dejar vacío para no cambiar)</span> @endif
-                                        </label>
-                                        <input type="password" 
-                                               id="password"
-                                               wire:model="password" 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 @error('password') border-red-500 @enderror"
-                                               placeholder="Contraseña segura">
-                                        @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    </div>
-
-                                    <!-- Role Field -->
-                                    <div class="mb-4">
-                                        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Rol del Empleado</label>
-                                        <select id="role"
-                                                wire:model="role" 
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 @error('role') border-red-500 @enderror">
-                                            <option value="empleado">Empleado</option>
-                                            <option value="admin">Administrador</option>
-                                            <option value="cocina">Cocina</option>
-                                            <option value="ventas">Ventas</option>
-                                            <option value="delivery">Delivery</option>
-                                        </select>
-                                        @error('role') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
-                                <i class="fas fa-save mr-2"></i>
-                                {{ $empleadoId ? 'Actualizar' : 'Crear' }} Empleado
-                            </button>
-                            <button type="button" wire:click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                <i class="fas fa-times mr-2"></i>
-                                Cancelar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <x-modals.empleados.form-empleado :empleadoId="$empleadoId" :modalTitle="$modalTitle" :showModal="$showModal" />
     @endif
+
+    <!-- Delete Confirmation Modal -->
+    <x-modals.delete-confirmation 
+        :show="$showDeleteModal" 
+        :item="$empleadoToDelete"
+        title="Confirmar Eliminación de Empleado"
+        :message="$empleadoToDelete ? '¿Estás seguro de que quieres eliminar a <strong>' . $empleadoToDelete->name . '</strong>?' : ''"
+        onCancel="closeDeleteModal"
+        onConfirm="deleteEmpleado" 
+    />
+
+    <!-- Loading Overlays -->
+    <x-loading-overlay target="createEmpleado" message="Abriendo formulario..." />
+    <x-loading-overlay target="editEmpleado" message="Cargando datos del empleado..." />
+    <x-loading-overlay target="saveEmpleado" message="Guardando empleado..." />
+    <x-loading-overlay target="deleteEmpleado" message="Eliminando empleado..." />
+    <x-loading-overlay target="confirmDeleteEmpleado" message="Preparando eliminación..." />
+    <x-loading-overlay target="closeDeleteModal" message="Cerrando..." />
 </div>

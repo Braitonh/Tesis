@@ -3,7 +3,9 @@
 namespace App\Livewire\Empleados;
 
 use App\Models\User;
+use App\Notifications\WelcomeUserNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -24,7 +26,6 @@ class Empleados extends Component
     // Form fields
     public $name = '';
     public $email = '';
-    public $password = '';
     public $role = 'empleado';
     public $dni = '';
     public $direccion = '';
@@ -41,7 +42,6 @@ class Empleados extends Component
         'dni' => 'required|string|max:20|unique:users,dni',
         'direccion' => 'required|string|max:500',
         'telefono' => 'required|string|max:20',
-
     ];
 
     public function updatingSearch()
@@ -59,7 +59,7 @@ class Empleados extends Component
         // Simulate loading time
         usleep(800000); // 0.8 seconds
         
-        $this->reset(['empleadoId', 'name', 'email', 'password', 'role', 'dni', 'direccion', 'telefono']);
+        $this->reset(['empleadoId', 'name', 'email', 'role', 'dni', 'direccion', 'telefono']);
         $this->modalTitle = 'Crear Nuevo Empleado';
         $this->showModal = true;
     }
@@ -73,7 +73,6 @@ class Empleados extends Component
         $this->empleadoId = $id;
         $this->name = $empleado->name;
         $this->email = $empleado->email;
-        $this->password = '';
         $this->role = $empleado->role ?? 'empleado';
         $this->dni = $empleado->dni ?? '';
         $this->direccion = $empleado->direccion ?? '';
@@ -93,18 +92,16 @@ class Empleados extends Component
             $rules = [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $this->empleadoId,
-                'password' => 'nullable|string|min:8',
                 'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
                 'dni' => 'required|string|max:20|unique:users,dni,' . $this->empleadoId,
                 'direccion' => 'required|string|max:500',
                 'telefono' => 'required|string|max:20',
             ];
         } else {
-            // Create - strict unique validation
+            // Create - strict unique validation (no password required for new employees)
             $rules = [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8',
                 'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
                 'dni' => 'required|string|max:20|unique:users,dni',
                 'direccion' => 'required|string|max:500',
@@ -114,28 +111,37 @@ class Empleados extends Component
 
         $this->validate($rules);
         
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'role' => $this->role,
-            'dni' => $this->dni,
-            'direccion' => $this->direccion,
-            'telefono' => $this->telefono,
-        ];
-
-        if ($this->password) {
-            $data['password'] = bcrypt($this->password);
-        }
-
         if ($this->empleadoId) {
-            // Update
+            // Update existing employee
+            $data = [
+                'name' => $this->name,
+                'email' => $this->email,
+                'role' => $this->role,
+                'dni' => $this->dni,
+                'direccion' => $this->direccion,
+                'telefono' => $this->telefono,
+            ];
+
             User::findOrFail($this->empleadoId)->update($data);
             session()->flash('message', 'Empleado actualizado correctamente.');
         } else {
-            // Create
-            $data['password'] = bcrypt($this->password);
-            User::create($data);
-            session()->flash('message', 'Empleado creado correctamente.');
+            // Create new employee with email verification
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make('temp_password_' . time()), // Temporary password
+                'role' => $this->role,
+                'dni' => $this->dni,
+                'direccion' => $this->direccion,
+                'telefono' => $this->telefono,
+                'password_created' => false,
+            ]);
+
+            // Generate verification token and send email
+            $token = $user->generateVerificationToken();
+            $user->notify(new WelcomeUserNotification($user, $token));
+            
+            session()->flash('message', 'Empleado creado correctamente. Se ha enviado un email para que configure su contraseña.');
         }
 
         $this->closeModal();
@@ -179,7 +185,7 @@ class Empleados extends Component
     public function closeModal()
     {
         $this->showModal = false;
-        $this->reset(['empleadoId', 'name', 'email', 'password', 'role', 'dni', 'direccion', 'telefono']);
+        $this->reset(['empleadoId', 'name', 'email', 'role', 'dni', 'direccion', 'telefono']);
         $this->resetValidation();
     }
 

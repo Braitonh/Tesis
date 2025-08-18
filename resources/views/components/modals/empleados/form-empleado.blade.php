@@ -27,7 +27,7 @@
                     {{ $empleadoId ? '¡Actualizar Empleado!' : '¡Nuevo Empleado!' }}
                 </h1>
                 <p class="text-lg opacity-90 leading-relaxed mb-8">
-                    {{ $empleadoId ? 'Modifica la información del empleado para mantener los datos actualizados.' : 'Completa la información para agregar un nuevo miembro al equipo de FoodDesk.' }}
+                    {{ $empleadoId ? 'Modifica la información del empleado para mantener los datos actualizados.' : 'Completa la información para agregar un nuevo miembro al equipo. El empleado recibirá un email para crear su contraseña.' }}
                 </p>
 
                 <!-- Food illustration -->
@@ -173,6 +173,23 @@
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
+
+                @if(!$empleadoId)
+                <!-- Information about email verification for new employees -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <div class="flex items-start gap-3">
+                        <div class="text-blue-600 text-lg">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-blue-800 mb-1">Configuración automática</h3>
+                            <p class="text-sm text-blue-700">
+                                Se enviará un email al empleado con un enlace seguro para que cree su contraseña.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <!-- Submit button -->
                 <button

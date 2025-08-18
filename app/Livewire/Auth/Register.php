@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Notifications\WelcomeUserNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
@@ -51,12 +52,15 @@ class Register extends Component
                 'name' => $this->name,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
+                'role' => 'cliente',
+                'email_verified_at' => now(), // Clients are automatically verified
+                'password_created' => true,
             ]);
 
             RateLimiter::clear($key);
 
-            
-            return redirect()->intended('/login');
+            Auth::login($user);
+            return redirect()->intended('/dashboard');
 
         } catch (\Exception $e) {
             RateLimiter::hit($key, 60);

@@ -43,6 +43,25 @@
                 <!-- <p class="text-gray-600">Accede a tu panel de administración</p> -->
             </div>
 
+            <!-- Messages -->
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-100 border border-green-300 text-green-700 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('info'))
+                <div class="mb-6 p-4 bg-blue-100 border border-blue-300 text-blue-700 rounded-lg">
+                    {{ session('info') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- Login form -->
             <form wire:submit.prevent="login" class="space-y-6">
                 

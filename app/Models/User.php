@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -25,6 +26,8 @@ class User extends Authenticatable
         'dni',
         'direccion',
         'telefono',
+        'verification_token',
+        'password_created',
     ];
 
     /**
@@ -35,6 +38,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'verification_token',
     ];
 
     /**
@@ -47,6 +51,31 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_created' => 'boolean',
         ];
+    }
+
+    public function generateVerificationToken(): string
+    {
+        $token = Str::random(32);
+        $this->update(['verification_token' => $token]);
+        return $token;
+    }
+
+    public function verifyEmailWithToken(string $token): bool
+    {
+        if ($this->verification_token === $token) {
+            $this->markEmailAsVerified();
+            return true;
+        }
+        return false;
+    }
+
+    public function markEmailAsVerified(): void
+    {
+        $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+            'verification_token' => null,
+        ])->save();
     }
 }

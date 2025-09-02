@@ -42,7 +42,14 @@ class Login extends Component
             
             session()->regenerate();
             
-            return redirect()->intended('/dashboard');
+            $user = Auth::user();
+            
+            // Redireccionar según el rol del usuario
+            if ($user->role === 'cliente') {
+                return redirect()->intended('/cliente/bienvenida');
+            } else {
+                return redirect()->intended('/dashboard');
+            }
         }
 
         RateLimiter::hit($key, 60);

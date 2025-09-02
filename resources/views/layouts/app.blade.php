@@ -31,10 +31,13 @@
                     <div class="flex items-center space-x-4">
                         @auth
                             <span class="text-gray-700">{{ Auth::user()->name }}</span>
-                            <a href="#" class="text-red-600 hover:text-red-800">Cerrar Sesión</a>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-600 hover:text-red-800">Cerrar Sesión</button>
+                            </form>
                         @else
-                            <a href="#" class="text-blue-600 hover:text-blue-800">Iniciar Sesión</a>
-                            <a href="#" class="text-green-600 hover:text-green-800">Registrarse</a>
+                            <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-800">Iniciar Sesión</a>
+                            <a href="{{ route('register') }}" class="text-green-600 hover:text-green-800">Registrarse</a>
                         @endauth
                     </div>
                 </div>

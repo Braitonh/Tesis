@@ -44,7 +44,6 @@ class Register extends Component
             $this->loading = false;
             return;
         }
-
         $this->validate();
 
         try {
@@ -59,8 +58,7 @@ class Register extends Component
 
             RateLimiter::clear($key);
 
-            Auth::login($user);
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/login');
 
         } catch (\Exception $e) {
             RateLimiter::hit($key, 60);

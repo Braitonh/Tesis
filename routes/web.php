@@ -39,13 +39,18 @@ Route::middleware('auth')->group(function () {
     })->name('logout');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function () {
     Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
 
     Route::get('/cocina', Cocina::class)->name('cocina');
     Route::get('/empleados', Empleados::class)->name('empleados');
+});
+
+// Ruta específica para clientes (no requiere email verificado)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cliente/bienvenida', \App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
 });
 
 // Fallback route - redirect any unregistered route to login

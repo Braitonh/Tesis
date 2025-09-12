@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Cliente;
 
-use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('layouts.cliente')]
 class ClienteBienvenida extends Component

@@ -32,9 +32,9 @@ class TestEmailCommand extends Command
 
         // Check mail configuration
         $mailConfig = config('mail');
-        $this->info('Mail driver: ' . $mailConfig['default']);
-        $this->info('Mail host: ' . $mailConfig['mailers']['smtp']['host']);
-        $this->info('Mail username: ' . $mailConfig['mailers']['smtp']['username']);
+        $this->info('Mail driver: '.$mailConfig['default']);
+        $this->info('Mail host: '.$mailConfig['mailers']['smtp']['host']);
+        $this->info('Mail username: '.$mailConfig['mailers']['smtp']['username']);
 
         // Create a test user
         $this->info('Creating test user...');
@@ -43,20 +43,20 @@ class TestEmailCommand extends Command
             'email' => 'test@example.com',
             'password' => bcrypt('password123'),
             'role' => 'empleado',
-            'dni' => 'TEST' . time(),
+            'dni' => 'TEST'.time(),
             'direccion' => 'Test Address',
-            'telefono' => '123456789'
+            'telefono' => '123456789',
         ]);
 
-        $this->info('User created with ID: ' . $user->id);
+        $this->info('User created with ID: '.$user->id);
 
         try {
             $this->info('Sending notification...');
             $user->notify(new WelcomeEmployeeNotification('testpass123'));
             $this->info('✓ Notification sent successfully!');
         } catch (\Exception $e) {
-            $this->error('✗ Error sending notification: ' . $e->getMessage());
-            Log::error('Email test error: ' . $e->getMessage());
+            $this->error('✗ Error sending notification: '.$e->getMessage());
+            Log::error('Email test error: '.$e->getMessage());
         }
 
         // Clean up

@@ -17,12 +17,12 @@ class Empleados extends Component
 
     public $showModal = false;
     public $modalTitle = '';
-    public $empleadoId = null;
-    
+    public $empleadoId;
+
     // Delete confirmation modal
     public $showDeleteModal = false;
-    public $empleadoToDelete = null;
-    
+    public $empleadoToDelete;
+
     // Form fields
     public $name = '';
     public $email = '';
@@ -30,7 +30,7 @@ class Empleados extends Component
     public $dni = '';
     public $direccion = '';
     public $telefono = '';
-    
+
     // Filters
     public $search = '';
     public $roleFilter = '';
@@ -58,7 +58,7 @@ class Empleados extends Component
     {
         // Simulate loading time
         usleep(800000); // 0.8 seconds
-        
+
         $this->reset(['empleadoId', 'name', 'email', 'role', 'dni', 'direccion', 'telefono']);
         $this->modalTitle = 'Crear Nuevo Empleado';
         $this->showModal = true;
@@ -68,7 +68,7 @@ class Empleados extends Component
     {
         // Simulate loading time
         usleep(1000000); // 1 second
-        
+
         $empleado = User::findOrFail($id);
         $this->empleadoId = $id;
         $this->name = $empleado->name;
@@ -82,18 +82,18 @@ class Empleados extends Component
     }
 
     public function saveEmpleado()
-    {     
+    {
         // Simulate loading time
         usleep(1500000); // 1.5 seconds
-        
+
         // Define validation rules based on create or edit
         if ($this->empleadoId) {
             // Edit - exclude current user from unique validation
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $this->empleadoId,
+                'email' => 'required|email|unique:users,email,'.$this->empleadoId,
                 'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
-                'dni' => 'required|string|max:20|unique:users,dni,' . $this->empleadoId,
+                'dni' => 'required|string|max:20|unique:users,dni,'.$this->empleadoId,
                 'direccion' => 'required|string|max:500',
                 'telefono' => 'required|string|max:20',
             ];
@@ -110,7 +110,7 @@ class Empleados extends Component
         }
 
         $this->validate($rules);
-        
+
         if ($this->empleadoId) {
             // Update existing employee
             $data = [
@@ -129,7 +129,7 @@ class Empleados extends Component
             $user = User::create([
                 'name' => $this->name,
                 'email' => $this->email,
-                'password' => Hash::make('temp_password_' . time()), // Temporary password
+                'password' => Hash::make('temp_password_'.time()), // Temporary password
                 'role' => $this->role,
                 'dni' => $this->dni,
                 'direccion' => $this->direccion,
@@ -140,7 +140,7 @@ class Empleados extends Component
             // Generate verification token and send email
             $token = $user->generateVerificationToken();
             $user->notify(new WelcomeUserNotification($user, $token));
-            
+
             session()->flash('message', 'Empleado creado correctamente. Se ha enviado un email para que configure su contraseña.');
         }
 
@@ -151,12 +151,13 @@ class Empleados extends Component
     {
         // Simulate loading time
         usleep(600000); // 0.6 seconds
-        
+
         $empleado = User::findOrFail($id);
-        
+
         // Prevent deletion of current user
         if ($empleado->id === Auth::user()->id) {
             session()->flash('error', 'No puedes eliminarte a ti mismo.');
+
             return;
         }
 
@@ -168,7 +169,7 @@ class Empleados extends Component
     {
         // Simulate loading time
         usleep(1200000); // 1.2 seconds
-        
+
         if ($this->empleadoToDelete) {
             $this->empleadoToDelete->delete();
             session()->flash('message', 'Empleado eliminado correctamente.');
@@ -193,8 +194,8 @@ class Empleados extends Component
     {
         $empleados = User::query()
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             })
             ->when($this->roleFilter, function ($query) {
                 $query->where('role', $this->roleFilter);

@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\URL;
 class EmployeeVerificationController extends Controller
 {
     /**
-     * Verify the employee's email address
+     * Verify the employee's email address.
      */
     public function verify(Request $request, $user)
     {
         // Verify the signed URL
         if (!URL::hasValidSignature($request)) {
             return view('employee.verification-failed', [
-                'message' => 'El enlace de verificación es inválido o ha expirado.'
+                'message' => 'El enlace de verificación es inválido o ha expirado.',
             ]);
         }
 
@@ -28,7 +28,7 @@ class EmployeeVerificationController extends Controller
             return view('employee.verification-success', [
                 'message' => 'Tu cuenta ya había sido verificada anteriormente.',
                 'employee' => $employee,
-                'alreadyVerified' => true
+                'alreadyVerified' => true,
             ]);
         }
 
@@ -38,12 +38,12 @@ class EmployeeVerificationController extends Controller
         return view('employee.verification-success', [
             'message' => '¡Tu cuenta ha sido verificada exitosamente!',
             'employee' => $employee,
-            'alreadyVerified' => false
+            'alreadyVerified' => false,
         ]);
     }
 
     /**
-     * Resend verification email
+     * Resend verification email.
      */
     public function resend(Request $request, $user)
     {

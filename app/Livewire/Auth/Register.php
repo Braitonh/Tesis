@@ -3,8 +3,6 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
-use App\Notifications\WelcomeUserNotification;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
@@ -35,13 +33,14 @@ class Register extends Component
     {
         $this->loading = true;
 
-        $key = 'register.' . request()->ip();
-        
+        $key = 'register.'.request()->ip();
+
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
-            
-            $this->addError('email', 'Demasiados intentos de registro. Inténtelo de nuevo en ' . $seconds . ' segundos.');
+
+            $this->addError('email', 'Demasiados intentos de registro. Inténtelo de nuevo en '.$seconds.' segundos.');
             $this->loading = false;
+
             return;
         }
         $this->validate();
@@ -59,7 +58,6 @@ class Register extends Component
             RateLimiter::clear($key);
 
             return redirect()->intended('/login');
-
         } catch (\Exception $e) {
             RateLimiter::hit($key, 60);
             $this->addError('email', 'Error al crear la cuenta. Inténtelo de nuevo.');
@@ -70,7 +68,7 @@ class Register extends Component
     public function render()
     {
         return view('livewire.auth.register')->with([
-            'backgroundGradient' => 'bg-gradient-to-br from-emerald-500 to-green-600'
+            'backgroundGradient' => 'bg-gradient-to-br from-emerald-500 to-green-600',
         ]);
     }
 }

@@ -11,7 +11,8 @@ use Illuminate\Support\Str;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,6 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $token = Str::random(32);
         $this->update(['verification_token' => $token]);
+
         return $token;
     }
 
@@ -66,8 +68,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($this->verification_token === $token) {
             $this->markEmailAsVerified();
+
             return true;
         }
+
         return false;
     }
 

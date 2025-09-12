@@ -99,9 +99,9 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased ">
     <!-- Animated background -->
-    <div class="fixed inset-0 bg-gradient-to-br from-orange-600 to-amber-600 overflow-hidden pointer-events-none">
+    <div class="fixed inset-0 bg-gradient-to-br from-orange-100 via-white to-amber-100 overflow-hidden pointer-events-none">
         <!-- Floating shapes -->
         <div class="bg-shape absolute w-48 h-48 bg-orange-200/20 rounded-full top-[10%] left-[10%]"></div>
         <div class="bg-shape absolute w-36 h-36 bg-amber-200/20 rounded-full top-[60%] right-[15%]"></div>
@@ -112,49 +112,37 @@
     <!-- Main content -->
     <div class="relative z-10 min-h-screen">
         <!-- Navigation Header -->
-        <nav class="bg-white/95 backdrop-blur-md shadow-lg border-b border-orange-100">
+        <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b border-orange-500/10 sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <!-- Logo and Brand -->
+                <div class="flex justify-between items-center h-20">
                     <div class="flex items-center space-x-4">
-                        <div class="bg-orange-500 p-2 rounded-lg">
-                            <i class="fas fa-utensils text-white text-xl"></i>
+                        <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-3 rounded-xl shadow-lg">
+                            <i class="fas fa-utensils text-white text-2xl"></i>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold text-gray-800">{{ config('app.name', 'FoodDesk') }}</h1>
-                            <p class="text-sm text-orange-600">Panel Cliente</p>
+                            <h1 class="text-2xl font-bold text-gray-800">FoodDesk</h1>
+                            <p class="text-sm text-orange-600 font-medium">Panel Cliente</p>
                         </div>
                     </div>
-
-                    <!-- User Menu -->
-                    <div class="flex items-center space-x-4">
-                        @auth
-                            <!-- User Info -->
-                            <div class="flex items-center space-x-3">
-                                <div class="bg-orange-100 p-2 rounded-full">
-                                    <i class="fas fa-user text-orange-600"></i>
-                                </div>
-                                <div class="hidden md:block">
-                                    <p class="text-sm font-medium text-gray-800">{{ Auth::user()->name }}</p>
-                                    <p class="text-xs text-gray-500">Cliente</p>
-                                </div>
+                    
+                    <div class="flex items-center space-x-6">
+                        <div class="hidden md:flex items-center space-x-4">
+                            <div class="bg-orange-500/10 p-3 rounded-full">
+                                <i class="fas fa-heart text-orange-600 text-xl"></i>
                             </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden md:flex items-center space-x-4">
-                                <a href="{{ route('cliente.bienvenida') }}" class="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                                    <i class="fas fa-home mr-2"></i>Inicio
-                                </a>
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800">¡Hola{{ Auth::user()->name ? ', ' . Auth::user()->name : '' }}!</p>
+                                <p class="text-xs text-gray-500">Bienvenido de vuelta</p>
                             </div>
-
-                            <!-- Logout Button -->
-                            <form method="POST" action="{{ route('logout') }}" class="inline">
-                                @csrf
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
-                                </button>
-                            </form>
-                        @endauth
+                        </div>
+                        
+                        <button class="hidden md:flex items-center space-x-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <span>Inicio</span>
+                        </button>
+                        
+                        <button class="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                            <span>Cerrar Sesión</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -173,7 +161,7 @@
 
         <!-- Page Content -->
         <main class="py-8">
-            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="content-container">
                     {{ $slot }}
                 </div>

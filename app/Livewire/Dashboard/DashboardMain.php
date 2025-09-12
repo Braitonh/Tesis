@@ -7,17 +7,17 @@ use Livewire\Component;
 class DashboardMain extends Component
 {
     public $activeSection = 'dashboard';
-    public $activeSubsection = null;
+    public $activeSubsection;
 
     protected $listeners = [
-        'navigateTo' => 'handleNavigation'
+        'navigateTo' => 'handleNavigation',
     ];
 
     public function handleNavigation($section, $subsection = null)
     {
         $this->activeSection = $section;
         $this->activeSubsection = $subsection;
-        
+
         // Emitir evento para que el componente de navegación actualice el estado activo
         $this->dispatch('sectionChanged', $section, $subsection);
     }

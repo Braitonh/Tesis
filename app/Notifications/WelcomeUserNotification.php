@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -38,11 +37,11 @@ class WelcomeUserNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/create-password/' . $this->token);
-        
-        return (new MailMessage)
+        $url = url('/create-password/'.$this->token);
+
+        return (new MailMessage())
             ->subject('¡Bienvenido a FoodDesk!')
-            ->greeting('¡Hola ' . $this->user->name . '!')
+            ->greeting('¡Hola '.$this->user->name.'!')
             ->line('Te damos la bienvenida a FoodDesk Restaurant.')
             ->line('Tu cuenta ha sido creada exitosamente. Para completar el registro, necesitas crear tu contraseña.')
             ->action('Crear mi contraseña', $url)
@@ -59,7 +58,7 @@ class WelcomeUserNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\URL;
@@ -43,14 +42,14 @@ class WelcomeEmployeeNotification extends Notification
             ['user' => $notifiable->id]
         );
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('¡Bienvenido al equipo de FoodDesk!')
-            ->greeting('¡Hola ' . $notifiable->name . '!')
+            ->greeting('¡Hola '.$notifiable->name.'!')
             ->line('Te damos la bienvenida al equipo de **FoodDesk Restaurant**.')
             ->line('Se ha creado una cuenta para ti con los siguientes datos:')
-            ->line('**Email:** ' . $notifiable->email)
-            ->line('**Rol:** ' . ucfirst($notifiable->role))
-            ->line('**Contraseña temporal:** ' . $this->password)
+            ->line('**Email:** '.$notifiable->email)
+            ->line('**Rol:** '.ucfirst($notifiable->role))
+            ->line('**Contraseña temporal:** '.$this->password)
             ->line('Para activar tu cuenta y poder acceder al sistema, necesitas verificar tu correo electrónico.')
             ->action('Verificar Mi Cuenta', $verificationUrl)
             ->line('Este enlace expirará en 24 horas.')
@@ -68,7 +67,7 @@ Equipo FoodDesk');
     public function toArray(object $notifiable): array
     {
         return [
-            //
+
         ];
     }
 }

@@ -93,6 +93,28 @@ test: ## Ejecutar tests
 test-coverage: ## Ejecutar tests con cobertura
 	docker-compose exec app php artisan test --coverage
 
+# Comandos de formateo de código
+format: ## Formatear todo el código PHP con Pint
+	@echo "$(GREEN)Formateando código con Laravel Pint...$(NC)"
+	docker-compose exec -T app ./vendor/bin/pint
+
+format-check: ## Verificar formato sin hacer cambios
+	@echo "$(YELLOW)Verificando formato de código...$(NC)"
+	docker-compose exec -T app ./vendor/bin/pint --test
+
+format-blade: ## Formatear archivos PHP y Blade con PHP-CS-Fixer
+	@echo "$(GREEN)Formateando archivos PHP y Blade con PHP-CS-Fixer...$(NC)"
+	docker-compose exec -T app ./vendor/bin/php-cs-fixer fix
+
+format-blade-check: ## Verificar formato de archivos Blade sin cambios
+	@echo "$(YELLOW)Verificando formato de archivos Blade...$(NC)"
+	docker-compose exec -T app ./vendor/bin/php-cs-fixer fix --dry-run --diff
+
+format-all: ## Formatear con ambas herramientas (Pint + PHP-CS-Fixer)
+	@echo "$(GREEN)Formateando con todas las herramientas...$(NC)"
+	make format
+	make format-blade
+
 npm-install: ## Instalar dependencias NPM
 	@echo "$(GREEN)Instalando dependencias NPM...$(NC)"
 	docker-compose exec app npm install

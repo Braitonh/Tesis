@@ -4,7 +4,6 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -25,13 +24,14 @@ class Login extends Component
     {
         $this->loading = true;
 
-        $key = 'login.' . request()->ip();
-        
+        $key = 'login.'.request()->ip();
+
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
-            
-            $this->addError('email', 'Demasiados intentos de inicio de sesión. Inténtelo de nuevo en ' . $seconds . ' segundos.');
+
+            $this->addError('email', 'Demasiados intentos de inicio de sesión. Inténtelo de nuevo en '.$seconds.' segundos.');
             $this->loading = false;
+
             return;
         }
 
@@ -39,13 +39,13 @@ class Login extends Component
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($key);
-            
+
             session()->regenerate();
-            
+
             $user = Auth::user();
-            
+
             // Redireccionar según el rol del usuario
-            if ($user->role === 'cliente') {
+            if ('cliente' === $user->role) {
                 return redirect()->intended('/cliente/bienvenida');
             } else {
                 return redirect()->intended('/dashboard');

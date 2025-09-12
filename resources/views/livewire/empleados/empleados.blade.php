@@ -158,7 +158,6 @@
                                             'cocina' => 'bg-yellow-100 text-yellow-800',
                                             'ventas' => 'bg-green-100 text-green-800',
                                             'delivery' => 'bg-purple-100 text-purple-800',
-                                            'cliente' => 'bg-purple-100 text-purple-800'
                                         ];
                                         $roleIcons = [
                                             'admin' => 'fas fa-crown',
@@ -166,7 +165,6 @@
                                             'cocina' => 'fas fa-utensils',
                                             'ventas' => 'fas fa-cash-register',
                                             'delivery' => 'fas fa-motorcycle',
-                                            'cliente' => 'fas fa-user'
                                         ];
                                     @endphp
                                     <span class="flex items-center px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $roleColors[$empleado->role ?? 'empleado'] }}">

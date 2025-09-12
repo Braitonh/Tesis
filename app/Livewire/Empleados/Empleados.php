@@ -199,6 +199,7 @@ class Empleados extends Component
             ->when($this->roleFilter, function ($query) {
                 $query->where('role', $this->roleFilter);
             })
+            ->where('role', '!=', 'cliente')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

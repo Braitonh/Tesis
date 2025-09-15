@@ -158,8 +158,19 @@
         </div>
     @endif
 
+    <!-- Hidden input for triggering reorder -->
+    <input type="hidden" wire:model.live="productOrderJson" id="product-order-input">
+
+    <!-- Spinner component for reordering -->
+    <x-drag-drop-spinner
+        id="reorder-spinner"
+        title="Actualizando orden de productos"
+        message="Por favor espera un momento..."
+    />
+
+
     <!-- Products Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" wire:key="productos-grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" wire:key="productos-grid" id="products-grid">
         @forelse($productos as $producto)
             <x-product-card
                 :producto="$producto"
@@ -235,4 +246,35 @@
     <x-loading-overlay target="closeDeleteModal" message="Cerrando..." />
     <x-loading-overlay target="closeDetailModal" message="Cerrando..." />
     <x-loading-overlay target="closeEditModal" message="Cerrando..." />
+
+    <!-- SortableJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <!-- Include CSS and JS assets -->
+    @vite(['resources/css/sortable-styles.css', 'resources/js/sortable-helper.js'])
+
+    <!-- Initialize drag and drop -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProductsSortable();
+        });
+
+        function initializeProductsSortable() {
+            // Configuración para el drag and drop de productos
+            const sortableConfig = {
+                spinnerId: 'reorder-spinner',
+                onReorder: 'updateProductOrder',
+                idSelectors: ['data-product-id', 'wire:key']
+            };
+
+            // Inicializar sortable usando el helper
+            window.SortableHelper.initSortable('products-grid', sortableConfig);
+
+            // Configurar listeners de Livewire
+            window.SortableHelper.setupLivewireListeners({
+                spinnerId: 'reorder-spinner',
+                reinitCallbacks: [initializeProductsSortable]
+            });
+        }
+    </script>
 </div>

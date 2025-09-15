@@ -22,6 +22,7 @@ class Producto extends Model
         'categoria_id',
         'destacado',
         'imagen',
+        'sort_order',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class Producto extends Model
         'activo' => 'boolean',
         'destacado' => 'boolean',
         'stock' => 'integer',
+        'sort_order' => 'integer',
     ];
 
     /**
@@ -62,6 +64,14 @@ class Producto extends Model
     public function scopeDisponible($query)
     {
         return $query->where('estado', 'disponible');
+    }
+
+    /**
+     * Scope a query to order productos by sort_order.
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
     }
 
     /**

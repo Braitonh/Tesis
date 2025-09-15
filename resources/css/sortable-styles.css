@@ -1,0 +1,181 @@
+/**
+ * Sortable Styles - Estilos reutilizables para drag and drop
+ * Compatible con SortableJS y el helper SortableHelper
+ */
+
+/* Estados del elemento durante el drag */
+.sortable-ghost {
+    opacity: 0.4;
+    transform: scale(0.95);
+    transition: all 0.2s ease;
+}
+
+.sortable-chosen {
+    cursor: grabbing !important;
+    z-index: 1000;
+}
+
+.sortable-drag {
+    transform: rotate(5deg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: none;
+}
+
+/* Estilos base para elementos draggables */
+.draggable-item {
+    cursor: grab;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.draggable-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.draggable-item:active {
+    cursor: grabbing;
+}
+
+/* Estilos específicos para product cards */
+.product-card {
+    cursor: grab;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.product-card:active {
+    cursor: grabbing;
+}
+
+/* Estados de feedback visual */
+.drag-container {
+    position: relative;
+}
+
+.drag-container.sorting {
+    pointer-events: none;
+}
+
+.drag-placeholder {
+    background: rgba(249, 115, 22, 0.1);
+    border: 2px dashed #f97316;
+    border-radius: 0.5rem;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f97316;
+    font-weight: 500;
+}
+
+.drag-placeholder::before {
+    content: '↕ Soltar aquí';
+    opacity: 0.7;
+}
+
+/* Indicadores de drag */
+.drag-handle {
+    cursor: grab;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #374151;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Efectos de drop zone */
+.drop-zone {
+    transition: all 0.3s ease;
+}
+
+.drop-zone.drag-over {
+    background-color: rgba(249, 115, 22, 0.05);
+    border-color: #f97316;
+    transform: scale(1.02);
+}
+
+/* Animaciones */
+@keyframes dragPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.dragging {
+    animation: dragPulse 1s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sortable-ghost {
+        transform: scale(0.9);
+    }
+
+    .sortable-drag {
+        transform: rotate(3deg);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .draggable-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Disabled state */
+.draggable-item.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Loading state */
+.draggable-item.loading {
+    cursor: wait;
+    opacity: 0.8;
+}
+
+.draggable-item.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f97316;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Utilidades */
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.touch-action-none {
+    touch-action: none;
+}
+
+/* Animación spin para loaders */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

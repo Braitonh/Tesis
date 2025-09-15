@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Categoria;
 use App\Models\Producto;
+use App\Traits\HasSortableItems;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -11,7 +12,7 @@ use Livewire\WithFileUploads;
 #[Layout('components.dashboard-layout')]
 class AdminProductos extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasSortableItems;
     // Filtros
     public $filtroCategoria = '';
     public $filtroEstado = '';
@@ -42,6 +43,9 @@ class AdminProductos extends Component
     public $activo = true;
     public $imagen = '';
     public $imagen_file;
+
+    // Para el reordenamiento (ya está en el trait como itemOrderJson)
+    public $productOrderJson = '';
 
     // Propiedades para query string
     protected $updatesQueryString = [
@@ -76,6 +80,13 @@ class AdminProductos extends Component
     {
         // Asegurar que el componente se actualice correctamente
         $this->resetPage();
+    }
+
+    public function updatedProductOrderJson()
+    {
+        // Compatibilidad con el nombre existente - delegar al trait
+        $this->itemOrderJson = $this->productOrderJson;
+        $this->updatedItemOrderJson();
     }
 
     private function resetPage()
@@ -194,6 +205,9 @@ class AdminProductos extends Component
                 $imagePath = $this->imagen_file->store($categoryPath, 'public');
             }
 
+            // Get next sort order using trait method
+            $nextSortOrder = $this->getNextSortOrder();
+
             // Create new product
             $data = [
                 'nombre' => $this->nombre,
@@ -206,6 +220,7 @@ class AdminProductos extends Component
                 'destacado' => $this->destacado,
                 'activo' => $this->activo,
                 'imagen' => $imagePath,
+                'sort_order' => $nextSortOrder,
             ];
 
             Producto::create($data);
@@ -308,6 +323,8 @@ class AdminProductos extends Component
         }
     }
 
+    // Método updateProductOrder ahora está en el trait HasSortableItems
+
     public function getProductos()
     {
         $query = Producto::with('categoria')
@@ -330,7 +347,7 @@ class AdminProductos extends Component
                     $query->where('estado', 'stock_bajo');
                 }
             })
-            ->orderBy('created_at', 'desc');
+            ->ordered();
 
         return $query->get();
     }

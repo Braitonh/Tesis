@@ -34,9 +34,12 @@
     };
 @endphp
 
-<div class="bg-white rounded-lg shadow-sm border border-orange-100 overflow-hidden relative {{ $cardClass }}" wire:key="card-{{ $producto->id }}">
+<div class="bg-white rounded-lg shadow-sm border border-orange-100 overflow-hidden relative product-card {{ $cardClass }} flex flex-col h-full"
+     wire:key="card-{{ $producto->id }}"
+     data-product-id="{{ $producto->id }}"
+     @if($variant === 'admin') draggable="true" @endif>
     <!-- Imagen del producto -->
-    <div class="h-48 bg-gray-200 flex items-center justify-center relative overflow-hidden">
+    <div class="h-72 bg-gray-200 flex items-center justify-center relative overflow-hidden">
         <img
             src="{{ $producto->image_url }}"
             alt="{{ $producto->nombre }}"
@@ -59,7 +62,7 @@
     </div>
 
     <!-- Contenido -->
-    <div class="p-6">
+    <div class="p-6 flex flex-col flex-1">
         <!-- Header con nombre y estado -->
         <div class="flex items-center justify-between mb-2">
             <h3 class="text-lg font-semibold text-gray-800">{{ $producto->nombre }}</h3>
@@ -69,7 +72,7 @@
         </div>
 
         <!-- Descripción -->
-        <p class="text-gray-600 text-sm mb-4">{{ Str::limit($producto->descripcion, 80) }}</p>
+        <p class="text-gray-600 text-sm mb-4 flex-1">{{ Str::limit($producto->descripcion, 80) }}</p>
 
         <!-- Precio y Stock -->
         <div class="flex items-center justify-between mb-4">
@@ -120,6 +123,14 @@
             @endif
         @endif
     </div>
+
+    <!-- Indicador de drag (solo para admin) -->
+    @if($variant === 'admin')
+        <div class="absolute top-1 left-1 w-8 h-8 bg-gray-500 bg-opacity-70 text-white rounded-full flex items-center justify-center z-20"
+             title="Arrastra para reordenar">
+            <i class="fas fa-grip-vertical text-xs"></i>
+        </div>
+    @endif
 
     <!-- Botón eliminar (solo para admin) -->
     @if($variant === 'admin' && $showActions)

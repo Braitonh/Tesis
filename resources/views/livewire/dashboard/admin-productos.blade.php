@@ -1,6 +1,6 @@
-<div class="space-y-6">
+<div class="p-6 space-y-6 bg-white/80  rounded-3xl w-full max-w-none">
     <!-- Header -->
-    <div class="bg-white rounded-lg p-6 shadow-sm border border-orange-100">
+    <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-gray-800">
@@ -9,7 +9,9 @@
                 </h2>
                 <p class="text-gray-600 mt-1">Administra el catálogo de productos del restaurante</p>
             </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            <button
+                wire:click="crearProducto"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                 <i class="fas fa-plus mr-2"></i>
                 Agregar Producto
             </button>
@@ -25,11 +27,11 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-gray-500 text-sm">Total Productos</p>
-                    <p class="text-2xl font-bold text-gray-800">89</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $stats['total'] }}</p>
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-white rounded-lg p-6 shadow-sm border border-orange-100">
             <div class="flex items-center">
                 <div class="bg-green-100 p-3 rounded-lg">
@@ -37,11 +39,11 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-gray-500 text-sm">Disponibles</p>
-                    <p class="text-2xl font-bold text-gray-800">76</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $stats['disponibles'] }}</p>
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-white rounded-lg p-6 shadow-sm border border-orange-100">
             <div class="flex items-center">
                 <div class="bg-yellow-100 p-3 rounded-lg">
@@ -49,11 +51,11 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-gray-500 text-sm">Stock Bajo</p>
-                    <p class="text-2xl font-bold text-gray-800">8</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $stats['stock_bajo'] }}</p>
                 </div>
             </div>
         </div>
-        
+
         <div class="bg-white rounded-lg p-6 shadow-sm border border-orange-100">
             <div class="flex items-center">
                 <div class="bg-red-100 p-3 rounded-lg">
@@ -61,7 +63,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-gray-500 text-sm">Agotados</p>
-                    <p class="text-2xl font-bold text-gray-800">5</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $stats['agotados'] }}</p>
                 </div>
             </div>
         </div>
@@ -72,120 +74,165 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
-                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
-                    <option>Todas las categorías</option>
-                    <option>Hamburguesas</option>
-                    <option>Pizzas</option>
-                    <option>Bebidas</option>
-                    <option>Postres</option>
+                <select wire:model.live="filtroCategoria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                    <option value="">Todas las categorías</option>
+                    @foreach($categorias as $categoria)
+                        <option value="{{ $categoria->nombre }}">{{ $categoria->nombre }}</option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
-                    <option>Todos</option>
-                    <option>Disponible</option>
-                    <option>Agotado</option>
-                    <option>Deshabilitado</option>
+                <select wire:model.live="filtroEstado" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                    <option value="">Todos</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Stock Bajo">Stock Bajo</option>
+                    <option value="Agotado">Agotado</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
-                <input type="text" placeholder="Nombre del producto..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                <input
+                    type="text"
+                    wire:model.live.debounce.300ms="busqueda"
+                    placeholder="Nombre del producto..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
+                >
             </div>
-            <div class="flex items-end">
-                <button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-search mr-2"></i>
-                    Filtrar
+            <div class="flex items-end space-x-2">
+                <button
+                    wire:click="limpiarFiltros"
+                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                >
+                    <i class="fas fa-times mr-2"></i>
+                    Limpiar
                 </button>
             </div>
         </div>
+
+        <!-- Filtros activos -->
+        @if($filtroCategoria || $filtroEstado || $busqueda)
+            <div class="mt-4 flex flex-wrap gap-2">
+                <span class="text-sm text-gray-600">Filtros activos:</span>
+
+                @if($filtroCategoria)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                        {{ $filtroCategoria }}
+                        <button wire:click="$set('filtroCategoria', '')" class="ml-1 text-orange-600 hover:text-orange-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endif
+
+                @if($filtroEstado)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {{ $filtroEstado }}
+                        <button wire:click="$set('filtroEstado', '')" class="ml-1 text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endif
+
+                @if($busqueda)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        "{{ $busqueda }}"
+                        <button wire:click="$set('busqueda', '')" class="ml-1 text-green-600 hover:text-green-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endif
+            </div>
+        @endif
     </div>
+
+    <!-- Mensajes de estado -->
+    @if (session()->has('message'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('message') }}</span>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
 
     <!-- Products Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Product Card 1 -->
-        <div class="bg-white rounded-lg shadow-sm border border-orange-100 overflow-hidden">
-            <div class="h-48 bg-gray-200 flex items-center justify-center">
-                <i class="fas fa-hamburger text-6xl text-gray-400"></i>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">Hamburguesa Clásica</h3>
-                    <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Disponible</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Carne, lechuga, tomate, cebolla y salsa especial</p>
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-2xl font-bold text-orange-600">$12.99</span>
-                    <span class="text-sm text-gray-500">Stock: 25</span>
-                </div>
-                <div class="flex space-x-2">
-                    <button class="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-edit mr-1"></i>
-                        Editar
-                    </button>
-                    <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-eye mr-1"></i>
-                        Ver
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Product Card 2 -->
-        <div class="bg-white rounded-lg shadow-sm border border-orange-100 overflow-hidden">
-            <div class="h-48 bg-gray-200 flex items-center justify-center">
-                <i class="fas fa-pizza-slice text-6xl text-gray-400"></i>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">Pizza Margarita</h3>
-                    <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Stock Bajo</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Masa artesanal, salsa de tomate, mozzarella y albahaca</p>
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-2xl font-bold text-orange-600">$18.50</span>
-                    <span class="text-sm text-yellow-600">Stock: 3</span>
-                </div>
-                <div class="flex space-x-2">
-                    <button class="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-edit mr-1"></i>
-                        Editar
-                    </button>
-                    <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-eye mr-1"></i>
-                        Ver
-                    </button>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" wire:key="productos-grid">
+        @forelse($productos as $producto)
+            <x-product-card
+                :producto="$producto"
+                :show-actions="true"
+                variant="admin"
+                wire:key="producto-{{ $producto->id }}"
+            />
+        @empty
+            <div class="col-span-full text-center py-12">
+                <div class="max-w-md mx-auto">
+                    <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No se encontraron productos</h3>
+                    <p class="text-gray-500 mb-6">
+                        @if($filtroCategoria || $filtroEstado || $busqueda)
+                            No hay productos que coincidan con los filtros aplicados.
+                        @else
+                            Aún no hay productos registrados en el sistema.
+                        @endif
+                    </p>
+                    @if($filtroCategoria || $filtroEstado || $busqueda)
+                        <button
+                            wire:click="limpiarFiltros"
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                        >
+                            <i class="fas fa-times mr-2"></i>
+                            Limpiar Filtros
+                        </button>
+                    @else
+                        <button
+                            wire:click="crearProducto"
+                            class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Agregar Primer Producto
+                        </button>
+                    @endif
                 </div>
             </div>
-        </div>
-
-        <!-- Product Card 3 -->
-        <div class="bg-white rounded-lg shadow-sm border border-orange-100 overflow-hidden opacity-75">
-            <div class="h-48 bg-gray-200 flex items-center justify-center">
-                <i class="fas fa-glass-whiskey text-6xl text-gray-400"></i>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">Refresco Cola</h3>
-                    <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Agotado</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Bebida gaseosa cola 500ml</p>
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-2xl font-bold text-gray-400">$3.50</span>
-                    <span class="text-sm text-red-600">Stock: 0</span>
-                </div>
-                <div class="flex space-x-2">
-                    <button class="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-edit mr-1"></i>
-                        Editar
-                    </button>
-                    <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-eye mr-1"></i>
-                        Ver
-                    </button>
-                </div>
-            </div>
-        </div>
+        @endforelse
     </div>
+
+
+    <!-- Product Edit Modal -->
+    <x-modals.productos.form-producto
+        :productoId="$productoId"
+        :modalTitle="$modalTitle"
+        :showModal="$showEditModal"
+        :categorias="$categorias"
+    />
+
+    <!-- Product Detail Modal -->
+    <x-modals.productos.detalle-producto
+        :show="$showDetailModal"
+        :producto="$productoToView"
+    />
+
+    <!-- Delete Confirmation Modal -->
+    <x-modals.delete-confirmation
+        :show="$showDeleteModal"
+        :item="$productoToDelete"
+        title="Confirmar Eliminación de Producto"
+        :message="$productoToDelete ? '¿Estás seguro de que quieres eliminar <strong>' . $productoToDelete->nombre . '</strong>?' : ''"
+        onCancel="closeDeleteModal"
+        onConfirm="eliminarProducto"
+    />
+
+    <!-- Loading Overlays -->
+    <x-loading-overlay target="crearProducto" message="Preparando formulario..." />
+    <x-loading-overlay target="editarProducto" message="Cargando datos del producto..." />
+    <x-loading-overlay target="saveProducto" message="Guardando producto..." />
+    <x-loading-overlay target="verProducto" message="Cargando detalles del producto..." />
+    <x-loading-overlay target="confirmDeleteProducto" message="Preparando eliminación..." />
+    <x-loading-overlay target="eliminarProducto" message="Eliminando producto..." />
+    <x-loading-overlay target="closeDeleteModal" message="Cerrando..." />
+    <x-loading-overlay target="closeDetailModal" message="Cerrando..." />
+    <x-loading-overlay target="closeEditModal" message="Cerrando..." />
 </div>

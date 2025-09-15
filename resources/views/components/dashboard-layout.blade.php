@@ -21,6 +21,9 @@
     @livewireStyles
     
     <style>
+        /* Alpine.js cloak */
+        [x-cloak] { display: none !important; }
+
         /* Custom animations for floating shapes */
         @keyframes float {
             0%, 100% {

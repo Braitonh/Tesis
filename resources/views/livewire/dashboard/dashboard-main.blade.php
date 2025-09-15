@@ -26,6 +26,9 @@
                 @case('cocina')
                     <livewire:dashboard.empleado-cocina />
                     @break
+                @case('productos')
+                    <livewire:dashboard.empleado-productos />
+                    @break
                 @case('delivery')
                     <livewire:dashboard.empleado-delivery />
                     @break

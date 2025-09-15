@@ -41,8 +41,8 @@
                         </button>
 
                         <!-- Dropdown menu -->
-                        <div 
-                            x-show="open" 
+                        <div
+                            x-show="open"
                             @click.away="open = false"
                             x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="opacity-0 scale-95"
@@ -50,6 +50,7 @@
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
+                            x-cloak
                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
                         >
                             <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
@@ -90,7 +91,7 @@
     </div>
 
     <!-- Mobile Navigation Menu -->
-    <div class="md:hidden border-t border-orange-100" x-data="{ mobileOpen: false }" x-show="mobileOpen">
+    <div class="md:hidden border-t border-orange-100" x-data="{ mobileOpen: false }" x-show="mobileOpen" x-cloak>
         @isset($mobileNavigation)
             {{ $mobileNavigation }}
         @endisset

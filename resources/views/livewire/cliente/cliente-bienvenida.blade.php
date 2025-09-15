@@ -165,7 +165,7 @@
                         </div>
                         
                         <!-- Contenido -->
-                        <div class="p-6">
+                        <div class="p-6 pb-20 relative">
                             <div class="flex justify-between items-start mb-3">
                                 <h3 class="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">Hamburguesa Premium</h3>
                                 <div class="text-right">
@@ -188,7 +188,7 @@
                             
                             <p class="text-gray-600 mb-4">Doble carne 100% premium, queso cheddar, bacon ahumado, lechuga y tomate en pan artesanal.</p>
                             
-                            <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <button class="absolute bottom-6 left-6 right-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
                                 <i class="fas fa-plus mr-2"></i>Agregar al Carrito
                             </button>
                         </div>
@@ -208,7 +208,7 @@
                         </div>
                         
                         <!-- Contenido -->
-                        <div class="p-6">
+                        <div class="p-6 pb-20 relative">
                             <div class="flex justify-between items-start mb-3">
                                 <h3 class="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">Pizza Margherita</h3>
                                 <div class="text-right">
@@ -230,7 +230,7 @@
                             
                             <p class="text-gray-600 mb-4">Pizza tradicional italiana con salsa de tomate fresca, mozzarella y albahaca sobre masa artesanal.</p>
                             
-                            <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <button class="absolute bottom-6 left-6 right-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
                                 <i class="fas fa-plus mr-2"></i>Agregar al Carrito
                             </button>
                         </div>
@@ -250,7 +250,7 @@
                         </div>
                         
                         <!-- Contenido -->
-                        <div class="p-6">
+                        <div class="p-6 pb-20 relative">
                             <div class="flex justify-between items-start mb-3">
                                 <h3 class="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">Smoothie Tropical</h3>
                                 <div class="text-right">
@@ -273,7 +273,7 @@
                             
                             <p class="text-gray-600 mb-4">Refrescante mezcla de frutas tropicales: mango, piña y maracuyá con yogurt natural.</p>
                             
-                            <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <button class="absolute bottom-6 left-6 right-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
                                 <i class="fas fa-plus mr-2"></i>Agregar al Carrito
                             </button>
                         </div>

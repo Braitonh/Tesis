@@ -16,6 +16,7 @@ class AdminProductos extends Component
     // Filtros
     public $filtroCategoria = '';
     public $filtroEstado = '';
+    public $filtroDestacado = '';
     public $busqueda = '';
 
     // Delete confirmation modal
@@ -51,13 +52,15 @@ class AdminProductos extends Component
     protected $updatesQueryString = [
         'busqueda' => ['except' => '', 'as' => 'q'],
         'filtroCategoria' => ['except' => '', 'as' => 'categoria'],
-        'filtroEstado' => ['except' => '', 'as' => 'estado']
+        'filtroEstado' => ['except' => '', 'as' => 'estado'],
+        'filtroDestacado' => ['except' => '', 'as' => 'destacado']
     ];
 
     public function limpiarFiltros()
     {
         $this->filtroCategoria = '';
         $this->filtroEstado = '';
+        $this->filtroDestacado = '';
         $this->busqueda = '';
 
         // Forzar re-render para asegurar que los event listeners se vinculen correctamente
@@ -77,6 +80,12 @@ class AdminProductos extends Component
     }
 
     public function updatedBusqueda()
+    {
+        // Asegurar que el componente se actualice correctamente
+        $this->resetPage();
+    }
+
+    public function updatedFiltroDestacado()
     {
         // Asegurar que el componente se actualice correctamente
         $this->resetPage();
@@ -347,6 +356,9 @@ class AdminProductos extends Component
                     $query->where('estado', 'stock_bajo');
                 }
             })
+            ->when($this->filtroDestacado !== '', function ($query) {
+                $query->where('destacado', $this->filtroDestacado === '1');
+            })
             ->ordered();
 
         return $query->get();
@@ -354,13 +366,11 @@ class AdminProductos extends Component
 
     public function getStatsProperty()
     {
-        $productos = Producto::active();
-
         return [
-            'total' => $productos->count(),
-            'disponibles' => $productos->where('estado', 'disponible')->count(),
-            'stock_bajo' => $productos->where('estado', 'stock_bajo')->count(),
-            'agotados' => $productos->where('estado', 'agotado')->count(),
+            'total' => Producto::active()->count(),
+            'disponibles' => Producto::active()->where('estado', 'disponible')->count(),
+            'stock_bajo' => Producto::active()->where('estado', 'stock_bajo')->count(),
+            'agotados' => Producto::active()->where('estado', 'agotado')->count(),
         ];
     }
 

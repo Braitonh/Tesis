@@ -71,7 +71,7 @@
 
     <!-- Filters -->
     <div class="bg-white rounded-lg p-6 shadow-sm border border-orange-100">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
                 <select wire:model.live="filtroCategoria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
@@ -88,6 +88,14 @@
                     <option value="Disponible">Disponible</option>
                     <option value="Stock Bajo">Stock Bajo</option>
                     <option value="Agotado">Agotado</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Destacado</label>
+                <select wire:model.live="filtroDestacado" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                    <option value="">Todos</option>
+                    <option value="1">Destacados</option>
+                    <option value="0">No Destacados</option>
                 </select>
             </div>
             <div>
@@ -111,7 +119,7 @@
         </div>
 
         <!-- Filtros activos -->
-        @if($filtroCategoria || $filtroEstado || $busqueda)
+        @if($filtroCategoria || $filtroEstado || $filtroDestacado !== '' || $busqueda)
             <div class="mt-4 flex flex-wrap gap-2">
                 <span class="text-sm text-gray-600">Filtros activos:</span>
 
@@ -128,6 +136,15 @@
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {{ $filtroEstado }}
                         <button wire:click="$set('filtroEstado', '')" class="ml-1 text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endif
+
+                @if($filtroDestacado !== '')
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        {{ $filtroDestacado === '1' ? 'Destacados' : 'No Destacados' }}
+                        <button wire:click="$set('filtroDestacado', '')" class="ml-1 text-yellow-600 hover:text-yellow-800">
                             <i class="fas fa-times"></i>
                         </button>
                     </span>
@@ -184,13 +201,13 @@
                     <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">No se encontraron productos</h3>
                     <p class="text-gray-500 mb-6">
-                        @if($filtroCategoria || $filtroEstado || $busqueda)
+                        @if($filtroCategoria || $filtroEstado || $filtroDestacado !== '' || $busqueda)
                             No hay productos que coincidan con los filtros aplicados.
                         @else
                             Aún no hay productos registrados en el sistema.
                         @endif
                     </p>
-                    @if($filtroCategoria || $filtroEstado || $busqueda)
+                    @if($filtroCategoria || $filtroEstado || $filtroDestacado !== '' || $busqueda)
                         <button
                             wire:click="limpiarFiltros"
                             class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"

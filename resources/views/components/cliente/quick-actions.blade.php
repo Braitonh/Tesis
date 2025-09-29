@@ -22,8 +22,8 @@
             </div>
         </button>
 
-        <button
-            class="group bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-8 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+        <a href="{{ route('cliente.pedidos') }}"
+            class="group bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-8 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 block"
         >
             <div class="text-center">
                 <div class="bg-white/20 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform duration-300 mx-auto w-fit">
@@ -36,6 +36,6 @@
                     <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                 </div>
             </div>
-        </button>
+        </a>
     </div>
 </div>

@@ -93,12 +93,11 @@
 
                 <!-- Actions -->
                 <div class="space-y-2">
-                    <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            disabled>
+                    <a href="{{ route('cliente.checkout') }}"
+                       class="block w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center">
                         <i class="fas fa-credit-card mr-2"></i>
                         Proceder al Checkout
-                        <span class="text-xs block mt-1">(Próximamente)</span>
-                    </button>
+                    </a>
 
                     <div class="grid grid-cols-2 gap-2">
                         <button wire:click="toggleModal"

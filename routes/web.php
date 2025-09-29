@@ -54,6 +54,9 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
 // Ruta específica para clientes (no requiere email verificado)
 Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/bienvenida', App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
+    Route::get('/cliente/pedidos', App\Livewire\Cliente\MisPedidos::class)->name('cliente.pedidos');
+    Route::get('/cliente/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.checkout');
+    Route::get('/cliente/pedido/{pedido}/confirmacion', App\Livewire\Cliente\PedidoConfirmacion::class)->name('cliente.pedido.confirmacion');
 });
 
 // Fallback route - redirect any unregistered route to login

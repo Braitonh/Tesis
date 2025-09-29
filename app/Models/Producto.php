@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Producto extends Model
 {
@@ -40,6 +42,14 @@ class Producto extends Model
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class);
+    }
+
+    /**
+     * Get the detalle pedidos for the producto.
+     */
+    public function detallePedidos(): HasMany
+    {
+        return $this->hasMany(DetallePedido::class);
     }
 
     /**
@@ -105,8 +115,8 @@ class Producto extends Model
         }
 
         // Si es una ruta local
-        if (\Storage::disk('public')->exists($this->imagen)) {
-            return \Storage::url($this->imagen);
+        if (Storage::disk('public')->exists($this->imagen)) {
+            return Storage::url($this->imagen);
         }
 
         // Fallback al placeholder si el archivo no existe
@@ -152,7 +162,7 @@ class Producto extends Model
     {
         return $this->imagen &&
                !filter_var($this->imagen, FILTER_VALIDATE_URL) &&
-               \Storage::disk('public')->exists($this->imagen);
+               Storage::disk('public')->exists($this->imagen);
     }
 
     /**

@@ -126,6 +126,11 @@
                     </div>
                     
                     <div class="flex items-center space-x-6">
+                        <!-- Carrito Badge -->
+                        @livewire('cliente.carrito-badge')
+                    </div>
+
+                    <div class="flex items-center space-x-6">
                         <div class="hidden md:flex items-center space-x-4">
                             <div class="bg-orange-500/10 p-3 rounded-full">
                                 <i class="fas fa-heart text-orange-600 text-xl"></i>
@@ -135,11 +140,7 @@
                                 <p class="text-xs text-gray-500">Bienvenido de vuelta</p>
                             </div>
                         </div>
-                        
-                        <button class="hidden md:flex items-center space-x-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
-                            <span>Inicio</span>
-                        </button>
-                        
+
                         <button class="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
                             <span>Cerrar Sesión</span>
                         </button>
@@ -188,6 +189,9 @@
             </div>
         </footer>
     </div>
+
+    <!-- Carrito Component -->
+    @livewire('cliente.carrito-compras')
 
     <!-- Livewire Scripts -->
     @livewireScripts

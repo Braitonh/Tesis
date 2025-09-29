@@ -110,7 +110,7 @@
                 </div>
             @elseif($variant === 'cliente')
                 <button
-                    wire:click="agregarAlCarrito({{ $producto->id }})"
+                    wire:click="$dispatch('agregar-al-carrito', { productoId: {{ $producto->id }} })"
                     @if($producto->estado === 'agotado') disabled @endif
                     class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >

@@ -97,6 +97,245 @@
                                 </p>
                             </div>
 
+                            <!-- Método de Pago -->
+                            <div x-data="{
+                                    metodoPagoLocal: '{{ $metodo_pago }}',
+                                    init() {
+                                        this.$watch('metodoPagoLocal', (value) => {
+                                            if (value !== 'efectivo') {
+                                                setTimeout(() => {
+                                                    const input = document.getElementById('numero_tarjeta');
+                                                    if (input) {
+                                                        input.scrollIntoView({
+                                                            behavior: 'smooth',
+                                                            block: 'center'
+                                                        });
+                                                        input.focus();
+                                                    }
+                                                }, 100);
+                                            }
+                                        });
+                                    }
+                                }"
+                                class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-3">
+                                        Método de Pago
+                                        <span class="text-red-500">*</span>
+                                    </label>
+
+                                    <div class="space-y-3">
+                                        <!-- Efectivo -->
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
+                                               :class="metodoPagoLocal === 'efectivo' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                            <input type="radio"
+                                                   name="metodo_pago"
+                                                   value="efectivo"
+                                                   wire:model.live="metodo_pago"
+                                                   x-model="metodoPagoLocal"
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                            <div class="ml-3 flex-1">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
+                                                    <span class="font-semibold text-gray-800">Efectivo</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Paga al recibir tu pedido</p>
+                                            </div>
+                                        </label>
+
+                                        <!-- Tarjeta de Crédito -->
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
+                                               :class="metodoPagoLocal === 'tarjeta_credito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                            <input type="radio"
+                                                   name="metodo_pago"
+                                                   value="tarjeta_credito"
+                                                   wire:model.live="metodo_pago"
+                                                   x-model="metodoPagoLocal"
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                            <div class="ml-3 flex-1">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-credit-card text-blue-600 mr-2"></i>
+                                                    <span class="font-semibold text-gray-800">Tarjeta de Crédito</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Visa, Mastercard, American Express</p>
+                                            </div>
+                                        </label>
+
+                                        <!-- Tarjeta de Débito -->
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
+                                               :class="metodoPagoLocal === 'tarjeta_debito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                            <input type="radio"
+                                                   name="metodo_pago"
+                                                   value="tarjeta_debito"
+                                                   wire:model.live="metodo_pago"
+                                                   x-model="metodoPagoLocal"
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                            <div class="ml-3 flex-1">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-credit-card text-purple-600 mr-2"></i>
+                                                    <span class="font-semibold text-gray-800">Tarjeta de Débito</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Débito instantáneo</p>
+                                            </div>
+                                        </label>
+
+                                        <!-- Billetera Digital -->
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
+                                               :class="metodoPagoLocal === 'billetera_digital' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                            <input type="radio"
+                                                   name="metodo_pago"
+                                                   value="billetera_digital"
+                                                   wire:model.live="metodo_pago"
+                                                   x-model="metodoPagoLocal"
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                            <div class="ml-3 flex-1">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-wallet text-orange-600 mr-2"></i>
+                                                    <span class="font-semibold text-gray-800">Billetera Digital</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Zimple, Tigo Money, Personal Pay</p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    @error('metodo_pago')
+                                        <p class="mt-2 text-sm text-red-500">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Formulario de Tarjeta (Condicional) -->
+                            <div id="formulario-tarjeta"
+                                 x-show="metodoPagoLocal !== 'efectivo'"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95"
+                                 class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4">
+
+                                <div class="flex items-center mb-4">
+                                    <i class="fas fa-lock text-blue-600 mr-2"></i>
+                                    <span class="text-sm font-semibold text-blue-800">Información de Pago Segura</span>
+                                </div>
+
+                                <!-- Número de Tarjeta -->
+                                <div>
+                                    <label for="numero_tarjeta" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Número de Tarjeta
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-credit-card text-gray-400"></i>
+                                        </div>
+                                        <input type="text"
+                                               id="numero_tarjeta"
+                                               wire:model="numero_tarjeta"
+                                               placeholder="1234 5678 9012 3456"
+                                               maxlength="19"
+                                               class="block w-full pl-10 pr-3 py-3 border @error('numero_tarjeta') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-orange-500 focus:border-orange-500 bg-white">
+                                    </div>
+                                    @error('numero_tarjeta')
+                                        <p class="mt-1 text-sm text-red-500">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Nombre en Tarjeta -->
+                                <div>
+                                    <label for="nombre_tarjeta" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        Nombre en la Tarjeta
+                                        <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                        <input type="text"
+                                               id="nombre_tarjeta"
+                                               wire:model="nombre_tarjeta"
+                                               placeholder="JUAN PÉREZ"
+                                               class="block w-full pl-10 pr-3 py-3 border @error('nombre_tarjeta') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-orange-500 focus:border-orange-500 bg-white uppercase">
+                                    </div>
+                                    @error('nombre_tarjeta')
+                                        <p class="mt-1 text-sm text-red-500">
+                                            <i class="fas fa-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Fecha y CVV -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="fecha_vencimiento" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Vencimiento
+                                            <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-calendar text-gray-400"></i>
+                                            </div>
+                                            <input type="text"
+                                                   id="fecha_vencimiento"
+                                                   wire:model="fecha_vencimiento"
+                                                   placeholder="MM/AA"
+                                                   maxlength="5"
+                                                   class="block w-full pl-10 pr-3 py-3 border @error('fecha_vencimiento') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-orange-500 focus:border-orange-500 bg-white">
+                                        </div>
+                                        @error('fecha_vencimiento')
+                                            <p class="mt-1 text-sm text-red-500">
+                                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="cvv" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            CVV
+                                            <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-lock text-gray-400"></i>
+                                            </div>
+                                            <input type="password"
+                                                   id="cvv"
+                                                   wire:model="cvv"
+                                                   placeholder="123"
+                                                   maxlength="4"
+                                                   class="block w-full pl-10 pr-3 py-3 border @error('cvv') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-orange-500 focus:border-orange-500 bg-white">
+                                        </div>
+                                        @error('cvv')
+                                            <p class="mt-1 text-sm text-red-500">
+                                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Iconos de Tarjetas -->
+                                <div class="flex items-center justify-between pt-2 border-t border-blue-200">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-cc-visa text-3xl text-blue-700"></i>
+                                        <i class="fab fa-cc-mastercard text-3xl text-red-600"></i>
+                                        <i class="fab fa-cc-amex text-3xl text-blue-500"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-600">
+                                        <i class="fas fa-shield-alt text-green-600"></i> Pago seguro SSL
+                                    </span>
+                                </div>
+                            </div>
+                            </div>
+
                             <!-- Información Adicional -->
                             <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
                                 <div class="flex items-start">
@@ -127,14 +366,14 @@
 
                 <!-- Resumen del Pedido -->
                 <div class="lg:col-span-1 flex">
-                    <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-4 flex-1 flex flex-col">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-4 flex-1 flex flex-col max-h-[calc(100vh-2rem)]">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">
                             <i class="fas fa-shopping-bag text-orange-600 mr-2"></i>
                             Resumen del Pedido
                         </h2>
 
                         <!-- Items -->
-                        <div class="space-y-3 mb-4 max-h-64 overflow-y-auto flex-1">
+                        <div class="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
                             @foreach($items as $item)
                                 <div class="flex items-center gap-3 pb-3 border-b border-gray-100" wire:key="checkout-item-{{ $item->producto->id }}">
                                     <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
@@ -162,7 +401,7 @@
                         </div>
 
                         <!-- Total -->
-                        <div class="border-t border-gray-200 pt-4 mb-6">
+                        <div class="border-t border-gray-200 pt-4 mb-6 mt-auto">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-gray-600">Subtotal</span>
                                 <span class="text-gray-800 font-semibold">${{ number_format($total, 2) }}</span>
@@ -184,7 +423,11 @@
                                 class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                             <span wire:loading.remove wire:target="confirmarPedido">
                                 <i class="fas fa-check-circle mr-2"></i>
-                                Confirmar Pedido
+                                @if($metodo_pago === 'efectivo')
+                                    Confirmar Pedido
+                                @else
+                                    Proceder al Pago
+                                @endif
                             </span>
                             <span wire:loading wire:target="confirmarPedido">
                                 <i class="fas fa-spinner fa-spin mr-2"></i>
@@ -209,4 +452,130 @@
             </div>
         </main>
     </div>
+
+    <!-- Modal de Error de Pago -->
+    @if($mostrarModalError)
+    <div class="fixed inset-0 z-50 overflow-y-auto animate-fade-in backdrop-blur-sm"
+         x-data
+         @scroll-to-top.window="window.scrollTo({ top: 0, behavior: 'smooth' })">
+
+        <!-- Modal Container -->
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 animate-scale-in">
+
+                <!-- Icono de Error -->
+                <div class="flex justify-center mb-4">
+                    @if($tipoError === 'rechazado')
+                        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-times-circle text-5xl text-red-600"></i>
+                        </div>
+                    @elseif($tipoError === 'fondos')
+                        <div class="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center">
+                            <i class="fas fa-wallet text-5xl text-orange-600"></i>
+                        </div>
+                    @elseif($tipoError === 'vencida')
+                        <div class="w-20 h-20 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <i class="fas fa-calendar-times text-5xl text-yellow-600"></i>
+                        </div>
+                    @elseif($tipoError === 'bloqueada')
+                        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-ban text-5xl text-red-600"></i>
+                        </div>
+                    @elseif($tipoError === 'invalido')
+                        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-5xl text-red-600"></i>
+                        </div>
+                    @else
+                        <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-exclamation-circle text-5xl text-red-600"></i>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Título -->
+                <h3 class="text-2xl font-bold text-gray-900 text-center mb-2">
+                    Error al Procesar el Pago
+                </h3>
+
+                <!-- Mensaje de Error -->
+                <p class="text-gray-600 text-center mb-6">
+                    {{ $mensajeError }}
+                </p>
+
+                <!-- Información Adicional según el tipo de error -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            @if($tipoError === 'rechazado')
+                                <p class="font-semibold mb-1">¿Qué puedes hacer?</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verifica que tu tarjeta esté activa</li>
+                                    <li>Contacta a tu banco para más información</li>
+                                    <li>Intenta con otro método de pago</li>
+                                </ul>
+                            @elseif($tipoError === 'fondos')
+                                <p class="font-semibold mb-1">Fondos insuficientes</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verifica el saldo disponible en tu tarjeta</li>
+                                    <li>Intenta con otra tarjeta</li>
+                                    <li>Puedes pagar en efectivo al recibir</li>
+                                </ul>
+                            @elseif($tipoError === 'vencida')
+                                <p class="font-semibold mb-1">Tarjeta vencida</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Usa una tarjeta vigente</li>
+                                    <li>Contacta a tu banco para renovarla</li>
+                                    <li>Puedes pagar en efectivo</li>
+                                </ul>
+                            @elseif($tipoError === 'bloqueada')
+                                <p class="font-semibold mb-1">Tarjeta bloqueada</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Contacta a tu banco inmediatamente</li>
+                                    <li>Verifica si hay alguna alerta de seguridad</li>
+                                    <li>Intenta con otro método de pago</li>
+                                </ul>
+                            @elseif($tipoError === 'invalido')
+                                <p class="font-semibold mb-1">Número de tarjeta inválido</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verifica que ingresaste el número correctamente</li>
+                                    <li>Revisa que no falten dígitos</li>
+                                    <li>Intenta nuevamente</li>
+                                </ul>
+                            @else
+                                <p class="font-semibold mb-1">Sugerencias</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Verifica tus datos de pago</li>
+                                    <li>Intenta nuevamente en unos momentos</li>
+                                    <li>Puedes pagar en efectivo</li>
+                                </ul>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="space-y-3">
+                    <button wire:click="cerrarModalError"
+                            class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-redo mr-2"></i>
+                        Intentar Nuevamente
+                    </button>
+
+                    <button onclick="window.location.href='{{ route('cliente.bienvenida') }}'"
+                            class="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Volver al Menú
+                    </button>
+                </div>
+
+                <!-- Botón Cerrar (X) -->
+                <button wire:click="cerrarModalError"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>

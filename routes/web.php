@@ -55,8 +55,14 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
 Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/bienvenida', App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
     Route::get('/cliente/pedidos', App\Livewire\Cliente\MisPedidos::class)->name('cliente.pedidos');
-    Route::get('/cliente/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.checkout');
+    Route::get('/cliente/carrito/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.carrito.checkout');
+    Route::get('/cliente/pago/procesando/{transaccionId}', App\Livewire\Cliente\ProcesoPago::class)->name('cliente.pago.procesando');
     Route::get('/cliente/pedido/{pedido}/confirmacion', App\Livewire\Cliente\PedidoConfirmacion::class)->name('cliente.pedido.confirmacion');
+
+    // Mantener alias de ruta antigua para compatibilidad
+    Route::get('/cliente/checkout', function () {
+        return redirect()->route('cliente.carrito.checkout');
+    })->name('cliente.checkout');
 });
 
 // Fallback route - redirect any unregistered route to login

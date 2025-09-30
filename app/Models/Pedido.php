@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pedido extends Model
@@ -16,6 +17,8 @@ class Pedido extends Model
         'user_id',
         'numero_pedido',
         'estado',
+        'estado_pago',
+        'metodo_pago_preferido',
         'subtotal',
         'total',
         'direccion_entrega',
@@ -42,6 +45,14 @@ class Pedido extends Model
     public function detalles(): HasMany
     {
         return $this->hasMany(DetallePedido::class);
+    }
+
+    /**
+     * Get the transaccion for the pedido.
+     */
+    public function transaccion(): HasOne
+    {
+        return $this->hasOne(Transaccion::class);
     }
 
     /**
@@ -135,5 +146,45 @@ class Pedido extends Model
             'cancelado' => 'Cancelado',
             default => 'Desconocido'
         };
+    }
+
+    /**
+     * Verificar si el pedido está pagado
+     */
+    public function isPagado(): bool
+    {
+        return $this->estado_pago === 'pagado';
+    }
+
+    /**
+     * Verificar si el pedido tiene pago pendiente
+     */
+    public function isPagoPendiente(): bool
+    {
+        return $this->estado_pago === 'pendiente';
+    }
+
+    /**
+     * Verificar si el pago falló
+     */
+    public function isPagoFallido(): bool
+    {
+        return $this->estado_pago === 'fallido';
+    }
+
+    /**
+     * Scope para pedidos pagados
+     */
+    public function scopePagados($query)
+    {
+        return $query->where('estado_pago', 'pagado');
+    }
+
+    /**
+     * Scope para pedidos con pago pendiente
+     */
+    public function scopePagoPendiente($query)
+    {
+        return $query->where('estado_pago', 'pendiente');
     }
 }

@@ -14,5 +14,18 @@
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "(Write|Edit)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$FILE_PATH\" == *.php ]] && [[ \"$FILE_PATH\" != *vendor* ]] && [[ \"$FILE_PATH\" != *bootstrap/cache* ]]; then docker-compose exec -T app vendor/bin/php-cs-fixer fix \"$FILE_PATH\" --config=.php-cs-fixer.php 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
   }
 }

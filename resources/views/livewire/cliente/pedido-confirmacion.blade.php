@@ -93,6 +93,73 @@
                         <span class="text-orange-600">${{ number_format($pedido->total, 2) }}</span>
                     </div>
                 </div>
+
+                <!-- Información de Pago -->
+                @if($pedido->transaccion)
+                <div class="border-t border-gray-200 mt-6 pt-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Información de Pago</h3>
+
+                    <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-600 text-2xl mr-3 mt-1"></i>
+                            <div class="flex-1">
+                                <p class="font-semibold text-green-900 mb-2">Pago Confirmado</p>
+                                <div class="space-y-2 text-sm text-gray-700">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Método de pago:</span>
+                                        <span class="font-medium">
+                                            @switch($pedido->transaccion->metodo_pago)
+                                                @case('efectivo')
+                                                    <i class="fas fa-money-bill-wave text-green-600 mr-1"></i>
+                                                    Efectivo
+                                                    @break
+                                                @case('tarjeta_credito')
+                                                    <i class="fas fa-credit-card text-blue-600 mr-1"></i>
+                                                    Tarjeta de Crédito
+                                                    @break
+                                                @case('tarjeta_debito')
+                                                    <i class="fas fa-credit-card text-purple-600 mr-1"></i>
+                                                    Tarjeta de Débito
+                                                    @break
+                                                @case('billetera_digital')
+                                                    <i class="fas fa-wallet text-orange-600 mr-1"></i>
+                                                    Billetera Digital
+                                                    @break
+                                            @endswitch
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">N° Transacción:</span>
+                                        <span class="font-mono font-medium">{{ $pedido->transaccion->numero_transaccion }}</span>
+                                    </div>
+                                    @if($pedido->transaccion->detalles_tarjeta)
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Tarjeta:</span>
+                                            <span class="font-medium">
+                                                {{ $pedido->transaccion->detalles_tarjeta['tipo'] ?? 'N/A' }}
+                                                **** {{ $pedido->transaccion->detalles_tarjeta['ultimos_digitos'] ?? '' }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Estado:</span>
+                                        <span class="font-medium text-green-600">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            {{ ucfirst($pedido->transaccion->estado) }}
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Fecha:</span>
+                                        <span class="font-medium">
+                                            {{ $pedido->transaccion->fecha_procesamiento ? $pedido->transaccion->fecha_procesamiento->format('d/m/Y H:i') : 'Pendiente' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
 
             <!-- Información Adicional -->

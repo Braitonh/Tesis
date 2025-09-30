@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\PasswordCreationController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Cocina\Cocina;
+use App\Livewire\Dashboard\AdminPedidos;
 use App\Livewire\Dashboard\AdminProductos;
 use App\Livewire\Empleados\Empleados;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
     Route::get('/cocina', Cocina::class)->name('cocina');
     Route::get('/empleados', Empleados::class)->name('empleados');
     Route::get('/productos', AdminProductos::class)->name('productos');
+    Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
 
 });
 

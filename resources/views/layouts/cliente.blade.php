@@ -131,19 +131,53 @@
                     </div>
 
                     <div class="flex items-center space-x-6">
-                        <div class="hidden md:flex items-center space-x-4">
-                            <div class="bg-orange-500/10 p-3 rounded-full">
-                                <i class="fas fa-heart text-orange-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-gray-800">¡Hola{{ Auth::user()->name ? ', ' . Auth::user()->name : '' }}!</p>
-                                <p class="text-xs text-gray-500">Bienvenido de vuelta</p>
+                        <!-- User dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button
+                                @click="open = !open"
+                                class="flex items-center space-x-3 text-gray-700 hover:text-orange-600 transition-colors duration-300 focus:outline-none"
+                            >
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white text-base font-semibold shadow-lg">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </div>
+                                <div class="hidden md:block text-left">
+                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+                                    <p class="text-xs text-gray-500">Cliente</p>
+                                </div>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <div
+                                x-show="open"
+                                @click.away="open = false"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                x-cloak
+                                class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
+                            >
+                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
+                                    <i class="fas fa-user"></i>
+                                    Mi Perfil
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
+                                    <i class="fas fa-cog"></i>
+                                    Configuración
+                                </a>
+                                <hr class="my-2 border-gray-100">
+                                <form method="POST" action="{{ route('logout') }}" class="block">
+                                    @csrf
+                                    <button type="submit" class="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 text-left">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
                             </div>
                         </div>
-
-                        <button class="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                            <span>Cerrar Sesión</span>
-                        </button>
                     </div>
                 </div>
             </div>

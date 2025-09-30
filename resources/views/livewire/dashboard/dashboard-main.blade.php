@@ -4,6 +4,15 @@
         @case('dashboard')
             <livewire:dashboard.dashboard-home />
             @break
+        @case('pedidos')
+            @switch($activeSubsection)
+                @case('pedidos')
+                    <livewire:dashboard.admin-pedidos />
+                    @break
+                @default
+                    <livewire:dashboard.admin-pedidos />
+                @endswitch
+        @break
             
         @case('cliente')
             @switch($activeSubsection)

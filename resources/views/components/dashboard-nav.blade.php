@@ -23,6 +23,39 @@ $currentPath = request()->path();
                         Dashboard
                     </a>
 
+                <!-- Pedidos Module -->
+                @php
+                $pedidosRoutes = ['pedidos']; // Agrega rutas específicas del módulo cliente aquí
+                $isPedidosActive = in_array($currentRouteName, $pedidosRoutes) || str_contains($currentRoute ?? '', 'pedidos');
+                @endphp
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 
+                                   {{ $isPedidosActive ? 'bg-orange-100 text-orange-700 shadow-sm' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
+                        <i class="fas fa-users"></i>
+                        <span class="hidden sm:block">Pedidos</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div x-show="open" @click.away="open = false"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-cloak
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
+                        <a href="{{ route('pedidos') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
+                           {{ $currentRouteName === 'pedidos' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            Ordenes
+                        </a>
+                        <button wire:click="$dispatch('navigateTo', 'cliente', 'perfil')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 w-full text-left">
+                            <i class="fas fa-user"></i>
+                            Detalles
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Cliente Module -->
                 @php
                 $clienteRoutes = []; // Agrega rutas específicas del módulo cliente aquí
@@ -122,6 +155,11 @@ $currentPath = request()->path();
                             <i class="fas fa-chart-bar"></i>
                             Analítica
                         </button>
+                        <a href="{{ route('pedidos') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
+                           {{ $currentRouteName === 'pedidos' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            Pedidos
+                        </a>
                         <a href="{{ route('productos') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
                            {{ $currentRouteName === 'productos' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                             <i class="fas fa-boxes"></i>

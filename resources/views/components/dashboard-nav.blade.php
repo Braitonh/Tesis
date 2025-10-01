@@ -6,7 +6,7 @@ $currentPath = request()->path();
 @endphp
 
 <!-- Horizontal Navigation Menu -->
-<nav class="bg-white sticky rounded-b-3xl">
+<nav class="bg-white sticky rounded-b-3xl z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-14">
 
@@ -30,7 +30,7 @@ $currentPath = request()->path();
                 @endphp
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
-                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
                                    {{ $isPedidosActive ? 'bg-orange-100 text-orange-700 shadow-sm' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                         <i class="fas fa-truck"></i>
                         <span class="hidden sm:block">Pedidos</span>
@@ -43,7 +43,7 @@ $currentPath = request()->path();
                         x-transition:enter-start="opacity-0 scale-95"
                         x-transition:enter-end="opacity-100 scale-100"
                         x-cloak
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                         <a href="{{ route('pedidos') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
                            {{ $currentRouteName === 'pedidos' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                             <i class="fas fa-truck"></i>
@@ -76,7 +76,7 @@ $currentPath = request()->path();
                         x-transition:enter-start="opacity-0 scale-95"
                         x-transition:enter-end="opacity-100 scale-100"
                         x-cloak
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                         <button wire:click="$dispatch('navigateTo', 'cliente', 'pedidos')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 w-full text-left">
                             <i class="fas fa-shopping-cart"></i>
                             Pedidos
@@ -108,7 +108,7 @@ $currentPath = request()->path();
                         x-transition:enter-start="opacity-0 scale-95"
                         x-transition:enter-end="opacity-100 scale-100"
                         x-cloak
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                         <button wire:click="$dispatch('navigateTo', 'empleado', 'ventas')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 w-full text-left">
                             <i class="fas fa-cash-register"></i>
                             Ventas
@@ -150,7 +150,7 @@ $currentPath = request()->path();
                         x-transition:enter-start="opacity-0 scale-95"
                         x-transition:enter-end="opacity-100 scale-100"
                         x-cloak
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                         <button wire:click="$dispatch('navigateTo', 'admin', 'analitica')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 w-full text-left">
                             <i class="fas fa-chart-bar"></i>
                             Analítica

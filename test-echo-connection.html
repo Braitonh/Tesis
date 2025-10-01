@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Echo Connection</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .log {
+            background: #000;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 3px solid #00ff00;
+        }
+        .error { border-color: #ff0000; color: #ff0000; }
+        .success { border-color: #00ff00; color: #00ff00; }
+        .info { border-color: #00aaff; color: #00aaff; }
+    </style>
+</head>
+<body>
+    <h1>🔌 Test de Conexión Echo/Reverb</h1>
+    <div id="logs"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.3/dist/echo.iife.js"></script>
+
+    <script>
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        log('Iniciando test de conexión...', 'info');
+
+        window.Pusher = Pusher;
+
+        try {
+            window.Echo = new Echo({
+                broadcaster: 'reverb',
+                key: 'local-key',
+                wsHost: 'localhost',
+                wsPort: 8080,
+                wssPort: 8080,
+                forceTLS: false,
+                enabledTransports: ['ws', 'wss'],
+                disableStats: true,
+            });
+
+            log('✅ Echo inicializado correctamente', 'success');
+
+            // Escuchar cambios de estado de conexión
+            window.Echo.connector.pusher.connection.bind('state_change', function(states) {
+                log(`Estado de conexión: ${states.previous} → ${states.current}`, 'info');
+            });
+
+            window.Echo.connector.pusher.connection.bind('connected', function() {
+                log('✅ CONECTADO a Reverb!', 'success');
+            });
+
+            window.Echo.connector.pusher.connection.bind('disconnected', function() {
+                log('❌ DESCONECTADO de Reverb', 'error');
+            });
+
+            window.Echo.connector.pusher.connection.bind('error', function(err) {
+                log(`❌ Error de conexión: ${JSON.stringify(err)}`, 'error');
+            });
+
+            // Suscribirse a canales de prueba
+            log('Suscribiéndose al canal "admin"...', 'info');
+            window.Echo.channel('admin')
+                .listen('.pedido.creado', (e) => {
+                    log(`🎉 EVENTO RECIBIDO - pedido.creado: ${JSON.stringify(e)}`, 'success');
+                })
+                .listen('.pedido.cambio-estado', (e) => {
+                    log(`🎉 EVENTO RECIBIDO - pedido.cambio-estado: ${JSON.stringify(e)}`, 'success');
+                });
+
+            log('Suscribiéndose al canal "cocina"...', 'info');
+            window.Echo.channel('cocina')
+                .listen('.pedido.creado', (e) => {
+                    log(`🎉 EVENTO RECIBIDO (cocina) - pedido.creado: ${JSON.stringify(e)}`, 'success');
+                });
+
+            log('Esperando eventos... Crea un pedido en la aplicación.', 'info');
+
+        } catch (error) {
+            log(`❌ Error al inicializar Echo: ${error.message}`, 'error');
+        }
+    </script>
+</body>
+</html>
+
+

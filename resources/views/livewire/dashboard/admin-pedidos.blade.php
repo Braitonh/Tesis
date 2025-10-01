@@ -292,3 +292,88 @@
     <x-loading-overlay target="cancelarPedido" message="Cancelando pedido..." />
     <x-loading-overlay target="closeDeleteModal" message="Cerrando..." />
 </div>
+
+@push('scripts')
+<script>    
+    // Función para inicializar los listeners de Echo
+    function inicializarEchoListeners() {
+        if (!window.Echo) {
+            return false;
+        }
+        
+        
+        const adminChannel = window.Echo.channel('admin');
+        adminChannel
+            .listen('.pedido.creado', (e) => {
+                
+                // Mostrar toast notification
+                if (window.showToast) {
+                    const total = e.pedido.total ? parseFloat(e.pedido.total).toLocaleString('es-PY') : '0';
+                    window.showToast(
+                        `Nuevo pedido ${e.pedido.numero_pedido} - $${total}`,
+                        'success',
+                        5000
+                    );
+                    
+                    // Incrementar badge
+                    if (window.incrementBadge) {
+                        window.incrementBadge();
+                    }
+                }
+            })
+            .listen('.pedido.cambio-estado', (e) => {
+                
+                // Mostrar notificación de cambio de estado
+                if (window.showToast && e.pedido && e.pedido.estado_nuevo) {
+                    const estadosTexto = {
+                        'pendiente': 'Pendiente',
+                        'en_preparacion': 'En Preparación',
+                        'listo': 'Listo',
+                        'en_camino': 'En Camino',
+                        'entregado': 'Entregado',
+                        'cancelado': 'Cancelado'
+                    };
+                    
+                    const tipo = e.tipo || 'info'; // Usar el tipo del evento
+                    
+                    window.showToast(
+                        `Pedido ${e.pedido.numero_pedido}: ${estadosTexto[e.pedido.estado_nuevo] || e.pedido.estado_nuevo}`,
+                        tipo,
+                        4000
+                    );
+                }
+            })
+            .listen('.pedido.cancelado', (e) => {
+                
+                // Mostrar notificación de cancelación
+                if (window.showToast) {
+                    window.showToast(
+                        `Pedido ${e.pedido.numero_pedido} cancelado`,
+                        'error',
+                        4000
+                    );
+                }
+            });
+            
+        return true;
+    }
+    
+    // Intentar inicializar inmediatamente
+    if (!inicializarEchoListeners()) {
+        // Si no está disponible, esperar con un intervalo
+        
+        let intentos = 0;
+        const maxIntentos = 50; // Máximo 5 segundos (50 * 100ms)
+        
+        const intervalo = setInterval(() => {
+            intentos++;
+            
+            if (inicializarEchoListeners()) {
+                clearInterval(intervalo);
+            } else if (intentos >= maxIntentos) {
+                clearInterval(intervalo);
+            }
+        }, 100); // Verificar cada 100ms
+    }
+</script>
+@endpush

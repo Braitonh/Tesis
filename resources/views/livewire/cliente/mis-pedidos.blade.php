@@ -364,3 +364,18 @@
         </div>
     @endif
 </div>
+
+@push('scripts')
+<script>
+    // Escuchar actualizaciones de pedidos del usuario actual
+    if (window.Echo) {
+        @foreach($pedidos as $pedido)
+            window.Echo.private('pedidos.{{ $pedido->id }}')
+                .listen('.pedido.cambio-estado', (e) => {
+                    console.log('Cliente - Estado de mi pedido cambió:', e);
+                    @this.call('refreshPedidos');
+                });
+        @endforeach
+    }
+</script>
+@endpush

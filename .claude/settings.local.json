@@ -10,7 +10,8 @@
       "Bash(docker-compose logs:*)",
       "Bash(curl:*)",
       "Bash(docker-compose:*)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//home/bhemsouvanh/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

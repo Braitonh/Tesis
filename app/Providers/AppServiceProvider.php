@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Pedido;
+use App\Observers\PedidoObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        // Registrar el observer de Pedido para disparar eventos automáticamente
+        Pedido::observe(PedidoObserver::class);
     }
 }

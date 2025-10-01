@@ -146,7 +146,13 @@
         </main>
     </div>
 
+    <!-- Toast Notifications Container -->
+    <x-toast-notification />
+
     <!-- Livewire Scripts -->
     @livewireScripts
+
+    <!-- Custom Scripts -->
+    @stack('scripts')
 </body>
 </html>

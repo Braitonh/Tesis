@@ -45,6 +45,9 @@ logs-app: ## Ver logs del contenedor app
 logs-db: ## Ver logs del contenedor db
 	docker-compose logs -f db
 
+logs-reverb: ## Ver logs del servidor Reverb (WebSocket)
+	docker-compose logs -f reverb
+
 # Comandos de aplicación
 shell: ## Acceder al contenedor app
 	docker-compose exec app bash
@@ -85,6 +88,30 @@ cache-clear: ## Limpiar caché
 	docker-compose exec app php artisan config:clear
 	docker-compose exec app php artisan route:clear
 	docker-compose exec app php artisan view:clear
+
+# Comandos de Broadcasting/WebSocket
+reverb-restart: ## Reiniciar servidor Reverb
+	@echo "$(YELLOW)Reiniciando servidor Reverb...$(NC)"
+	docker-compose restart reverb
+
+reverb-status: ## Ver estado del servidor Reverb
+	@echo "$(GREEN)Estado del servidor Reverb:$(NC)"
+	docker-compose ps reverb
+
+# Comandos de Queue Worker
+queue-logs: ## Ver logs del queue worker
+	docker-compose logs -f queue
+
+queue-restart: ## Reiniciar queue worker
+	@echo "$(YELLOW)Reiniciando queue worker...$(NC)"
+	docker-compose restart queue
+
+queue-status: ## Ver estado del queue worker
+	@echo "$(GREEN)Estado del queue worker:$(NC)"
+	docker-compose ps queue
+
+queue-work: ## Iniciar queue worker manualmente en foreground
+	docker-compose exec app php artisan queue:work --verbose
 
 # Comandos de desarrollo
 test: ## Ejecutar tests

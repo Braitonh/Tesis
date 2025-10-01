@@ -1,4 +1,5 @@
 import './bootstrap';
+import './notifications';
 
 // Importar AlpineJS y sus plugins
 import Alpine from 'alpinejs';

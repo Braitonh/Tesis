@@ -21,10 +21,10 @@
             <!-- User Menu -->
             <div class="flex items-center space-x-4">
                 @auth
-                    <!-- Notifications (optional) -->
-                    <button class="relative p-2 text-gray-400 hover:text-orange-600 transition-colors duration-300">
+                    <!-- Notifications -->
+                    <button id="notification-bell" class="relative p-2 text-gray-400 hover:text-orange-600 transition-colors duration-300" title="Notificaciones">
                         <i class="fas fa-bell text-lg"></i>
-                        <span class="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                        <span id="notification-badge" class="hidden absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">0</span>
                     </button>
 
                     <!-- User dropdown -->
@@ -51,7 +51,7 @@
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
                             x-cloak
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-[100]"
                         >
                             <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
                                 <i class="fas fa-user"></i>

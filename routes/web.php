@@ -9,7 +9,11 @@ use App\Livewire\Dashboard\AdminPedidos;
 use App\Livewire\Dashboard\AdminProductos;
 use App\Livewire\Empleados\Empleados;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+
+// Broadcasting authentication routes
+Broadcast::routes(['middleware' => ['auth']]);
 
 // Authentication routes
 Route::middleware('guest')->group(function () {

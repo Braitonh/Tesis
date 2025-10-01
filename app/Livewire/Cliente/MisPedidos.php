@@ -28,6 +28,14 @@ class MisPedidos extends Component
         }
     }
 
+    /**
+     * Refrescar la vista cuando hay actualizaciones de pedidos
+     */
+    public function refreshPedidos()
+    {
+        $this->resetPage();
+    }
+
     public function filtrarPor($estado)
     {
         $this->filtroEstado = $estado;

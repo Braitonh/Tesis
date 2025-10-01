@@ -43,6 +43,53 @@ services:
     networks:
       - tesis-network
 
+  # Servicio Redis
+  redis:
+    image: redis:alpine
+    container_name: tesis-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - tesis-network
+
+  # Servicio Reverb (WebSocket Server)
+  reverb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tesis-laravel
+    container_name: tesis-reverb
+    working_dir: /var/www
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - db
+    networks:
+      - tesis-network
+    restart: unless-stopped
+
+  # Servicio Queue Worker (Procesa eventos de broadcasting)
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tesis-laravel
+    container_name: tesis-queue
+    working_dir: /var/www
+    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - redis
+      - db
+    networks:
+      - tesis-network
+    restart: unless-stopped
+
 # Volúmenes
 volumes:
   dbdata:

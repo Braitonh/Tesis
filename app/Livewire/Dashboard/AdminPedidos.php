@@ -47,6 +47,18 @@ class AdminPedidos extends Component
         $this->busquedaCliente = '';
     }
 
+    /**
+     * Escuchar eventos de WebSocket para actualizar en tiempo real
+     */
+    protected function getListeners()
+    {
+        return [
+            "echo:admin,.pedido.creado" => '$refresh',
+            "echo:admin,.pedido.cambio-estado" => '$refresh',
+            "echo:admin,.pedido.cancelado" => '$refresh',
+        ];
+    }
+
     public function limpiarFiltros()
     {
         $this->filtroEstado = '';

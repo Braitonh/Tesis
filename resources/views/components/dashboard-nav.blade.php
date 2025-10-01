@@ -32,7 +32,7 @@ $currentPath = request()->path();
                     <button @click="open = !open"
                         class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 
                                    {{ $isPedidosActive ? 'bg-orange-100 text-orange-700 shadow-sm' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-truck"></i>
                         <span class="hidden sm:block">Pedidos</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
@@ -46,8 +46,8 @@ $currentPath = request()->path();
                         class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
                         <a href="{{ route('pedidos') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
                            {{ $currentRouteName === 'pedidos' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
-                            <i class="fas fa-shopping-cart"></i>
-                            Ordenes
+                            <i class="fas fa-truck"></i>
+                            Gestión de Pedidos
                         </a>
                         <button wire:click="$dispatch('navigateTo', 'cliente', 'perfil')" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 w-full text-left">
                             <i class="fas fa-user"></i>

@@ -20,7 +20,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($pedidos as $pedido)
-                    <x-pedidos.pedido-row :pedido="$pedido" />
+                    <x-pedidos.pedido-row :pedido="$pedido" wire:key="pedido-{{ $pedido->id }}" />
                 @empty
                     <tr>
                         <td colspan="8" class="px-6 py-8 text-center text-gray-500">

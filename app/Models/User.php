@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -81,5 +82,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => $this->freshTimestamp(),
             'verification_token' => null,
         ])->save();
+    }
+
+    /**
+     * Get the pedidos asignados al delivery.
+     */
+    public function pedidosAsignados(): HasMany
+    {
+        return $this->hasMany(Pedido::class, 'delivery_id');
     }
 }

@@ -47,6 +47,8 @@ class Login extends Component
             // Redireccionar según el rol del usuario
             if ('cliente' === $user->role) {
                 return redirect()->intended('/cliente/bienvenida');
+            } elseif ('delivery' === $user->role) {
+                return redirect()->intended('/delivery');
             } else {
                 return redirect()->intended('/dashboard');
             }

@@ -27,6 +27,10 @@ class EnsureUserRole
                 return redirect()->route('cliente.bienvenida');
             }
 
+            if ('delivery' === $user->role) {
+                return redirect()->route('delivery');
+            }
+
             // Para otros roles no permitidos, redirigir al login
             return redirect()->route('login');
         }

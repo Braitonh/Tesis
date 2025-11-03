@@ -15,6 +15,7 @@ class Pedido extends Model
 
     protected $fillable = [
         'user_id',
+        'delivery_id',
         'numero_pedido',
         'estado',
         'estado_pago',
@@ -24,6 +25,7 @@ class Pedido extends Model
         'direccion_entrega',
         'telefono_contacto',
         'notas',
+        'listo_at',
     ];
 
     protected $casts = [
@@ -37,6 +39,14 @@ class Pedido extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the delivery assigned to the pedido.
+     */
+    public function delivery(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'delivery_id');
     }
 
     /**
@@ -85,6 +95,22 @@ class Pedido extends Model
     public function scopeEnProceso($query)
     {
         return $query->whereIn('estado', ['en_preparacion', 'listo', 'en_camino']);
+    }
+
+    /**
+     * Scope a query to only include pedidos ready for delivery.
+     */
+    public function scopeListo($query)
+    {
+        return $query->where('estado', 'listo');
+    }
+
+    /**
+     * Scope a query to only include pedidos en camino.
+     */
+    public function scopeEnCamino($query)
+    {
+        return $query->where('estado', 'en_camino');
     }
 
     /**

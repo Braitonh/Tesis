@@ -90,8 +90,9 @@ class CarritoCheckout extends Component
 
         // Prellenar con datos del usuario si existen
         $user = Auth::user();
-        if ($user->telefono) {
+        if($user) {
             $this->telefono_contacto = $user->telefono;
+            $this->direccion_entrega = $user->direccion;   
         }
     }
 

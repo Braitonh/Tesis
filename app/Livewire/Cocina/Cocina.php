@@ -59,7 +59,31 @@ class Cocina extends Component
             ->orderBy('updated_at', 'asc')
             ->get()
             ->map(function ($pedido) {
-                $pedido->minutos_transcurridos = Carbon::parse($pedido->updated_at)->diffInMinutes(now());
+                $fechaActualizacion = Carbon::parse($pedido->updated_at);
+                $minutos = (int) round($fechaActualizacion->diffInMinutes(now()));
+                $horas = (int) $fechaActualizacion->diffInHours(now());
+                
+                // Formatear tiempo de forma amigable
+                if ($minutos < 1) {
+                    $pedido->tiempo_formateado = 'Hace menos de 1 min';
+                } elseif ($minutos < 60) {
+                    $pedido->tiempo_formateado = "Hace {$minutos} " . ($minutos == 1 ? 'minuto' : 'minutos');
+                } elseif ($horas < 24) {
+                    $minutosRestantes = $minutos % 60;
+                    if ($minutosRestantes == 0) {
+                        $pedido->tiempo_formateado = "Hace {$horas} " . ($horas == 1 ? 'hora' : 'horas');
+                    } else {
+                        $pedido->tiempo_formateado = "Hace {$horas} " . ($horas == 1 ? 'hora' : 'horas') . " y {$minutosRestantes} " . ($minutosRestantes == 1 ? 'minuto' : 'minutos');
+                    }
+                } else {
+                    $dias = (int) $fechaActualizacion->diffInDays(now());
+                    $pedido->tiempo_formateado = "Hace {$dias} " . ($dias == 1 ? 'día' : 'días');
+                }
+                
+                // Mantener minutos_transcurridos para compatibilidad si se usa en otro lugar
+                $pedido->minutos_transcurridos = $minutos;
+                // Marcar como urgente si lleva más de 15 minutos en preparación
+                $pedido->es_urgente = $pedido->minutos_transcurridos > 15;
                 return $pedido;
             });
     }
@@ -86,14 +110,14 @@ class Cocina extends Component
 
         // Calcular tiempo promedio de pedidos completados hoy
         $tiempoPromedio = 0;
-        $pedidosCompletadosHoy = Pedido::whereDate('updated_at', today())
-            ->where('estado', 'listo')
+        $pedidosCompletadosHoy = Pedido::whereDate('listo_at', today())
+            ->whereNotNull('listo_at')
             ->get();
 
         if ($pedidosCompletadosHoy->count() > 0) {
             $totalMinutos = 0;
             foreach ($pedidosCompletadosHoy as $pedido) {
-                $totalMinutos += Carbon::parse($pedido->created_at)->diffInMinutes($pedido->updated_at);
+                $totalMinutos += Carbon::parse($pedido->created_at)->diffInMinutes($pedido->listo_at);
             }
             $tiempoPromedio = round($totalMinutos / $pedidosCompletadosHoy->count());
         }
@@ -130,7 +154,10 @@ class Cocina extends Component
         $pedido = Pedido::findOrFail($pedidoId);
 
         if ($pedido->estado === 'en_preparacion') {
-            $pedido->update(['estado' => 'listo']);
+            $pedido->update([
+                'estado' => 'listo',
+                'listo_at' => now()
+            ]);
 
             session()->flash('message', "Pedido {$pedido->numero_pedido} está listo para entregar");
         }

@@ -15,4 +15,11 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    server: {
+        host: '0.0.0.0', // Permitir acceso desde cualquier IP de la red local
+        port: 5173,
+        hmr: {
+            host: '192.168.1.4', // Tu IP local para que el celular pueda cargar los assets
+        },
+    },
 });

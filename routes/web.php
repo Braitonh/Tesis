@@ -7,6 +7,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Cocina\Cocina;
 use App\Livewire\Dashboard\AdminPedidos;
 use App\Livewire\Dashboard\AdminProductos;
+use App\Livewire\Delivery\Delivery;
 use App\Livewire\Empleados\Empleados;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
@@ -52,7 +53,11 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
     Route::get('/empleados', Empleados::class)->name('empleados');
     Route::get('/productos', AdminProductos::class)->name('productos');
     Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
+});
 
+// Ruta para módulo Delivery (admin y delivery)
+Route::middleware(['auth', 'verified', 'role:admin,delivery'])->group(function () {
+    Route::get('/delivery', Delivery::class)->name('delivery');
 });
 
 

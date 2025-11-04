@@ -56,9 +56,6 @@ class Empleados extends Component
 
     public function createEmpleado()
     {
-        // Simulate loading time
-        usleep(800000); // 0.8 seconds
-
         $this->reset(['empleadoId', 'name', 'email', 'role', 'dni', 'direccion', 'telefono']);
         $this->modalTitle = 'Crear Nuevo Empleado';
         $this->showModal = true;
@@ -66,9 +63,6 @@ class Empleados extends Component
 
     public function editEmpleado($id)
     {
-        // Simulate loading time
-        usleep(1000000); // 1 second
-
         $empleado = User::findOrFail($id);
         $this->empleadoId = $id;
         $this->name = $empleado->name;
@@ -83,9 +77,6 @@ class Empleados extends Component
 
     public function saveEmpleado()
     {
-        // Simulate loading time
-        usleep(1500000); // 1.5 seconds
-
         // Define validation rules based on create or edit
         if ($this->empleadoId) {
             // Edit - exclude current user from unique validation
@@ -149,9 +140,6 @@ class Empleados extends Component
 
     public function confirmDeleteEmpleado($id)
     {
-        // Simulate loading time
-        usleep(600000); // 0.6 seconds
-
         $empleado = User::findOrFail($id);
 
         // Prevent deletion of current user

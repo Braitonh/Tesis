@@ -94,9 +94,9 @@ class Cocina extends Component
     public function getPedidosListosProperty()
     {
         return Pedido::with(['user', 'detalles.producto'])
-            ->where('estado', 'listo')
-            ->orderBy('updated_at', 'desc')
-            ->take(6)
+            ->where('listo_at', '!=', null)
+            ->whereDate('listo_at', today())
+            ->orderBy('listo_at', 'desc')
             ->get();
     }
 

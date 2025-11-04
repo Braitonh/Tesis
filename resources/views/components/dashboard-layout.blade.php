@@ -91,7 +91,7 @@
 </head>
 <body class="font-sans antialiased">
     <!-- Animated background -->
-    <div class="fixed inset-0 bg-gradient-to-br from-orange-600 to-amber-600 overflow-hidden pointer-events-none">
+    <div class="fixed inset-0 bg-gradient-to-br from-orange-100 overflow-hidden pointer-events-none">
         <!-- Floating shapes -->
         <div class="bg-shape absolute w-48 h-48 bg-orange-200/20 rounded-full top-[10%] left-[10%]"></div>
         <div class="bg-shape absolute w-36 h-36 bg-amber-200/20 rounded-full top-[60%] right-[15%]"></div>

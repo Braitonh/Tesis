@@ -249,7 +249,8 @@ class AdminPedidos extends Component
         return [
             'total' => Pedido::count(),
             'pendientes' => Pedido::where('estado', 'pendiente')->count(),
-            'en_proceso' => Pedido::whereIn('estado', ['en_preparacion', 'listo', 'en_camino'])->count(),
+            'en_proceso' => Pedido::whereIn('estado', ['en_preparacion'])->count(),
+            'en_delivery' => Pedido::whereIn('estado', ['en_camino'])->count(),
             'entregados' => Pedido::where('estado', 'entregado')->count(),
             'cancelados' => Pedido::where('estado', 'cancelado')->count(),
             'pagados' => Pedido::where('estado_pago', 'pagado')->count(),

@@ -1,199 +1,209 @@
-<div class="p-6 space-y-6 bg-white/80 rounded-3xl w-full max-w-none">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-        <div class="absolute inset-0 bg-black/10"></div>
-        <div class="relative">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold mb-2">
-                        <i class="fas fa-fire mr-3"></i>
-                        Módulo Cocina
-                    </h1>
-                    <p class="text-orange-100">Panel de gestión de cocina - {{ auth()->user()->name }}</p>
+<div>
+    <div class="relative z-10">
+        <main class="py-8 px-4 sm:px-6 lg:px-8 max-full mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">Módulo Cocina</h1>
+                <p class="text-gray-500">Panel de gestión de cocina</p>
+            </div>
+
+            <!-- Mensajes de estado -->
+            @if (session()->has('message'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span class="block sm:inline">{{ session('message') }}</span>
                 </div>
-                <div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm">
-                    <i class="fas fa-sync-alt text-2xl"></i>
+            @endif
+
+            @if (session()->has('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            <!-- Estadísticas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- En Preparación -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-semibold uppercase mb-1">En Preparación</p>
+                            <p class="text-3xl font-bold text-gray-800">{{ $stats['en_preparacion'] }}</p>
+                        </div>
+                        <div class="bg-blue-100 p-4 rounded-full">
+                            <i class="fas fa-utensils text-blue-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completados Hoy -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Completados Hoy</p>
+                            <p class="text-3xl font-bold text-gray-800">{{ $stats['completados_hoy'] }}</p>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Mensaje Flash -->
-    @if (session()->has('message'))
-        <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-sm animate-fade-in">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
-                <p class="text-green-800 font-medium">{{ session('message') }}</p>
-            </div>
-        </div>
-    @endif
-
-    <!-- Kitchen Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="bg-blue-500 p-3 rounded-xl shadow-sm">
-                    <i class="fas fa-utensils text-white text-xl"></i>
+                <!-- Empty State -->
+            @if($pedidosEnPreparacion->count() == 0)
+                <div class="bg-white rounded-2xl shadow-lg p-12 text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-orange-100 rounded-full mb-6">
+                        <i class="fas fa-clipboard-check text-orange-600 text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Todo al día</h3>
+                    <p class="text-gray-500 mb-6">
+                        No hay pedidos en preparación en este momento. Los nuevos pedidos aparecerán aquí automáticamente.
+                    </p>
+                    <div class="inline-flex items-center text-sm text-gray-500">
+                        <i class="fas fa-sync-alt animate-spin mr-2"></i>
+                        Actualizando en tiempo real
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-blue-600 text-sm font-medium">En Preparación</p>
-                    <p class="text-3xl font-bold text-blue-700">{{ $stats['en_preparacion'] }}</p>
-                </div>
-            </div>
-        </div>
+            @endif
 
-        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="bg-green-500 p-3 rounded-xl shadow-sm">
-                    <i class="fas fa-check-circle text-white text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-green-600 text-sm font-medium">Completados Hoy</p>
-                    <p class="text-3xl font-bold text-green-700">{{ $stats['completados_hoy'] }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pedidos En Preparación -->
-    @if($pedidosEnPreparacion->count() > 0)
-        <div class="bg-white rounded-2xl shadow-sm border border-blue-100">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-t-2xl">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-white flex items-center">
-                        <i class="fas fa-utensils mr-3"></i>
-                        En Preparación
-                    </h3>
-                    <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
-                        {{ $pedidosEnPreparacion->count() }} pedidos
-                    </span>
-                </div>
-            </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach($pedidosEnPreparacion as $pedido)
-                        <div class="@if($pedido->es_urgente) bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-sm font-bold @if($pedido->es_urgente) text-red-800 @else text-blue-800 @endif">
-                                    {{ $pedido->numero_pedido }}
-                                </span>
-                                <span class="text-xs @if($pedido->es_urgente) text-red-600 @else text-blue-600 @endif font-medium">
-                                    {{ $pedido->tiempo_formateado }}
-                                </span>
-                            </div>
-
-                            <div class="mb-3 space-y-1">
-                                @foreach($pedido->detalles->take(3) as $detalle)
-                                    <div class="text-sm text-gray-700 font-medium">
-                                        <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
-                                        {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
-                                    </div>
-                                @endforeach
-                                @if($pedido->detalles->count() > 3)
-                                    <div class="text-xs text-gray-500 italic">
-                                        +{{ $pedido->detalles->count() - 3 }} productos más
-                                    </div>
-                                @endif
-                            </div>
-
-                            @if($pedido->notas)
-                                <div class="mb-3 bg-amber-50 border border-amber-200 rounded-lg p-2">
-                                    <p class="text-xs text-amber-800 font-medium">
-                                        <i class="fas fa-sticky-note mr-1"></i>
-                                        {{ Str::limit($pedido->notas, 50) }}
-                                    </p>
+            <!-- Pedidos En Preparación -->
+            @if($pedidosEnPreparacion->count() > 0)
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-utensils mr-3"></i>
+                                En Preparación
+                            </h3>
+                            <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                {{ $pedidosEnPreparacion->count() }} pedidos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($pedidosEnPreparacion as $pedido)
+                            <div class="@if($pedido->es_urgente) bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-bold @if($pedido->es_urgente) text-red-800 @else text-blue-800 @endif">
+                                        {{ $pedido->numero_pedido }}
+                                    </span>
+                                    <span class="text-xs @if($pedido->es_urgente) text-red-600 @else text-blue-600 @endif font-medium">
+                                        {{ $pedido->tiempo_formateado }}
+                                    </span>
                                 </div>
-                            @endif
 
-                            <div class="flex gap-2">
-                                <button
-                                    wire:click="marcarComoListo({{ $pedido->id }})"
-                                    class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm font-bold transition-all transform hover:scale-105 shadow-sm">
-                                    <i class="fas fa-check mr-2"></i>Listo
-                                </button>
-                                <button
-                                    wire:click="verDetalles({{ $pedido->id }})"
-                                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    @endif
+                                <div class="mb-3 space-y-1">
+                                    @foreach($pedido->detalles->take(3) as $detalle)
+                                        <div class="text-sm text-gray-700 font-medium">
+                                            <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
+                                            {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                        </div>
+                                    @endforeach
+                                    @if($pedido->detalles->count() > 3)
+                                        <div class="text-xs text-gray-500 italic">
+                                            +{{ $pedido->detalles->count() - 3 }} productos más
+                                        </div>
+                                    @endif
+                                </div>
 
-    <!-- Vista Previa de Pedidos Listos -->
-    @if($pedidosListos->count() > 0)
-        <div class="bg-white rounded-2xl shadow-sm border border-green-100">
-            <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-t-2xl">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-white flex items-center">
-                        <i class="fas fa-check-circle mr-3"></i>
-                        Pedidos Listos
-                    </h3>
-                    <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
-                        {{ $pedidosListos->count() }} recientes
-                    </span>
-                </div>
-            </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach($pedidosListos as $pedido)
-                        <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-sm">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="text-sm font-bold text-green-800">
-                                    {{ $pedido->numero_pedido }}
-                                </span>
-                                <span class="text-xs bg-green-500 text-white px-3 py-1 rounded-full font-bold">
-                                    LISTO
-                                </span>
-                            </div>
-
-                            <div class="mb-2 text-xs text-gray-600">
-                                <i class="fas fa-user text-gray-400 mr-1"></i>
-                                {{ $pedido->user->name }}
-                            </div>
-
-                            <div class="space-y-1">
-                                @foreach($pedido->detalles->take(2) as $detalle)
-                                    <div class="text-sm text-gray-700 font-medium">
-                                        <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
-                                        {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
-                                    </div>
-                                @endforeach
-                                @if($pedido->detalles->count() > 2)
-                                    <div class="text-xs text-gray-500 italic">
-                                        +{{ $pedido->detalles->count() - 2 }} productos más
+                                @if($pedido->notas)
+                                    <div class="mb-3 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                                        <p class="text-xs text-amber-800 font-medium">
+                                            <i class="fas fa-sticky-note mr-1"></i>
+                                            {{ Str::limit($pedido->notas, 50) }}
+                                        </p>
                                     </div>
                                 @endif
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    @endif
 
-    <!-- Empty State -->
-    @if($pedidosPendientes->count() === 0 && $pedidosEnPreparacion->count() === 0)
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-            <div class="max-w-md mx-auto">
-                <div class="bg-gradient-to-br from-orange-100 to-amber-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-clipboard-check text-4xl text-orange-600"></i>
+                                <div class="flex gap-2">
+                                    <button
+                                        wire:click="marcarComoListo({{ $pedido->id }})"
+                                        class="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-2 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                        <span wire:loading.remove wire:target="marcarComoListo({{ $pedido->id }})">
+                                            <i class="fas fa-check mr-2"></i>Listo
+                                        </span>
+                                        <span wire:loading wire:target="marcarComoListo({{ $pedido->id }})">
+                                            <svg class="animate-spin h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <button
+                                        wire:click="verDetalles({{ $pedido->id }})"
+                                        class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                        title="Ver detalles">
+                                        <span wire:loading.remove wire:target="verDetalles({{ $pedido->id }})">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                        <span wire:loading wire:target="verDetalles({{ $pedido->id }})">
+                                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3">Todo al día</h3>
-                <p class="text-gray-600 mb-6">
-                    No hay pedidos pendientes en este momento. Los nuevos pedidos aparecerán aquí automáticamente.
-                </p>
-                <div class="inline-flex items-center text-sm text-gray-500">
-                    <i class="fas fa-sync-alt animate-spin mr-2"></i>
-                    Actualizando en tiempo real
+            @endif
+
+            <!-- Vista Previa de Pedidos Listos -->
+            @if($pedidosListos->count() > 0)
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-check-circle mr-3"></i>
+                                Pedidos Completados Hoy
+                            </h3>
+                            <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                {{ $pedidosListos->count() }} pedidos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 lg:grid-cols-1 gap-4">
+                        @foreach($pedidosListos as $pedido)
+                            <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-bold text-green-800">
+                                        {{ $pedido->numero_pedido }}
+                                    </span>
+                                    <span class="text-xs bg-green-500 text-white px-3 py-1 rounded-full font-bold">
+                                        LISTO
+                                    </span>
+                                </div>
+
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-user text-gray-400 mr-1"></i>
+                                    {{ $pedido->user->name }}
+                                </div>
+
+                                <div class="space-y-1">
+                                    @foreach($pedido->detalles->take(2) as $detalle)
+                                        <div class="text-sm text-gray-700 font-medium">
+                                            <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
+                                            {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                        </div>
+                                    @endforeach
+                                    @if($pedido->detalles->count() > 2)
+                                        <div class="text-xs text-gray-500 italic">
+                                            +{{ $pedido->detalles->count() - 2 }} productos más
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        </div>
-    @endif
+            @endif
+
+        </main>
+    </div>
 
     <!-- Modal Ver Detalles -->
     <x-modals.pedidos.detalle-pedido

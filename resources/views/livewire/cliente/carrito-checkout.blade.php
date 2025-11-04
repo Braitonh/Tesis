@@ -98,26 +98,7 @@
                             </div>
 
                             <!-- Método de Pago -->
-                            <div x-data="{
-                                    metodoPagoLocal: '{{ $metodo_pago }}',
-                                    init() {
-                                        this.$watch('metodoPagoLocal', (value) => {
-                                            if (value !== 'efectivo') {
-                                                setTimeout(() => {
-                                                    const input = document.getElementById('numero_tarjeta');
-                                                    if (input) {
-                                                        input.scrollIntoView({
-                                                            behavior: 'smooth',
-                                                            block: 'center'
-                                                        });
-                                                        input.focus();
-                                                    }
-                                                }, 100);
-                                            }
-                                        });
-                                    }
-                                }"
-                                class="space-y-6">
+                            <div class="space-y-6" id="metodo-pago-container">
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-3">
                                         Método de Pago
@@ -126,14 +107,13 @@
 
                                     <div class="space-y-3">
                                         <!-- Efectivo -->
-                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
-                                               :class="metodoPagoLocal === 'efectivo' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition metodo-pago-option {{ $metodo_pago === 'efectivo' ? 'border-orange-500 bg-orange-50' : 'border-gray-300' }}"
+                                               data-metodo="efectivo">
                                             <input type="radio"
                                                    name="metodo_pago"
                                                    value="efectivo"
                                                    wire:model.live="metodo_pago"
-                                                   x-model="metodoPagoLocal"
-                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500 metodo-pago-radio">
                                             <div class="ml-3 flex-1">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
@@ -144,14 +124,13 @@
                                         </label>
 
                                         <!-- Tarjeta de Crédito -->
-                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
-                                               :class="metodoPagoLocal === 'tarjeta_credito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition metodo-pago-option {{ $metodo_pago === 'tarjeta_credito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300' }}"
+                                               data-metodo="tarjeta_credito">
                                             <input type="radio"
                                                    name="metodo_pago"
                                                    value="tarjeta_credito"
                                                    wire:model.live="metodo_pago"
-                                                   x-model="metodoPagoLocal"
-                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500 metodo-pago-radio">
                                             <div class="ml-3 flex-1">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-credit-card text-blue-600 mr-2"></i>
@@ -162,14 +141,13 @@
                                         </label>
 
                                         <!-- Tarjeta de Débito -->
-                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
-                                               :class="metodoPagoLocal === 'tarjeta_debito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition metodo-pago-option {{ $metodo_pago === 'tarjeta_debito' ? 'border-orange-500 bg-orange-50' : 'border-gray-300' }}"
+                                               data-metodo="tarjeta_debito">
                                             <input type="radio"
                                                    name="metodo_pago"
                                                    value="tarjeta_debito"
                                                    wire:model.live="metodo_pago"
-                                                   x-model="metodoPagoLocal"
-                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500 metodo-pago-radio">
                                             <div class="ml-3 flex-1">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-credit-card text-purple-600 mr-2"></i>
@@ -180,14 +158,13 @@
                                         </label>
 
                                         <!-- Billetera Digital -->
-                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition"
-                                               :class="metodoPagoLocal === 'billetera_digital' ? 'border-orange-500 bg-orange-50' : 'border-gray-300'">
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition metodo-pago-option {{ $metodo_pago === 'billetera_digital' ? 'border-orange-500 bg-orange-50' : 'border-gray-300' }}"
+                                               data-metodo="billetera_digital">
                                             <input type="radio"
                                                    name="metodo_pago"
                                                    value="billetera_digital"
                                                    wire:model.live="metodo_pago"
-                                                   x-model="metodoPagoLocal"
-                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500">
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500 metodo-pago-radio">
                                             <div class="ml-3 flex-1">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-wallet text-orange-600 mr-2"></i>
@@ -208,14 +185,8 @@
 
                                 <!-- Formulario de Tarjeta (Condicional) -->
                             <div id="formulario-tarjeta"
-                                 x-show="metodoPagoLocal !== 'efectivo'"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                 x-transition:leave-end="opacity-0 transform scale-95"
-                                 class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4">
+                                 class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4 {{ $metodo_pago === 'efectivo' ? 'hidden' : '' }}"
+                                 style="transition: all 0.2s ease-out;">
 
                                 <div class="flex items-center mb-4">
                                     <i class="fas fa-lock text-blue-600 mr-2"></i>
@@ -578,4 +549,80 @@
         </div>
     </div>
     @endif
+
+    <!-- Script JavaScript puro para manejar método de pago -->
+    <script>
+        (function() {
+            // Esperar a que el DOM esté listo
+            document.addEventListener('DOMContentLoaded', function() {
+                const radioButtons = document.querySelectorAll('.metodo-pago-radio');
+                const formularioTarjeta = document.getElementById('formulario-tarjeta');
+                
+                // Función para actualizar estilos y visibilidad
+                function actualizarMetodoPago() {
+                    const radioSeleccionado = document.querySelector('.metodo-pago-radio:checked');
+                    
+                    if (!radioSeleccionado) return;
+                    
+                    const metodoPago = radioSeleccionado.value;
+                    const todasOpciones = document.querySelectorAll('.metodo-pago-option');
+                    
+                    // Actualizar estilos de las opciones
+                    todasOpciones.forEach(function(opcion) {
+                        const opcionMetodo = opcion.getAttribute('data-metodo');
+                        if (opcionMetodo === metodoPago) {
+                            opcion.classList.remove('border-gray-300');
+                            opcion.classList.add('border-orange-500', 'bg-orange-50');
+                        } else {
+                            opcion.classList.remove('border-orange-500', 'bg-orange-50');
+                            opcion.classList.add('border-gray-300');
+                        }
+                    });
+                    
+                    // Mostrar/ocultar formulario de tarjeta
+                    if (formularioTarjeta) {
+                        if (metodoPago === 'efectivo') {
+                            formularioTarjeta.classList.add('hidden');
+                        } else {
+                            formularioTarjeta.classList.remove('hidden');
+                            
+                            // Scroll automático al campo de número de tarjeta
+                            setTimeout(function() {
+                                const inputTarjeta = document.getElementById('numero_tarjeta');
+                                if (inputTarjeta) {
+                                    inputTarjeta.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                    inputTarjeta.focus();
+                                }
+                            }, 100);
+                        }
+                    }
+                }
+                
+                // Escuchar cambios en los radio buttons
+                radioButtons.forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        // Pequeño delay para asegurar que Livewire haya actualizado el valor
+                        setTimeout(actualizarMetodoPago, 50);
+                    });
+                });
+                
+                // Inicializar el estado al cargar la página
+                actualizarMetodoPago();
+                
+                // Escuchar eventos de Livewire para actualizar después de las actualizaciones del servidor
+                document.addEventListener('livewire:init', function() {
+                    Livewire.hook('morph.updated', function({ el }) {
+                        // Verificar si el contenedor de método de pago fue actualizado
+                        const container = document.getElementById('metodo-pago-container');
+                        if (container && container.contains(el)) {
+                            setTimeout(actualizarMetodoPago, 50);
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
 </div>

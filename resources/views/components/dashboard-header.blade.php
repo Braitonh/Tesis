@@ -21,12 +21,6 @@
             <!-- User Menu -->
             <div class="flex items-center space-x-4">
                 @auth
-                    <!-- Notifications -->
-                    <button id="notification-bell" class="relative p-2 text-gray-400 hover:text-orange-600 transition-colors duration-300" title="Notificaciones">
-                        <i class="fas fa-bell text-lg"></i>
-                        <span id="notification-badge" class="hidden absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold">0</span>
-                    </button>
-
                     <!-- User dropdown -->
                     <div class="relative" x-data="{ open: false }">
                         <button 

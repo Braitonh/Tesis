@@ -1,154 +1,110 @@
-<div class="p-6 space-y-6 bg-white/80 rounded-3xl w-full max-w-none">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-        <div class="absolute inset-0 bg-black/10"></div>
-        <div class="relative">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold mb-2">
-                        <i class="fas fa-motorcycle mr-3"></i>
-                        @if($isAdmin)
-                            Gestión de Delivery
-                        @else
-                            Mis Entregas
-                        @endif
-                    </h1>
-                    <p class="text-orange-100">
-                        @if($isAdmin)
-                            Panel de administración de entregas - {{ auth()->user()->name }}
-                        @else
-                            Panel de delivery - {{ auth()->user()->name }}
-                        @endif
-                    </p>
-                </div>
-                <div class="bg-white/20 p-4 rounded-xl backdrop-blur-sm">
-                    <i class="fas fa-sync-alt text-2xl"></i>
-                </div>
+<div>
+    <div class="relative z-10">
+        <main class="py-8 px-4 sm:px-6 lg:px-8 max-full mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                    @if($isAdmin)
+                        Gestión de Delivery
+                    @else
+                        Mis Entregas
+                    @endif
+                </h1>
+                <p class="text-gray-500">Panel de {{ $isAdmin ? 'administración de entregas' : 'delivery' }}</p>
             </div>
-        </div>
-    </div>
 
-    <!-- Flash Messages -->
-    @if (session()->has('message'))
-        <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-sm animate-fade-in">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
-                <p class="text-green-800 font-medium">{{ session('message') }}</p>
-            </div>
-        </div>
-    @endif
-
-    @if (session()->has('error'))
-        <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-sm animate-fade-in">
-            <div class="flex items-center">
-                <i class="fas fa-exclamation-circle text-red-500 text-xl mr-3"></i>
-                <p class="text-red-800 font-medium">{{ session('error') }}</p>
-            </div>
-        </div>
-    @endif
-
-    <!-- Estadísticas -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Total Disponibles -->
-        <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 shadow-sm border border-orange-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="bg-orange-500 p-3 rounded-xl shadow-sm">
-                    <i class="fas fa-box text-white text-xl"></i>
+            <!-- Mensajes de estado -->
+            @if (session()->has('message'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span class="block sm:inline">{{ session('message') }}</span>
                 </div>
-                <div class="ml-4">
-                    <p class="text-orange-600 text-sm font-medium">Pedidos Disponibles</p>
-                    <p class="text-3xl font-bold text-orange-700">{{ $totalDisponibles }}</p>
-                </div>
-            </div>
-        </div>
+            @endif
 
-        @if($isAdmin)
-            <!-- Total En Camino (Admin) -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
-                <div class="flex items-center">
-                    <div class="bg-blue-500 p-3 rounded-xl shadow-sm">
-                        <i class="fas fa-motorcycle text-white text-xl"></i>
+            @if (session()->has('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            <!-- Estadísticas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Disponibles / En Camino -->
+                @if($isAdmin)
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-semibold uppercase mb-1">En Camino</p>
+                                <p class="text-3xl font-bold text-gray-800">{{ $totalEnCamino }}</p>
+                            </div>
+                            <div class="bg-blue-100 p-4 rounded-full">
+                                <i class="fas fa-motorcycle text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-blue-600 text-sm font-medium">En Camino</p>
-                        <p class="text-3xl font-bold text-blue-700">{{ $totalEnCamino }}</p>
+                @else
+                    <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Mis Entregas Activas</p>
+                                <p class="text-3xl font-bold text-gray-800">{{ $totalMisPedidos }}</p>
+                            </div>
+                            <div class="bg-blue-100 p-4 rounded-full">
+                                <i class="fas fa-motorcycle text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Completados Hoy -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Entregas Hoy</p>
+                            <p class="text-3xl font-bold text-gray-800">{{ $entregasHoy }}</p>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-full">
+                            <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-        @else
-            <!-- Mis Entregas Activas (Delivery) -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
-                <div class="flex items-center">
-                    <div class="bg-blue-500 p-3 rounded-xl shadow-sm">
-                        <i class="fas fa-motorcycle text-white text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-blue-600 text-sm font-medium">Mis Entregas Activas</p>
-                        <p class="text-3xl font-bold text-blue-700">{{ $totalMisPedidos }}</p>
-                    </div>
-                </div>
-            </div>
-        @endif
 
-        <!-- Entregas Hoy -->
-        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center">
-                <div class="bg-green-500 p-3 rounded-xl shadow-sm">
-                    <i class="fas fa-check-circle text-white text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-green-600 text-sm font-medium">Entregas Hoy</p>
-                    <p class="text-3xl font-bold text-green-700">{{ $entregasHoy }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+            <!-- Tabs de Navegación -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="flex items-center flex-wrap gap-3">
+                    <span class="text-gray-700 font-semibold mr-2">Filtrar por:</span>
 
-    <!-- Tabs de Navegación -->
-    <div class="bg-white rounded-2xl shadow-sm border border-orange-100">
-            <div class="border-b border-gray-200">
-                <div class="flex flex-wrap -mb-px">
-                    <button
-                        wire:click="cambiarVista('disponibles')"
-                        class="px-6 py-4 text-sm font-medium transition-all duration-300 border-b-2
-                            {{ $vistaActiva === 'disponibles'
-                                ? 'border-orange-500 text-orange-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                    <button wire:click="cambiarVista('disponibles')"
+                            class="px-6 py-2 rounded-lg font-medium transition-all duration-300 {{ $vistaActiva === 'disponibles' ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                         <i class="fas fa-box mr-2"></i>
                         Pedidos Disponibles
                         @if($totalDisponibles > 0)
-                            <span class="ml-2 bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs font-semibold">
+                            <span class="ml-2 {{ $vistaActiva === 'disponibles' ? 'bg-white/20 text-white' : 'bg-orange-500 text-white' }} px-2 py-1 rounded-full text-xs font-bold">
                                 {{ $totalDisponibles }}
                             </span>
                         @endif
                     </button>
 
                     @if($isAdmin)
-                        <button
-                            wire:click="cambiarVista('en_camino')"
-                            class="px-6 py-4 text-sm font-medium transition-all duration-300 border-b-2
-                                {{ $vistaActiva === 'en_camino'
-                                    ? 'border-orange-500 text-orange-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        <button wire:click="cambiarVista('en_camino')"
+                                class="px-6 py-2 rounded-lg font-medium transition-all duration-300 {{ $vistaActiva === 'en_camino' ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             <i class="fas fa-motorcycle mr-2"></i>
-                            Pedidos En Camino
+                            En Camino
                             @if($totalEnCamino > 0)
-                                <span class="ml-2 bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full text-xs font-semibold">
+                                <span class="ml-2 {{ $vistaActiva === 'en_camino' ? 'bg-white/20 text-white' : 'bg-orange-500 text-white' }} px-2 py-1 rounded-full text-xs font-bold">
                                     {{ $totalEnCamino }}
                                 </span>
                             @endif
                         </button>
                     @else
-                        <button
-                            wire:click="cambiarVista('mis_entregas')"
-                            class="px-6 py-4 text-sm font-medium transition-all duration-300 border-b-2
-                                {{ $vistaActiva === 'mis_entregas'
-                                    ? 'border-orange-500 text-orange-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        <button wire:click="cambiarVista('mis_entregas')"
+                                class="px-6 py-2 rounded-lg font-medium transition-all duration-300 {{ $vistaActiva === 'mis_entregas' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             <i class="fas fa-motorcycle mr-2"></i>
                             Mis Entregas
                             @if($totalMisPedidos > 0)
-                                <span class="ml-2 bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs font-semibold">
+                                <span class="ml-2 {{ $vistaActiva === 'mis_entregas' ? 'bg-white/20 text-white' : 'bg-blue-500 text-white' }} px-2 py-1 rounded-full text-xs font-bold">
                                     {{ $totalMisPedidos }}
                                 </span>
                             @endif
@@ -156,287 +112,304 @@
                     @endif
                 </div>
             </div>
-        </div>
 
-        <!-- Contenido de los Tabs -->
-        <div class="space-y-4">
-            @if($vistaActiva === 'disponibles')
-                <!-- Pedidos Disponibles -->
-                @forelse($pedidosDisponibles as $pedido)
-                    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300" wire:key="disponible-{{ $pedido->id }}">
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                            <!-- Información del Pedido -->
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $pedido->numero_pedido }}</h3>
-                                        <p class="text-sm text-gray-500">
-                                            <i class="fas fa-calendar mr-1"></i>
-                                            {{ $pedido->created_at->format('d/m/Y H:i') }}
-                                            <span class="ml-2 text-xs text-gray-400">
-                                                ({{ $pedido->created_at->diffForHumans() }})
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-800">
-                                        {{ $pedido->estado_texto }}
+            <!-- Empty State -->
+            @if($vistaActiva === 'disponibles' && $pedidosDisponibles->count() == 0)
+                <div class="bg-white rounded-2xl shadow-lg p-12 text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-orange-100 rounded-full mb-6">
+                        <i class="fas fa-box-open text-orange-600 text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">No hay pedidos disponibles</h3>
+                    <p class="text-gray-500 mb-6">
+                        Todos los pedidos están asignados o no hay pedidos listos para entregar.
+                    </p>
+                    <div class="inline-flex items-center text-sm text-gray-500">
+                        <i class="fas fa-sync-alt animate-spin mr-2"></i>
+                        Actualizando en tiempo real
+                    </div>
+                </div>
+            @endif
+
+            @if(($vistaActiva === 'en_camino' && $pedidosEnCamino->count() == 0) || ($vistaActiva === 'mis_entregas' && $misPedidos->count() == 0))
+                <div class="bg-white rounded-2xl shadow-lg p-12 text-center mb-8">
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <i class="fas fa-motorcycle text-orange-600 text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">
+                        @if($vistaActiva === 'en_camino')
+                            No hay pedidos en camino
+                        @else
+                            No tienes entregas activas
+                        @endif
+                    </h3>
+                    <p class="text-gray-500 mb-6">
+                        @if($vistaActiva === 'en_camino')
+                            Actualmente no hay entregas en curso.
+                        @else
+                            Toma un pedido de la sección "Pedidos Disponibles" para comenzar.
+                        @endif
+                    </p>
+                    <div class="inline-flex items-center text-sm text-gray-500">
+                        <i class="fas fa-sync-alt animate-spin mr-2"></i>
+                        Actualizando en tiempo real
+                    </div>
+                </div>
+            @endif
+
+            <!-- Pedidos Disponibles -->
+            @if($vistaActiva === 'disponibles' && $pedidosDisponibles->count() > 0)
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-box mr-3"></i>
+                                Pedidos Disponibles
+                            </h3>
+                            <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                {{ $pedidosDisponibles->count() }} pedidos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($pedidosDisponibles as $pedido)
+                            <div class="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300" wire:key="disponible-{{ $pedido->id }}">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-bold text-orange-800">
+                                        {{ $pedido->numero_pedido }}
+                                    </span>
+                                    <span class="text-xs text-orange-600 font-medium">
+                                        {{ $pedido->created_at->diffForHumans() }}
                                     </span>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-user text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->user->name }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-phone text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->telefono_contacto }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-map-marker-alt text-orange-600 mr-2"></i>
-                                        <span class="truncate">{{ Str::limit($pedido->direccion_entrega, 40) }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-shopping-bag text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}</span>
-                                    </div>
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-user text-gray-400 mr-1"></i>
+                                    {{ $pedido->user->name }}
                                 </div>
-                            </div>
 
-                            <!-- Total y Acción -->
-                            <div class="flex flex-col items-end gap-3">
-                                <div class="text-right">
-                                    <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-phone text-gray-400 mr-1"></i>
+                                    {{ $pedido->telefono_contacto }}
+                                </div>
+
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+                                    {{ Str::limit($pedido->direccion_entrega, 35) }}
+                                </div>
+
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-shopping-bag text-gray-400 mr-1"></i>
+                                    {{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}
+                                </div>
+
+                                @if($pedido->notas)
+                                    <div class="mb-3 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                                        <p class="text-xs text-amber-800 font-medium">
+                                            <i class="fas fa-sticky-note mr-1"></i>
+                                            {{ Str::limit($pedido->notas, 50) }}
+                                        </p>
+                                    </div>
+                                @endif
+
+                                <div class="mb-3 text-right">
+                                    <p class="text-xs text-gray-500">Total</p>
+                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
                                 </div>
 
                                 @if($isAdmin)
-                                    <!-- Admin: Asignar Delivery -->
-                                    <div class="flex items-center gap-2">
+                                    <div class="mb-2">
                                         <select wire:model="deliverySeleccionado"
-                                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                                            <option value="">Seleccionar delivery...</option>
+                                                class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-2 focus:ring-orange-500">
+                                            <option value="">Asignar delivery...</option>
                                             @foreach($deliverysDisponibles as $delivery)
                                                 <option value="{{ $delivery->id }}">{{ $delivery->name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="flex gap-2">
                                         <button wire:click="asignarDelivery({{ $pedido->id }})"
-                                                class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-                                            <i class="fas fa-user-plus mr-1"></i>
-                                            Asignar
+                                                class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+                                            <i class="fas fa-user-plus mr-1"></i>Asignar
+                                        </button>
+                                        <button wire:click="verDetalles({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                 @else
-                                    <!-- Delivery: Tomar Pedido -->
-                                    <button wire:click="tomarPedido({{ $pedido->id }})"
-                                            class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                        <i class="fas fa-hand-paper mr-2"></i>
-                                        Tomar Pedido
-                                    </button>
-                                @endif
-
-                                <button wire:click="verDetalles({{ $pedido->id }})"
-                                        class="text-orange-600 hover:text-orange-700 font-medium text-sm">
-                                    <i class="fas fa-eye mr-1"></i>
-                                    Ver Detalles
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <!-- Estado Vacío -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-                        <div class="max-w-md mx-auto">
-                            <div class="bg-gradient-to-br from-orange-100 to-amber-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <i class="fas fa-box-open text-4xl text-orange-600"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">No hay pedidos disponibles</h3>
-                            <p class="text-gray-600 mb-6">Todos los pedidos están asignados o no hay pedidos listos para entregar.</p>
-                            <div class="inline-flex items-center text-sm text-gray-500">
-                                <i class="fas fa-sync-alt animate-spin mr-2"></i>
-                                Actualizando en tiempo real
-                            </div>
-                        </div>
-                    </div>
-                @endforelse
-
-            @elseif($vistaActiva === 'en_camino')
-                <!-- Pedidos En Camino (Solo Admin) -->
-                @forelse($pedidosEnCamino as $pedido)
-                    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300" wire:key="encamino-{{ $pedido->id }}">
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                            <!-- Información del Pedido -->
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $pedido->numero_pedido }}</h3>
-                                        <p class="text-sm text-gray-500">
-                                            <i class="fas fa-calendar mr-1"></i>
-                                            {{ $pedido->created_at->format('d/m/Y H:i') }}
-                                            <span class="ml-2 text-xs text-gray-400">
-                                                ({{ $pedido->created_at->diffForHumans() }})
-                                            </span>
-                                        </p>
+                                    <div class="flex gap-2">
+                                        <button wire:click="tomarPedido({{ $pedido->id }})"
+                                                class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+                                            <i class="fas fa-hand-paper mr-1"></i>Tomar
+                                        </button>
+                                        <button wire:click="verDetalles({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
                                     </div>
-                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800">
-                                        {{ $pedido->estado_texto }}
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- Pedidos En Camino (Solo Admin) -->
+            @if($vistaActiva === 'en_camino' && $pedidosEnCamino->count() > 0)
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-motorcycle mr-3"></i>
+                                Pedidos En Camino
+                            </h3>
+                            <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                {{ $pedidosEnCamino->count() }} pedidos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($pedidosEnCamino as $pedido)
+                            <div class="border-l-4 border-orange-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300" wire:key="encamino-{{ $pedido->id }}">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-bold text-orange-800">
+                                        {{ $pedido->numero_pedido }}
+                                    </span>
+                                    <span class="text-xs bg-orange-500 text-white px-3 py-1 rounded-full font-bold">
+                                        EN CAMINO
                                     </span>
                                 </div>
 
                                 <!-- Delivery Asignado -->
-                                <div class="mb-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                                    <div class="flex items-center gap-2">
-                                        <i class="fas fa-motorcycle text-indigo-600"></i>
-                                        <span class="text-sm font-semibold text-gray-700">Delivery:</span>
-                                        <span class="text-sm text-gray-800 font-medium">{{ $pedido->delivery->name }}</span>
-                                    </div>
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-motorcycle text-gray-400 mr-1"></i>
+                                    {{ $pedido->delivery->name }}
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-user text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->user->name }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-phone text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->telefono_contacto }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-map-marker-alt text-orange-600 mr-2"></i>
-                                        <span class="truncate">{{ Str::limit($pedido->direccion_entrega, 40) }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-shopping-bag text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Total y Acción -->
-                            <div class="flex flex-col items-end gap-3">
-                                <div class="text-right">
-                                    <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-user text-gray-400 mr-1"></i>
+                                    {{ $pedido->user->name }}
                                 </div>
 
-                                <button wire:click="verDetalles({{ $pedido->id }})"
-                                        class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-                                    <i class="fas fa-eye mr-2"></i>
-                                    Ver Detalles
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <!-- Estado Vacío -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-                        <div class="max-w-md mx-auto">
-                            <div class="bg-gradient-to-br from-indigo-100 to-purple-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <i class="fas fa-motorcycle text-4xl text-indigo-600"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">No hay pedidos en camino</h3>
-                            <p class="text-gray-600 mb-6">Actualmente no hay entregas en curso.</p>
-                            <div class="inline-flex items-center text-sm text-gray-500">
-                                <i class="fas fa-sync-alt animate-spin mr-2"></i>
-                                Actualizando en tiempo real
-                            </div>
-                        </div>
-                    </div>
-                @endforelse
-
-            @elseif($vistaActiva === 'mis_entregas')
-                <!-- Mis Entregas (Solo Delivery) -->
-                @forelse($misPedidos as $pedido)
-                    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300" wire:key="misped-{{ $pedido->id }}">
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                            <!-- Información del Pedido -->
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $pedido->numero_pedido }}</h3>
-                                        <p class="text-sm text-gray-500">
-                                            <i class="fas fa-calendar mr-1"></i>
-                                            {{ $pedido->created_at->format('d/m/Y H:i') }}
-                                            <span class="ml-2 text-xs text-gray-400">
-                                                ({{ $pedido->created_at->diffForHumans() }})
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <span class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800">
-                                        {{ $pedido->estado_texto }}
-                                    </span>
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-phone text-gray-400 mr-1"></i>
+                                    {{ $pedido->telefono_contacto }}
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm mb-3">
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-user text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->user->name }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-phone text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->telefono_contacto }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 md:col-span-2">
-                                        <i class="fas fa-map-marker-alt text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->direccion_entrega }}</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600">
-                                        <i class="fas fa-shopping-bag text-orange-600 mr-2"></i>
-                                        <span>{{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}</span>
-                                    </div>
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+                                    {{ Str::limit($pedido->direccion_entrega, 35) }}
+                                </div>
+
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-shopping-bag text-gray-400 mr-1"></i>
+                                    {{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}
                                 </div>
 
                                 @if($pedido->notas)
-                                    <div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                                        <p class="text-sm text-gray-700">
-                                            <i class="fas fa-sticky-note text-yellow-600 mr-2"></i>
-                                            <span class="font-semibold">Nota:</span> {{ $pedido->notas }}
+                                    <div class="mb-3 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                                        <p class="text-xs text-amber-800 font-medium">
+                                            <i class="fas fa-sticky-note mr-1"></i>
+                                            {{ Str::limit($pedido->notas, 50) }}
                                         </p>
                                     </div>
                                 @endif
-                            </div>
 
-                            <!-- Total y Acción -->
-                            <div class="flex flex-col items-end gap-3">
-                                <div class="text-right">
-                                    <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                <div class="mb-3 text-right">
+                                    <p class="text-xs text-gray-500">Total</p>
+                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
                                 </div>
 
-                                <button wire:click="marcarComoEntregado({{ $pedido->id }})"
-                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                                    <i class="fas fa-check-circle mr-2"></i>
-                                    Marcar como Entregado
-                                </button>
-
                                 <button wire:click="verDetalles({{ $pedido->id }})"
-                                        class="text-orange-600 hover:text-orange-700 font-medium text-sm">
-                                    <i class="fas fa-eye mr-1"></i>
-                                    Ver Detalles
+                                        class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+                                    <i class="fas fa-eye mr-1"></i>Ver Detalles
                                 </button>
                             </div>
-                        </div>
+                        @endforeach
                     </div>
-                @empty
-                    <!-- Estado Vacío -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-                        <div class="max-w-md mx-auto">
-                            <div class="bg-gradient-to-br from-green-100 to-emerald-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <i class="fas fa-motorcycle text-4xl text-green-600"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-gray-800 mb-3">No tienes entregas activas</h3>
-                            <p class="text-gray-600 mb-6">Toma un pedido de la sección "Pedidos Disponibles" para comenzar.</p>
-                            <button wire:click="cambiarVista('disponibles')"
-                                    class="inline-flex items-center bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-                                <i class="fas fa-box mr-2"></i>
-                                Ver Pedidos Disponibles
-                            </button>
-                        </div>
-                    </div>
-                @endforelse
+                </div>
             @endif
-        </div>
-    </main>
+
+            <!-- Mis Entregas (Solo Delivery) -->
+            @if($vistaActiva === 'mis_entregas' && $misPedidos->count() > 0)
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-t-2xl -m-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-motorcycle mr-3"></i>
+                                Mis Entregas Activas
+                            </h3>
+                            <span class="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                {{ $misPedidos->count() }} pedidos
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($misPedidos as $pedido)
+                            <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300" wire:key="misped-{{ $pedido->id }}">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-bold text-green-800">
+                                        {{ $pedido->numero_pedido }}
+                                    </span>
+                                    <span class="text-xs bg-green-500 text-white px-3 py-1 rounded-full font-bold">
+                                        EN CAMINO
+                                    </span>
+                                </div>
+
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-user text-gray-400 mr-1"></i>
+                                    {{ $pedido->user->name }}
+                                </div>
+
+                                <div class="mb-2 text-xs text-gray-600">
+                                    <i class="fas fa-phone text-gray-400 mr-1"></i>
+                                    {{ $pedido->telefono_contacto }}
+                                </div>
+
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>
+                                    {{ Str::limit($pedido->direccion_entrega, 35) }}
+                                </div>
+
+                                <div class="mb-3 text-xs text-gray-600">
+                                    <i class="fas fa-shopping-bag text-gray-400 mr-1"></i>
+                                    {{ $pedido->detalles->count() }} {{ $pedido->detalles->count() === 1 ? 'producto' : 'productos' }}
+                                </div>
+
+                                @if($pedido->notas)
+                                    <div class="mb-3 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                                        <p class="text-xs text-amber-800 font-medium">
+                                            <i class="fas fa-sticky-note mr-1"></i>
+                                            {{ Str::limit($pedido->notas, 50) }}
+                                        </p>
+                                    </div>
+                                @endif
+
+                                <div class="mb-3 text-right">
+                                    <p class="text-xs text-gray-500">Total</p>
+                                    <p class="text-lg font-bold text-green-600">${{ number_format($pedido->total, 2) }}</p>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button wire:click="marcarComoEntregado({{ $pedido->id }})"
+                                            class="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-2 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+                                        <i class="fas fa-check mr-1"></i>Entregado
+                                    </button>
+                                    <button wire:click="verDetalles({{ $pedido->id }})"
+                                            class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                            title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </main>
+    </div>
 
     <!-- Modal de Detalles del Pedido -->
     @if($mostrarDetalles && $pedidoSeleccionado)
@@ -513,7 +486,7 @@
 
                     @if($pedidoSeleccionado->delivery)
                         <!-- Información del Delivery -->
-                        <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                        <div class="bg-gray-50 rounded-lg p-4">
                             <h4 class="text-sm font-semibold text-gray-500 uppercase mb-2">Delivery Asignado</h4>
                             <p class="text-gray-800 flex items-center">
                                 <i class="fas fa-motorcycle text-indigo-600 mr-2"></i>

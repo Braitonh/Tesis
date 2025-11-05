@@ -82,8 +82,8 @@ class CarritoCheckout extends Component
 
     public function mount()
     {
-        // Si el carrito está vacío, redirigir a la página principal
-        if ($this->getCartCount() === 0) {
+        // Si el carrito está vacío (productos y promociones), redirigir a la página principal
+        if ($this->getCartCount() === 0 && $this->getPromocionesItems()->count() === 0) {
             return redirect()->route('cliente.bienvenida')
                 ->with('error', 'Tu carrito está vacío');
         }
@@ -92,7 +92,7 @@ class CarritoCheckout extends Component
         $user = Auth::user();
         if($user) {
             $this->telefono_contacto = $user->telefono;
-            $this->direccion_entrega = $user->direccion;   
+            $this->direccion_entrega = $user->direccion;
         }
     }
 
@@ -163,7 +163,7 @@ class CarritoCheckout extends Component
                 'notas' => $this->notas,
             ]);
 
-            // Crear los detalles del pedido
+            // Crear los detalles del pedido para productos
             foreach ($this->items as $item) {
                 DetallePedido::create([
                     'pedido_id' => $pedido->id,
@@ -172,6 +172,24 @@ class CarritoCheckout extends Component
                     'precio_unitario' => $item->precio,
                     'subtotal' => $item->subtotal,
                 ]);
+            }
+
+            // Crear los detalles del pedido para promociones
+            foreach ($this->getPromocionesItems() as $item) {
+                DetallePedido::create([
+                    'pedido_id' => $pedido->id,
+                    'producto_id' => null,
+                    'promocion_id' => $item->promocion->id,
+                    'cantidad' => $item->cantidad,
+                    'precio_unitario' => $item->precio,
+                    'subtotal' => $item->subtotal,
+                ]);
+
+                // Deducir stock de los productos individuales dentro de la promoción
+                foreach ($item->promocion->productos as $producto) {
+                    $cantidadADeducir = $producto->pivot->cantidad * $item->cantidad;
+                    $producto->decrement('stock', $cantidadADeducir);
+                }
             }
 
             // Recalcular el total del pedido (por si acaso)
@@ -235,8 +253,8 @@ class CarritoCheckout extends Component
                 'user_id' => Auth::id(),
             ]);
 
-            // Vaciar el carrito
-            $this->clearCart();
+            // Vaciar el carrito (productos y promociones)
+            $this->clearAllCarts();
 
             // Redirigir según el método de pago
             if ($this->metodo_pago === 'efectivo') {

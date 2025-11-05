@@ -45,6 +45,26 @@ class CarritoCompras extends Component
         session()->flash('message', 'Producto eliminado del carrito');
     }
 
+    // Métodos para promociones
+    public function incrementPromocion($promocionId)
+    {
+        $this->incrementPromocionCartItem($promocionId);
+        $this->dispatch('carrito-actualizado');
+    }
+
+    public function decrementPromocion($promocionId)
+    {
+        $this->decrementPromocionCartItem($promocionId);
+        $this->dispatch('carrito-actualizado');
+    }
+
+    public function removePromocion($promocionId)
+    {
+        $this->removePromocionFromCart($promocionId);
+        $this->dispatch('carrito-actualizado');
+        session()->flash('message', 'Promoción eliminada del carrito');
+    }
+
     public function confirmClear()
     {
         $this->showConfirmClear = true;
@@ -57,7 +77,7 @@ class CarritoCompras extends Component
 
     public function clear()
     {
-        $this->clearCart();
+        $this->clearAllCarts();
         $this->showConfirmClear = false;
         $this->dispatch('carrito-actualizado');
         session()->flash('message', 'Carrito vaciado correctamente');
@@ -66,6 +86,11 @@ class CarritoCompras extends Component
     public function getItemsProperty()
     {
         return $this->getCartItems();
+    }
+
+    public function getPromocionesItemsProperty()
+    {
+        return $this->getPromocionesItems();
     }
 
     public function getCountProperty()
@@ -82,6 +107,7 @@ class CarritoCompras extends Component
     {
         return view('livewire.cliente.carrito-compras', [
             'items' => $this->items,
+            'promocionesItems' => $this->promocionesItems,
             'count' => $this->count,
             'total' => $this->total,
         ]);

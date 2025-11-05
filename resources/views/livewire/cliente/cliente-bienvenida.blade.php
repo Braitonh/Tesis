@@ -10,6 +10,29 @@
             <!-- Quick Actions -->
             <x-cliente.quick-actions />
 
+            <!-- Promociones Destacadas -->
+            @if($promocionesDestacadas->count() > 0)
+                <div id="promociones-section" class="mb-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-4xl font-bold text-gray-800 mb-3">
+                            <i class="fas fa-gift text-orange-600"></i> Promociones Especiales
+                        </h2>
+                        <p class="text-xl text-gray-600">¡Aprovecha nuestras increíbles ofertas!</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        @foreach($promocionesDestacadas as $promocion)
+                            <x-promocion-card
+                                :promocion="$promocion"
+                                :show-actions="true"
+                                variant="cliente"
+                                wire:key="destacada-promo-{{ $promocion->id }}"
+                            />
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <!-- Productos Destacados -->
             <div id="destacados-section" class="mb-12">
                 <div class="text-center mb-8">

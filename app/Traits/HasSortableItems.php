@@ -106,7 +106,12 @@ trait HasSortableItems
             $modelClass = $this->getModelClass();
         }
 
-        return $modelClass::max($orderField) + 1;
+        if (!$modelClass || !class_exists($modelClass)) {
+            throw new \Exception("No se pudo determinar la clase del modelo para obtener el siguiente sort_order");
+        }
+
+        $maxOrder = $modelClass::max($orderField);
+        return ($maxOrder ?? 0) + 1;
     }
 
     /**

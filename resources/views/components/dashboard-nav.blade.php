@@ -102,8 +102,8 @@ $currentPath = request()->path();
                 <!-- Administración Module (Admin only) -->
                 @if(auth()->user()->role === 'admin')
                     @php
-                    $adminRoutes = ['admin.analitica', 'admin.usuarios', 'admin.personalizacion'];
-                    $isAdminActive = in_array($currentRouteName, $adminRoutes) || str_contains($currentRoute ?? '', 'admin');
+                    $adminRoutes = ['admin.analitica', 'admin.usuarios', 'admin.personalizacion', 'promociones'];
+                    $isAdminActive = in_array($currentRouteName, $adminRoutes) || str_contains($currentRoute ?? '', 'admin') || str_contains($currentRoute ?? '', 'promociones');
                     @endphp
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
@@ -121,6 +121,11 @@ $currentPath = request()->path();
                             x-transition:enter-end="opacity-100 scale-100"
                             x-cloak
                             class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                            <a href="{{ route('promociones') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
+                               {{ $currentRouteName === 'promociones' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                                <i class="fas fa-tags"></i>
+                                Promociones
+                            </a>
                             <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
                                {{ $currentRouteName === 'admin.analitica' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                                 <i class="fas fa-chart-bar"></i>
@@ -215,6 +220,10 @@ $currentPath = request()->path();
             @if(auth()->user()->role === 'admin')
                 <div class="pt-2 border-t border-gray-100 mt-2">
                     <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">Administración</div>
+                    <a href="{{ route('promociones') }}" class="block px-3 py-2 text-sm rounded transition-colors duration-200
+                        {{ $currentRouteName === 'promociones' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
+                        <i class="fas fa-tags mr-2"></i> Promociones
+                    </a>
                     <a href="#" class="block px-3 py-2 text-sm rounded transition-colors duration-200
                         {{ $currentRouteName === 'admin.analitica' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                         <i class="fas fa-chart-bar mr-2"></i> Analítica

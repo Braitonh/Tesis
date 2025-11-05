@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Producto;
+use App\Models\Promocion;
 use Illuminate\Support\Collection;
 
 trait HasShoppingCart
@@ -151,6 +152,147 @@ trait HasShoppingCart
      */
     public function getCartTotal(): float
     {
-        return $this->getCartItems()->sum('subtotal');
+        return $this->getCartItems()->sum('subtotal') + $this->getPromocionesItems()->sum('subtotal');
+    }
+
+    // ========== MÉTODOS PARA PROMOCIONES ==========
+
+    /**
+     * Get the promociones cart from session.
+     */
+    public function getPromocionesCart(): array
+    {
+        return session()->get('promociones_cart', []);
+    }
+
+    /**
+     * Add a promocion to the cart.
+     */
+    public function addPromocionToCart(int $promocionId, int $cantidad = 1): void
+    {
+        $promocion = Promocion::with('productos')->find($promocionId);
+
+        if (!$promocion || !$promocion->activo || !$promocion->verificarStock($cantidad)) {
+            return;
+        }
+
+        $promocionesCart = $this->getPromocionesCart();
+
+        if (isset($promocionesCart[$promocionId])) {
+            // Si ya existe, incrementar cantidad
+            $promocionesCart[$promocionId]['cantidad'] += $cantidad;
+        } else {
+            // Agregar nueva promoción
+            $promocionesCart[$promocionId] = [
+                'cantidad' => $cantidad,
+                'precio' => $promocion->precio_final,
+            ];
+        }
+
+        session()->put('promociones_cart', $promocionesCart);
+    }
+
+    /**
+     * Update promocion cart item quantity.
+     */
+    public function updatePromocionCartItem(int $promocionId, int $cantidad): void
+    {
+        if ($cantidad <= 0) {
+            $this->removePromocionFromCart($promocionId);
+            return;
+        }
+
+        $promocionesCart = $this->getPromocionesCart();
+
+        if (isset($promocionesCart[$promocionId])) {
+            $promocionesCart[$promocionId]['cantidad'] = $cantidad;
+            session()->put('promociones_cart', $promocionesCart);
+        }
+    }
+
+    /**
+     * Increment promocion cart item quantity.
+     */
+    public function incrementPromocionCartItem(int $promocionId): void
+    {
+        $promocionesCart = $this->getPromocionesCart();
+
+        if (isset($promocionesCart[$promocionId])) {
+            $promocionesCart[$promocionId]['cantidad']++;
+            session()->put('promociones_cart', $promocionesCart);
+        }
+    }
+
+    /**
+     * Decrement promocion cart item quantity.
+     */
+    public function decrementPromocionCartItem(int $promocionId): void
+    {
+        $promocionesCart = $this->getPromocionesCart();
+
+        if (isset($promocionesCart[$promocionId])) {
+            $promocionesCart[$promocionId]['cantidad']--;
+
+            if ($promocionesCart[$promocionId]['cantidad'] <= 0) {
+                $this->removePromocionFromCart($promocionId);
+            } else {
+                session()->put('promociones_cart', $promocionesCart);
+            }
+        }
+    }
+
+    /**
+     * Remove a promocion from the cart.
+     */
+    public function removePromocionFromCart(int $promocionId): void
+    {
+        $promocionesCart = $this->getPromocionesCart();
+        unset($promocionesCart[$promocionId]);
+        session()->put('promociones_cart', $promocionesCart);
+    }
+
+    /**
+     * Get promociones cart items with full data.
+     */
+    public function getPromocionesItems(): Collection
+    {
+        $promocionesCart = $this->getPromocionesCart();
+
+        if (empty($promocionesCart)) {
+            return collect();
+        }
+
+        $promocionIds = array_keys($promocionesCart);
+        $promociones = Promocion::with('productos.categoria')
+            ->whereIn('id', $promocionIds)
+            ->get();
+
+        return $promociones->map(function ($promocion) use ($promocionesCart) {
+            $cartItem = $promocionesCart[$promocion->id];
+
+            return (object) [
+                'promocion' => $promocion,
+                'cantidad' => $cartItem['cantidad'],
+                'precio' => $cartItem['precio'],
+                'subtotal' => $cartItem['cantidad'] * $cartItem['precio'],
+            ];
+        });
+    }
+
+    /**
+     * Clear the promociones cart.
+     */
+    public function clearPromocionesCart(): void
+    {
+        session()->forget('promociones_cart');
+    }
+
+    /**
+     * Clear both carts (productos and promociones).
+     */
+    public function clearAllCarts(): void
+    {
+        $this->clearCart();
+        $this->clearPromocionesCart();
     }
 }

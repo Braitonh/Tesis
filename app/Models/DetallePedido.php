@@ -13,6 +13,7 @@ class DetallePedido extends Model
     protected $fillable = [
         'pedido_id',
         'producto_id',
+        'promocion_id',
         'cantidad',
         'precio_unitario',
         'subtotal',
@@ -38,6 +39,22 @@ class DetallePedido extends Model
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class);
+    }
+
+    /**
+     * Get the promocion that owns the detalle pedido.
+     */
+    public function promocion(): BelongsTo
+    {
+        return $this->belongsTo(Promocion::class);
+    }
+
+    /**
+     * Check if this detalle is for a promocion.
+     */
+    public function esPromocion(): bool
+    {
+        return !is_null($this->promocion_id);
     }
 
     /**

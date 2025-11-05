@@ -4,6 +4,7 @@ namespace App\Livewire\Cliente;
 
 use App\Models\Categoria;
 use App\Models\Producto;
+use App\Models\Promocion;
 use App\Traits\HasShoppingCart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -91,11 +92,54 @@ class ClienteBienvenida extends Component
         session()->flash('message', 'Carrito limpiado completamente');
     }
 
+    public function getPromocionesDestacadas()
+    {
+        return Promocion::with('productos.categoria')
+            ->active()
+            ->destacado()
+            ->ordered()
+            ->limit(3)
+            ->get();
+    }
+
+    #[On('agregar-promocion-al-carrito')]
+    public function agregarPromocionAlCarrito($promocionId)
+    {
+        Log::info('Método agregarPromocionAlCarrito llamado', ['promocionId' => $promocionId]);
+
+        $promocion = Promocion::with('productos')->find($promocionId);
+
+        if (!$promocion) {
+            Log::warning('Promoción no encontrada', ['promocionId' => $promocionId]);
+            session()->flash('error', 'Promoción no encontrada');
+            return;
+        }
+
+        if (!$promocion->activo) {
+            Log::warning('Promoción no activa', ['promocion' => $promocion->nombre]);
+            session()->flash('error', 'Esta promoción no está disponible');
+            return;
+        }
+
+        if (!$promocion->verificarStock(1)) {
+            Log::warning('Promoción sin stock', ['promocion' => $promocion->nombre]);
+            session()->flash('error', 'No hay stock suficiente para esta promoción');
+            return;
+        }
+
+        $this->addPromocionToCart($promocionId, 1);
+        Log::info('Promoción agregada al carrito', ['promocion' => $promocion->nombre, 'carrito' => $this->getCart()]);
+
+        $this->dispatch('carrito-actualizado');
+        session()->flash('message', "¡{$promocion->nombre} agregada al carrito!");
+    }
+
     public function render()
     {
         return view('livewire.cliente.cliente-bienvenida', [
             'productosDestacados' => $this->getProductosDestacados(),
             'productos' => $this->getProductos(),
+            'promocionesDestacadas' => $this->getPromocionesDestacadas(),
             'categorias' => $this->categorias,
         ]);
     }

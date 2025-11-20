@@ -36,14 +36,6 @@
             </div>
         @endif
 
-        <!-- Badge de Descuento -->
-        <div class="absolute top-3 right-3 bg-gradient-to-r from-orange-600 to-red-600 text-white px-5 py-3 rounded-full shadow-2xl z-10 transform rotate-12">
-            <div class="text-center">
-                <div class="text-3xl font-black leading-none">{{ $promocion->precio_descuento_porcentaje }}%</div>
-                <div class="text-xs font-semibold uppercase tracking-wide">OFF</div>
-            </div>
-        </div>
-
         <!-- Badge sin stock -->
         @if($promocion->stock_disponible <= 0)
             <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
@@ -90,32 +82,24 @@
             <div class="flex items-center justify-between mb-2">
                 <span class="text-sm text-gray-500">Precio normal:</span>
                 <span class="text-lg text-gray-400 line-through font-semibold">
-                    Gs. {{ number_format($promocion->precio_original, 0, ',', '.') }}
+                    ${{ number_format($promocion->precio_original, 2, '.', ',') }}
                 </span>
             </div>
             <div class="flex items-center justify-between mb-2">
                 <span class="text-base font-semibold text-gray-700">Precio promoción:</span>
                 <span class="text-3xl font-black {{ $precioClass }}">
-                    Gs. {{ number_format($promocion->precio_final, 0, ',', '.') }}
+                    ${{ number_format($promocion->precio_final, 2, '.', ',') }}
                 </span>
             </div>
             <div class="flex items-center justify-center pt-2 border-t border-orange-200">
                 <div class="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-bold">
                     <i class="fas fa-piggy-bank mr-1"></i>
-                    Ahorrás Gs. {{ number_format($promocion->descuento_aplicado, 0, ',', '.') }}
+                    Ahorrás ${{ number_format($promocion->descuento_aplicado, 2, '.', ',') }}
                 </div>
             </div>
         </div>
 
-        <!-- Stock disponible -->
-        <div class="flex items-center justify-between mb-4 text-sm">
-            <span class="text-gray-500 font-medium">
-                <i class="fas fa-warehouse mr-1"></i>Stock disponible:
-            </span>
-            <span class="font-bold {{ $stockClass }}">
-                {{ $promocion->stock_disponible }} combos
-            </span>
-        </div>
+
 
         <!-- Acciones -->
         @if($showActions && $variant === 'cliente')

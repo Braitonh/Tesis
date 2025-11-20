@@ -108,6 +108,11 @@ class CarritoCheckout extends Component
         return $this->getCartItems();
     }
 
+    public function getPromocionesProperty()
+    {
+        return $this->getPromocionesItems();
+    }
+
     public function getCountProperty()
     {
         return $this->getCartCount();
@@ -162,7 +167,6 @@ class CarritoCheckout extends Component
                 'telefono_contacto' => $this->telefono_contacto,
                 'notas' => $this->notas,
             ]);
-
             // Crear los detalles del pedido para productos
             foreach ($this->items as $item) {
                 DetallePedido::create([
@@ -173,7 +177,6 @@ class CarritoCheckout extends Component
                     'subtotal' => $item->subtotal,
                 ]);
             }
-
             // Crear los detalles del pedido para promociones
             foreach ($this->getPromocionesItems() as $item) {
                 DetallePedido::create([
@@ -184,16 +187,7 @@ class CarritoCheckout extends Component
                     'precio_unitario' => $item->precio,
                     'subtotal' => $item->subtotal,
                 ]);
-
-                // Deducir stock de los productos individuales dentro de la promoción
-                foreach ($item->promocion->productos as $producto) {
-                    $cantidadADeducir = $producto->pivot->cantidad * $item->cantidad;
-                    $producto->decrement('stock', $cantidadADeducir);
-                }
             }
-
-            // Recalcular el total del pedido (por si acaso)
-            $pedido->calcularTotal();
 
             // Procesar el pago
             $pagoService = new PagoSimuladoService();
@@ -209,7 +203,6 @@ class CarritoCheckout extends Component
             ];
 
             $resultadoPago = $pagoService->procesarPago($datosPago);
-
             if (!$resultadoPago['success']) {
                 DB::rollBack();
 
@@ -240,8 +233,6 @@ class CarritoCheckout extends Component
                 $this->dispatch('scroll-to-top');
                 return;
             }
-
-            // Actualizar estado de pago del pedido
             $pedido->update(['estado_pago' => 'pagado']);
 
             DB::commit();
@@ -273,7 +264,7 @@ class CarritoCheckout extends Component
                 'user_id' => Auth::id(),
             ]);
 
-            $this->mensajeError = 'Hubo un error al procesar tu pedido. Por favor, intenta nuevamente.';
+            $this->mensajeError = 'Hubo un error al procesar tu pedido. Por favor, intenta nuevamente.' . $e->getMessage();
             $this->tipoError = 'general';
             $this->mostrarModalError = true;
             $this->dispatch('scroll-to-top');
@@ -284,6 +275,7 @@ class CarritoCheckout extends Component
     {
         return view('livewire.cliente.carrito-checkout', [
             'items' => $this->items,
+            'promociones' => $this->promociones,
             'count' => $this->count,
             'total' => $this->total,
         ]);

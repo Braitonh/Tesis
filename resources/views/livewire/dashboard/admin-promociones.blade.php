@@ -104,7 +104,7 @@
             </div>
 
             <!-- Grid de Promociones -->
-            <div id="promociones-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div id="promociones-container" class="bg-white rounded-2xl shadow-lg p-6 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 @forelse($promociones as $promocion)
                     <div
                         data-promocion-id="{{ $promocion->id }}"
@@ -115,7 +115,7 @@
                             <img
                                 src="{{ $promocion->image_url }}"
                                 alt="{{ $promocion->nombre }}"
-                                class="w-full h-full object-cover"
+                                class="w-full h-full object-cover {{ $promocion->stock_disponible <= 0 ? 'opacity-50' : '' }}"
                             />
                             <!-- Descuento Badge -->
                             <div class="absolute top-3 right-3">
@@ -166,9 +166,23 @@
 
                             <!-- Stock -->
                             <div class="mb-4">
-                                <p class="text-xs text-gray-500">
-                                    Stock disponible: <span class="font-semibold {{ $promocion->stock_disponible <= 5 ? 'text-red-600' : 'text-green-600' }}">{{ $promocion->stock_disponible }}</span>
-                                </p>
+                                <div class="flex items-center justify-between p-3 rounded-lg {{ $promocion->stock_disponible <= 0 ? 'bg-red-50 border-2 border-red-200' : ($promocion->stock_disponible <= 5 ? 'bg-yellow-50 border-2 border-yellow-200' : 'bg-green-50 border-2 border-green-200') }}">
+                                    <div class="flex items-center gap-2">
+                                        @if($promocion->stock_disponible <= 0)
+                                            <i class="fas fa-times-circle text-red-600 text-lg"></i>
+                                            <span class="text-sm font-semibold text-red-600">Sin Stock</span>
+                                        @elseif($promocion->stock_disponible <= 5)
+                                            <i class="fas fa-exclamation-triangle text-yellow-600 text-lg"></i>
+                                            <span class="text-sm font-semibold text-yellow-600">Stock Bajo</span>
+                                        @else
+                                            <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                                            <span class="text-sm font-semibold text-green-600">Stock Disponible</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-lg font-bold {{ $promocion->stock_disponible <= 0 ? 'text-red-600' : ($promocion->stock_disponible <= 5 ? 'text-yellow-600' : 'text-green-600') }}">
+                                        {{ $promocion->stock_disponible }} unidades
+                                    </span>
+                                </div>
                             </div>
 
                             <!-- Acciones -->
@@ -225,7 +239,7 @@
 
     <!-- Modal de Edición/Creación -->
     @if($showEditModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" x-data="{ activeTab: 'info' }">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <!-- Header -->
                 <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl z-10">
@@ -239,15 +253,13 @@
                     <!-- Tabs -->
                     <div class="flex gap-4 mt-4">
                         <button
-                            @click="activeTab = 'info'"
-                            :class="activeTab === 'info' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                            class="pb-2 px-1 border-b-2 font-medium transition-colors">
+                            wire:click="cambiarTab('info')"
+                            class="pb-2 px-1 border-b-2 font-medium transition-colors {{ $activeTab === 'info' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                             <i class="fas fa-info-circle mr-2"></i>Información
                         </button>
                         <button
-                            @click="activeTab = 'productos'"
-                            :class="activeTab === 'productos' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                            class="pb-2 px-1 border-b-2 font-medium transition-colors">
+                            wire:click="cambiarTab('productos')"
+                            class="pb-2 px-1 border-b-2 font-medium transition-colors {{ $activeTab === 'productos' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
                             <i class="fas fa-box mr-2"></i>Productos ({{ count($selectedProductos) }})
                         </button>
                     </div>
@@ -256,7 +268,8 @@
                 <!-- Body -->
                 <div class="p-6">
                     <!-- Tab: Información -->
-                    <div x-show="activeTab === 'info'" class="space-y-4">
+                    @if($activeTab === 'info')
+                    <div class="space-y-4">
                         <!-- Nombre -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
@@ -332,9 +345,11 @@
                             </label>
                         </div>
                     </div>
+                    @endif
 
                     <!-- Tab: Productos -->
-                    <div x-show="activeTab === 'productos'" class="space-y-4">
+                    @if($activeTab === 'productos')
+                    <div class="space-y-4">
                         <p class="text-sm text-gray-600 mb-4">Selecciona los productos que incluirá esta promoción y especifica las cantidades.</p>
                         @error('selectedProductos') <span class="text-red-500 text-sm block mb-2">{{ $message }}</span> @enderror
 
@@ -372,6 +387,7 @@
                             @endforeach
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <!-- Footer -->
@@ -384,6 +400,7 @@
                         </button>
                         <button
                             wire:click="savePromocion"
+                            id="btn-guardar-promocion"
                             class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors">
                             <i class="fas fa-save mr-2"></i>Guardar
                         </button>
@@ -395,7 +412,7 @@
 
     <!-- Modal de Detalle -->
     @if($showDetailModal && $promocionToView)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <!-- Header -->
                 <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
@@ -454,12 +471,32 @@
                     </div>
 
                     <!-- Stock -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="p-4 rounded-lg {{ $promocionToView->stock_disponible <= 0 ? 'bg-red-50 border-2 border-red-200' : ($promocionToView->stock_disponible <= 5 ? 'bg-yellow-50 border-2 border-yellow-200' : 'bg-green-50 border-2 border-green-200') }}">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-700 font-medium">Stock disponible:</span>
-                            <span class="text-lg font-bold {{ $promocionToView->stock_disponible <= 5 ? 'text-red-600' : 'text-green-600' }}">
-                                {{ $promocionToView->stock_disponible }} unidades
-                            </span>
+                            <div class="flex items-center gap-2">
+                                @if($promocionToView->stock_disponible <= 0)
+                                    <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                                    <span class="text-gray-700 font-semibold">Stock disponible:</span>
+                                @elseif($promocionToView->stock_disponible <= 5)
+                                    <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                                    <span class="text-gray-700 font-semibold">Stock disponible:</span>
+                                @else
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                    <span class="text-gray-700 font-semibold">Stock disponible:</span>
+                                @endif
+                            </div>
+                            <div class="text-right">
+                                <span class="text-2xl font-bold {{ $promocionToView->stock_disponible <= 0 ? 'text-red-600' : ($promocionToView->stock_disponible <= 5 ? 'text-yellow-600' : 'text-green-600') }}">
+                                    {{ $promocionToView->stock_disponible }} unidades
+                                </span>
+                                @if($promocionToView->stock_disponible <= 0)
+                                    <p class="text-xs text-red-600 font-medium mt-1">No disponible</p>
+                                @elseif($promocionToView->stock_disponible <= 5)
+                                    <p class="text-xs text-yellow-600 font-medium mt-1">Stock bajo - Reabastecer pronto</p>
+                                @else
+                                    <p class="text-xs text-green-600 font-medium mt-1">Disponible</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -501,7 +538,7 @@
 
     <!-- Modal de Confirmación de Eliminación -->
     @if($showDeleteModal && $promocionToDelete)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
                 <div class="p-6">
                     <div class="text-center mb-6">
@@ -631,32 +668,97 @@
                 mostrarMensajesFlash();
             }, 200);
         });
-        
+
         document.addEventListener('livewire:navigated', function() {
             setTimeout(function() {
                 mostrarMensajesFlash();
             }, 200);
         });
+
+        // Función simplificada para hacer focus en el primer campo con error
+        function focusEnPrimerError() {
+            // Verificar si el modal de edición está visible
+            const modalEdit = document.querySelector('[x-data*="activeTab"]');
+            if (!modalEdit || !modalEdit.offsetParent) {
+                return; // El modal no está visible
+            }
+
+            // Buscar todos los mensajes de error dentro del modal
+            const mensajesError = modalEdit.querySelectorAll('.text-red-500');
+            if (mensajesError.length === 0) {
+                return; // No hay errores
+            }
+
+            // Encontrar el primer mensaje de error visible
+            let primerError = null;
+            for (let i = 0; i < mensajesError.length; i++) {
+                const elemento = mensajesError[i];
+                // Verificar si el elemento es visible
+                if (elemento.offsetParent !== null && window.getComputedStyle(elemento).display !== 'none') {
+                    primerError = elemento;
+                    break;
+                }
+            }
+
+            if (!primerError) {
+                return; // No hay errores visibles
+            }
+
+            // Hacer focus en el campo asociado
+            focusEnCampoError(primerError);
+        }
         
-        // Escuchar actualizaciones del componente
+        // Función auxiliar para hacer focus en el campo de error
+        function focusEnCampoError(primerError) {
+            // Buscar el campo asociado (input, textarea, select) que está antes del mensaje de error
+            let campo = primerError.previousElementSibling;
+            
+            // Si no está justo antes, buscar en el contenedor padre
+            if (!campo || !['INPUT', 'TEXTAREA', 'SELECT'].includes(campo.tagName)) {
+                const contenedor = primerError.closest('div');
+                if (contenedor) {
+                    // Buscar el primer input, textarea o select en el contenedor
+                    campo = contenedor.querySelector('input, textarea, select');
+                }
+            }
+
+            // Si encontramos un campo, hacer focus y scroll
+            if (campo && ['INPUT', 'TEXTAREA', 'SELECT'].includes(campo.tagName)) {
+                // Hacer scroll al campo
+                campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Hacer focus después de un pequeño delay para asegurar que el scroll terminó
+                setTimeout(function() {
+                    campo.focus();
+                }, 300);
+            } else {
+                // Si no hay un campo asociado (como en el caso de selectedProductos),
+                // al menos hacer scroll al mensaje de error para que sea visible
+                primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Escuchar eventos de Livewire para detectar errores de validación
         document.addEventListener('livewire:update', function() {
             setTimeout(function() {
                 mostrarMensajesFlash();
+                focusEnPrimerError();
             }, 300);
         });
-        
-        // Escuchar cuando Livewire procesa mensajes
+
         document.addEventListener('livewire:message-processed', function() {
             setTimeout(function() {
                 mostrarMensajesFlash();
+                focusEnPrimerError();
             }, 200);
         });
-        
+
         // También usar el hook de Livewire si está disponible
         if (window.Livewire) {
             Livewire.hook('message.processed', ({ component, respond }) => {
                 setTimeout(function() {
                     mostrarMensajesFlash();
+                    focusEnPrimerError();
                 }, 200);
             });
         }

@@ -70,8 +70,8 @@
                                     </div>
 
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs text-gray-400 line-through">Gs. {{ number_format($item->promocion->precio_original, 0, ',', '.') }}</span>
-                                        <p class="text-orange-600 font-bold text-lg">Gs. {{ number_format($item->precio, 0, ',', '.') }}</p>
+                                        <span class="text-xs text-gray-400 line-through">$. {{ number_format($item->promocion->precio_original, 0, ',', '.') }}</span>
+                                        <p class="text-orange-600 font-bold text-lg">$. {{ number_format($item->precio, 0, ',', '.') }}</p>
                                     </div>
 
                                     <!-- Quantity Controls -->
@@ -97,7 +97,7 @@
                                     <!-- Subtotal -->
                                     <div class="text-sm text-gray-600 mt-2 flex items-center justify-between">
                                         <span>Subtotal:</span>
-                                        <span class="font-semibold text-orange-600">Gs. {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                        <span class="font-semibold text-orange-600">$. {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                 <!-- Product Info -->
                                 <div class="flex-1 min-w-0">
                                     <h3 class="font-semibold text-gray-800 truncate">{{ $item->producto->nombre }}</h3>
-                                    <p class="text-orange-600 font-bold text-lg">Gs. {{ number_format($item->precio, 0, ',', '.') }}</p>
+                                    <p class="text-orange-600 font-bold text-lg">$. {{ number_format($item->precio, 0, ',', '.') }}</p>
 
                                     <!-- Quantity Controls -->
                                     <div class="flex items-center gap-2 mt-2">
@@ -154,7 +154,7 @@
 
                                     <!-- Subtotal -->
                                     <div class="text-sm text-gray-600 mt-2">
-                                        Subtotal: <span class="font-semibold text-gray-800">Gs. {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                        Subtotal: <span class="font-semibold text-gray-800">$. {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                 <!-- Total -->
                 <div class="flex justify-between items-center text-lg font-bold">
                     <span class="text-gray-800">Total:</span>
-                    <span class="text-orange-600 text-2xl">Gs. {{ number_format($total, 0, ',', '.') }}</span>
+                    <span class="text-orange-600 text-2xl">$. {{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
                 <!-- Actions -->
@@ -244,7 +244,7 @@
                         <div class="flex items-start">
                             <i class="fas fa-info-circle text-amber-600 mt-0.5 mr-2"></i>
                             <p class="text-sm text-amber-800">
-                                Se eliminarán <span class="font-bold">{{ $count }} {{ $count === 1 ? 'ítem' : 'ítems' }}</span> por un total de <span class="font-bold">Gs. {{ number_format($total, 0, ',', '.') }}</span>
+                                Se eliminarán <span class="font-bold">{{ $count }} {{ $count === 1 ? 'ítem' : 'ítems' }}</span> por un total de <span class="font-bold">$. {{ number_format($total, 0, ',', '.') }}</span>
                             </p>
                         </div>
                     </div>
@@ -265,18 +265,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    @endif
-
-    <!-- Flash Messages -->
-    @if (session()->has('message'))
-        <div x-data="{ show: true }"
-             x-show="show"
-             x-init="setTimeout(() => show = false, 3000)"
-             class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50"
-             style="display: none;">
-            <i class="fas fa-check-circle mr-2"></i>
-            {{ session('message') }}
         </div>
     @endif
 </div>

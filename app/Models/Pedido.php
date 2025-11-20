@@ -136,7 +136,7 @@ class Pedido extends Model
     {
         $subtotal = $this->detalles->sum('subtotal');
 
-        $this->update([
+        $this->updateQuietly([
             'subtotal' => $subtotal,
             'total' => $subtotal, // Aquí se podrían agregar descuentos, impuestos, etc.
         ]);

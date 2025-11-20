@@ -90,7 +90,7 @@ class AdminPedidos extends Component
 
     public function verDetalles($pedidoId)
     {
-        $this->pedidoSeleccionado = Pedido::with(['user', 'detalles.producto', 'transaccion'])
+        $this->pedidoSeleccionado = Pedido::with(['user', 'detalles.producto', 'detalles.promocion.productos', 'transaccion'])
             ->findOrFail($pedidoId);
         $this->showDetailModal = true;
     }

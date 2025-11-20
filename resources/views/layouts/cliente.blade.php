@@ -121,7 +121,6 @@
                         </div>
                         <div>
                             <h1 class="text-2xl font-bold text-gray-800">FoodDesk</h1>
-                            <p class="text-sm text-orange-600 font-medium">Panel Cliente</p>
                         </div>
                     </div>
                     
@@ -142,7 +141,6 @@
                                 </div>
                                 <div class="hidden md:block text-left">
                                     <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
-                                    <p class="text-xs text-gray-500">Cliente</p>
                                 </div>
                                 <i class="fas fa-chevron-down text-sm"></i>
                             </button>
@@ -160,7 +158,7 @@
                                 x-cloak
                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
                             >
-                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
+                                <a href="{{ route('cliente.perfil') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
                                     <i class="fas fa-user"></i>
                                     Mi Perfil
                                 </a>
@@ -227,7 +225,39 @@
     <!-- Carrito Component -->
     @livewire('cliente.carrito-compras')
 
+    <!-- Toast Notifications -->
+    <x-toast-notification />
+
     <!-- Livewire Scripts -->
     @livewireScripts
+
+    <!-- Script para mostrar toasts desde mensajes de sesión -->
+    @if (session()->has('message'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (window.showToast) {
+                    window.showToast(
+                        '{{ session('message') }}',
+                        'success',
+                        4000
+                    );
+                }
+            });
+        </script>
+    @endif
+
+    @if (session()->has('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (window.showToast) {
+                    window.showToast(
+                        '{{ session('error') }}',
+                        'error',
+                        4000
+                    );
+                }
+            });
+        </script>
+    @endif
 </body>
 </html>

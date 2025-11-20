@@ -3,7 +3,10 @@
 namespace App\Livewire\Cocina;
 
 use App\Models\Pedido;
+use App\Models\Producto;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -44,7 +47,7 @@ class Cocina extends Component
             ->get()
             ->map(function ($pedido) {
                 $pedido->minutos_transcurridos = Carbon::parse($pedido->created_at)->diffInMinutes(now());
-                $pedido->es_urgente = $pedido->minutos_transcurridos > 15;
+                $pedido->es_urgente = $pedido->minutos_transcurridos > 1;
                 return $pedido;
             });
     }
@@ -83,7 +86,7 @@ class Cocina extends Component
                 // Mantener minutos_transcurridos para compatibilidad si se usa en otro lugar
                 $pedido->minutos_transcurridos = $minutos;
                 // Marcar como urgente si lleva más de 15 minutos en preparación
-                $pedido->es_urgente = $pedido->minutos_transcurridos > 15;
+                $pedido->es_urgente = $pedido->minutos_transcurridos > 1;
                 return $pedido;
             });
     }
@@ -151,15 +154,103 @@ class Cocina extends Component
      */
     public function marcarComoListo($pedidoId)
     {
-        $pedido = Pedido::findOrFail($pedidoId);
+        try {
+            DB::beginTransaction();
 
-        if ($pedido->estado === 'en_preparacion') {
+            // Cargar el pedido con todas las relaciones necesarias
+            $pedido = Pedido::with([
+                'detalles.producto',
+                'detalles.promocion.productos'
+            ])->findOrFail($pedidoId);
+
+            if ($pedido->estado !== 'en_preparacion') {
+                session()->flash('error', "El pedido {$pedido->numero_pedido} no está en preparación");
+                DB::rollBack();
+                return;
+            }
+
+            // Descontar stock de los productos según los detalles del pedido
+            foreach ($pedido->detalles as $detalle) {
+                if ($detalle->producto_id) {
+                    // Producto individual
+                    $producto = $detalle->producto;
+                    if ($producto) {
+                        $cantidadADeducir = $detalle->cantidad;
+                        
+                        // Verificar que haya stock suficiente
+                        if ($producto->stock < $cantidadADeducir) {
+                            DB::rollBack();
+                            session()->flash('error', "Stock insuficiente para el producto {$producto->nombre}. Stock disponible: {$producto->stock}, requerido: {$cantidadADeducir}");
+                            return;
+                        }
+
+                        // Descontar stock
+                        $producto->decrement('stock', $cantidadADeducir);
+                        
+                        // Actualizar estado del producto según el nuevo stock
+                        $nuevoStock = $producto->fresh()->stock;
+                        $nuevoEstado = $this->calcularEstado($nuevoStock);
+                        $producto->update(['estado' => $nuevoEstado]);
+                    }
+                } elseif ($detalle->promocion_id) {
+                    // Promoción: descontar stock de cada producto de la promoción
+                    $promocion = $detalle->promocion;
+                    if ($promocion && $promocion->productos) {
+                        foreach ($promocion->productos as $producto) {
+                            $cantidadADeducir = $producto->pivot->cantidad * $detalle->cantidad;
+                            
+                            // Verificar que haya stock suficiente
+                            if ($producto->stock < $cantidadADeducir) {
+                                DB::rollBack();
+                                session()->flash('error', "Stock insuficiente para el producto {$producto->nombre} en la promoción {$promocion->nombre}. Stock disponible: {$producto->stock}, requerido: {$cantidadADeducir}");
+                                return;
+                            }
+
+                            // Descontar stock
+                            $producto->decrement('stock', $cantidadADeducir);
+                            
+                            // Actualizar estado del producto según el nuevo stock
+                            $nuevoStock = $producto->fresh()->stock;
+                            $nuevoEstado = $this->calcularEstado($nuevoStock);
+                            $producto->update(['estado' => $nuevoEstado]);
+                        }
+                    }
+                }
+            }
+
+            // Actualizar el estado del pedido a "listo"
             $pedido->update([
                 'estado' => 'listo',
                 'listo_at' => now()
             ]);
 
+            DB::commit();
+
             session()->flash('message', "Pedido {$pedido->numero_pedido} está listo para entregar");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al marcar pedido como listo y descontar stock', [
+                'pedido_id' => $pedidoId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', "Error al procesar el pedido: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * Calcular el estado del producto según su stock
+     */
+    private function calcularEstado($stock)
+    {
+        if ($stock <= 0) {
+            return 'agotado';
+        } elseif ($stock <= 5) {
+            return 'stock_bajo';
+        } else {
+            return 'disponible';
         }
     }
 
@@ -168,7 +259,7 @@ class Cocina extends Component
      */
     public function verDetalles($pedidoId)
     {
-        $this->pedidoSeleccionado = Pedido::with(['user', 'detalles.producto', 'transaccion'])
+        $this->pedidoSeleccionado = Pedido::with(['user', 'detalles.producto', 'detalles.promocion.productos', 'transaccion'])
             ->findOrFail($pedidoId);
         $this->showDetailModal = true;
     }

@@ -50,7 +50,6 @@ class PagoSimuladoService
                 'monto' => $datos['monto'],
                 'numero_transaccion' => Transaccion::generarNumeroTransaccion(),
             ]);
-
             // Si es efectivo, aprobar directamente
             if ($datos['metodo_pago'] === 'efectivo') {
                 $transaccion->update([

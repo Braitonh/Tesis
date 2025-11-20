@@ -45,6 +45,9 @@ class AdminPromociones extends Component
     public $selectedProductos = [];
     public $productoCantidades = [];
 
+    // Tab activo en el modal de edición
+    public $activeTab = 'info';
+
     // Para el reordenamiento
     public $promocionOrderJson = '';
 
@@ -94,6 +97,7 @@ class AdminPromociones extends Component
         $this->precio_descuento_porcentaje = 10;
         $this->destacado = false;
         $this->activo = true;
+        $this->activeTab = 'info';
         $this->modalTitle = 'Nueva Promoción';
 
         // Limpiar errores de validación
@@ -123,6 +127,7 @@ class AdminPromociones extends Component
             $this->productoCantidades[$producto->id] = $producto->pivot->cantidad;
         }
 
+        $this->activeTab = 'info';
         $this->modalTitle = 'Editar Promoción';
         $this->showEditModal = true;
     }
@@ -138,6 +143,40 @@ class AdminPromociones extends Component
             $this->selectedProductos[] = $productoId;
             $this->productoCantidades[$productoId] = 1; // Default quantity
         }
+    }
+
+    /**
+     * Cambia el tab activo
+     */
+    public function cambiarTab($tab)
+    {
+        $this->activeTab = $tab;
+    }
+
+    /**
+     * Determina en qué tab debe estar el foco basado en los errores de validación
+     */
+    private function determinarTabConErrores()
+    {
+        $camposConError = $this->getErrorBag()->keys();
+
+        // Campos del tab de productos
+        $camposTabProductos = ['selectedProductos', 'selectedProductos.*', 'productoCantidades', 'productoCantidades.*'];
+
+        // Si hay algún error relacionado con productos, cambiar al tab de productos
+        foreach ($camposConError as $campo) {
+            // Verificar si el campo es selectedProductos o comienza con selectedProductos.
+            if ($campo === 'selectedProductos' || str_starts_with($campo, 'selectedProductos.')) {
+                return 'productos';
+            }
+            // Verificar si el campo es productoCantidades o comienza con productoCantidades.
+            if ($campo === 'productoCantidades' || str_starts_with($campo, 'productoCantidades.')) {
+                return 'productos';
+            }
+        }
+
+        // Si hay otros errores, mantener en el tab de info
+        return 'info';
     }
 
     public function savePromocion()
@@ -156,7 +195,44 @@ class AdminPromociones extends Component
             'selectedProductos.*' => 'exists:productos,id',
         ];
 
-        $this->validate($rules);
+        $messages = [
+            'nombre.required' => 'El campo nombre es obligatorio.',
+            'nombre.string' => 'El campo nombre debe ser un texto.',
+            'nombre.max' => 'El campo nombre no puede tener más de 255 caracteres.',
+            'descripcion.required' => 'El campo descripción es obligatorio.',
+            'descripcion.string' => 'El campo descripción debe ser un texto.',
+            'precio_descuento_porcentaje.required' => 'El campo descuento es obligatorio.',
+            'precio_descuento_porcentaje.numeric' => 'El campo descuento debe ser un número.',
+            'precio_descuento_porcentaje.min' => 'El campo descuento debe ser mayor o igual a 0.',
+            'precio_descuento_porcentaje.max' => 'El campo descuento no puede ser mayor a 100.',
+            'imagen_file.image' => 'El archivo debe ser una imagen.',
+            'imagen_file.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            'imagen_file.max' => 'La imagen no puede pesar más de 2MB.',
+            'selectedProductos.required' => 'Debe seleccionar al menos un producto.',
+            'selectedProductos.array' => 'Los productos seleccionados deben ser una lista válida.',
+            'selectedProductos.min' => 'Debe seleccionar al menos un producto.',
+            'selectedProductos.*.exists' => 'Uno o más productos seleccionados no existen.',
+        ];
+
+        try {
+            $this->validate($rules, $messages);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Obtener los errores del validator
+            $validator = $e->validator;
+
+            // Agregar los errores al error bag de Livewire
+            foreach ($validator->errors()->messages() as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
+
+            // Determinar el tab donde está el error y cambiarlo
+            $this->activeTab = $this->determinarTabConErrores();
+
+            // Detener la ejecución sin guardar
+            return;
+        }
 
         // Handle image upload
         $imagePath = $this->imagen;
@@ -232,6 +308,7 @@ class AdminPromociones extends Component
             'destacado', 'activo', 'imagen', 'imagen_file', 'selectedProductos',
             'productoCantidades', 'modalTitle'
         ]);
+        $this->activeTab = 'info';
         $this->resetValidation();
     }
 

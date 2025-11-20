@@ -345,6 +345,39 @@
 
                         <!-- Items -->
                         <div class="space-y-3 mb-4 overflow-y-auto flex-1 min-h-0">
+                            <!-- Promociones -->
+                            @foreach($promociones as $item)
+                                <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-3 border border-orange-200" wire:key="checkout-promo-{{ $item->promocion->id }}">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-orange-100">
+                                            <img src="{{ $item->promocion->image_url }}"
+                                                 alt="{{ $item->promocion->nombre }}"
+                                                 class="w-full h-full object-cover"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                                <i class="fas fa-gift text-orange-400"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-semibold text-gray-800 truncate">
+                                                <i class="fas fa-gift text-orange-500 mr-1"></i>
+                                                {{ $item->promocion->nombre }}
+                                            </p>
+                                            <p class="text-xs text-gray-500 mb-1">
+                                                {{ $item->cantidad }} x ${{ number_format($item->precio, 2, ',', '.') }}
+                                            </p>
+                                            <span class="inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                                -{{ $item->promocion->precio_descuento_porcentaje }}% OFF
+                                            </span>
+                                        </div>
+                                        <p class="text-sm font-bold text-orange-600">
+                                            ${{ number_format($item->subtotal, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Productos -->
                             @foreach($items as $item)
                                 <div class="flex items-center gap-3 pb-3 border-b border-gray-100" wire:key="checkout-item-{{ $item->producto->id }}">
                                     <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
@@ -361,11 +394,11 @@
                                             {{ $item->producto->nombre }}
                                         </p>
                                         <p class="text-xs text-gray-500">
-                                            {{ $item->cantidad }} x ${{ number_format($item->precio, 2) }}
+                                            {{ $item->cantidad }} x ${{ number_format($item->precio, 2, ',', '.') }}
                                         </p>
                                     </div>
                                     <p class="text-sm font-bold text-gray-800">
-                                        ${{ number_format($item->subtotal, 2) }}
+                                        ${{ number_format($item->subtotal, 2, ',', '.') }}
                                     </p>
                                 </div>
                             @endforeach
@@ -375,7 +408,7 @@
                         <div class="border-t border-gray-200 pt-4 mb-6 mt-auto">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-gray-600">Subtotal</span>
-                                <span class="text-gray-800 font-semibold">${{ number_format($total, 2) }}</span>
+                                <span class="text-gray-800 font-semibold">${{ number_format($total, 2, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-gray-600">Delivery</span>
@@ -383,7 +416,7 @@
                             </div>
                             <div class="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t border-gray-200">
                                 <span class="text-gray-800">Total</span>
-                                <span class="text-orange-600 text-2xl">${{ number_format($total, 2) }}</span>
+                                <span class="text-orange-600 text-2xl">${{ number_format($total, 2, ',', '.') }}</span>
                             </div>
                         </div>
 

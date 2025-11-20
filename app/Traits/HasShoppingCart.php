@@ -144,7 +144,12 @@ trait HasShoppingCart
     public function getCartCount(): int
     {
         $cart = $this->getCart();
-        return array_sum(array_column($cart, 'cantidad'));
+        $productsCount = array_sum(array_column($cart, 'cantidad'));
+
+        $promocionesCart = $this->getPromocionesCart();
+        $promocionesCount = array_sum(array_column($promocionesCart, 'cantidad'));
+
+        return $productsCount + $promocionesCount;
     }
 
     /**

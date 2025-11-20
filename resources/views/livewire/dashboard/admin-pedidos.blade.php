@@ -8,7 +8,7 @@
             </div>
 
             <!-- Estadísticas -->
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <!-- Total Pedidos -->
                 <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500">
                     <div class="flex items-center justify-between">
@@ -172,7 +172,7 @@
             <!-- Lista de Pedidos -->
             <div class="space-y-4 bg-white rounded-2xl shadow-lg p-6">
                 @forelse($pedidos as $pedido)
-                    <div class="bg-gray-100 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300" wire:key="pedido-{{ $pedido->id }}">
+                    <div class="rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-xl transition-shadow duration-300" wire:key="pedido-{{ $pedido->id }}">
                         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                             <!-- Información del Pedido -->
                             <div class="flex-1">
@@ -218,7 +218,13 @@
                                         <i class="fas fa-shopping-bag text-orange-600 mr-2"></i>
                                         <span>
                                             @foreach($pedido->detalles->take(2) as $detalle)
-                                                {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}@if(!$loop->last), @endif
+                                                {{ $detalle->cantidad }}x
+                                                @if($detalle->promocion_id)
+                                                    <i class="fas fa-gift text-orange-500"></i> {{ $detalle->promocion->nombre }}
+                                                @else
+                                                    {{ $detalle->producto->nombre }}
+                                                @endif
+                                                @if(!$loop->last), @endif
                                             @endforeach
                                             @if($pedido->detalles->count() > 2)
                                                 +{{ $pedido->detalles->count() - 2 }} más
@@ -236,7 +242,7 @@
                             <div class="flex items-center gap-4 lg:flex-col lg:items-end">
                                 <div class="text-right">
                                     <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">Gs. {{ number_format($pedido->total, 0, ',', '.') }}</p>
+                                    <p class="text-2xl font-bold text-orange-600">$. {{ number_format($pedido->total, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button wire:click="verDetalles({{ $pedido->id }})"
@@ -386,7 +392,7 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Total:</span>
-                                <span class="font-bold text-orange-600">Gs. {{ number_format($pedidoSeleccionado->total, 0, ',', '.') }}</span>
+                                <span class="font-bold text-orange-600">$. {{ number_format($pedidoSeleccionado->total, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Estado:</span>

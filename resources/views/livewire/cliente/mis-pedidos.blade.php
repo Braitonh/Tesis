@@ -45,7 +45,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Total Gastado</p>
-                            <p class="text-3xl font-bold text-gray-800">${{ number_format($totalGastado, 2) }}</p>
+                            <p class="text-3xl font-bold text-gray-800">${{ number_format($totalGastado, 2, ',', '.') }}</p>
                         </div>
                         <div class="bg-green-100 p-4 rounded-full">
                             <i class="fas fa-dollar-sign text-green-600 text-2xl"></i>
@@ -129,7 +129,7 @@
                             <div class="flex items-center gap-4 lg:flex-col lg:items-end">
                                 <div class="text-right">
                                     <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                    <p class="text-2xl font-bold text-orange-600">${{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
                                 <button wire:click="verDetalles({{ $pedido->id }})"
                                         class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
@@ -291,22 +291,39 @@
                             @foreach($pedidoSeleccionado->detalles as $detalle)
                                 <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                                     <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
-                                        <img src="{{ $detalle->producto->image_url }}"
-                                             alt="{{ $detalle->producto->nombre }}"
-                                             class="w-full h-full object-cover"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <div class="w-full h-full flex items-center justify-center" style="display: none;">
-                                            <i class="fas fa-utensils text-gray-400 text-xl"></i>
-                                        </div>
+                                        @if($detalle->promocion_id)
+                                            <img src="{{ $detalle->promocion->image_url }}"
+                                                 alt="{{ $detalle->promocion->nombre }}"
+                                                 class="w-full h-full object-cover"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                                <i class="fas fa-gift text-orange-500 text-xl"></i>
+                                            </div>
+                                        @else
+                                            <img src="{{ $detalle->producto->image_url }}"
+                                                 alt="{{ $detalle->producto->nombre }}"
+                                                 class="w-full h-full object-cover"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                                <i class="fas fa-utensils text-gray-400 text-xl"></i>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="font-semibold text-gray-800">{{ $detalle->producto->nombre }}</p>
+                                        @if($detalle->promocion_id)
+                                            <p class="font-semibold text-gray-800">
+                                                <i class="fas fa-gift text-orange-500 mr-1"></i>
+                                                {{ $detalle->promocion->nombre }}
+                                            </p>
+                                        @else
+                                            <p class="font-semibold text-gray-800">{{ $detalle->producto->nombre }}</p>
+                                        @endif
                                         <p class="text-sm text-gray-500">
-                                            {{ $detalle->cantidad }} x ${{ number_format($detalle->precio_unitario, 2) }}
+                                            {{ $detalle->cantidad }} x ${{ number_format($detalle->precio_unitario, 2, ',', '.') }}
                                         </p>
                                     </div>
                                     <p class="font-bold text-gray-800">
-                                        ${{ number_format($detalle->subtotal, 2) }}
+                                        ${{ number_format($detalle->subtotal, 2, ',', '.') }}
                                     </p>
                                 </div>
                             @endforeach
@@ -317,7 +334,7 @@
                     <div class="border-t border-gray-200 pt-4">
                         <div class="flex justify-between items-center text-2xl font-bold">
                             <span class="text-gray-800">Total</span>
-                            <span class="text-orange-600">${{ number_format($pedidoSeleccionado->total, 2) }}</span>
+                            <span class="text-orange-600">${{ number_format($pedidoSeleccionado->total, 2, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>

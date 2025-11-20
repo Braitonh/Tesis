@@ -79,14 +79,28 @@ class PedidoCreado implements ShouldBroadcast
                     'name' => $this->pedido->user->name,
                 ],
                 'detalles' => $this->pedido->detalles->map(function ($detalle) {
-                    return [
+                    $item = [
                         'cantidad' => $detalle->cantidad,
-                        'producto' => [
-                            'id' => $detalle->producto->id,
-                            'nombre' => $detalle->producto->nombre,
-                        ],
                         'subtotal' => $detalle->subtotal,
                     ];
+
+                    // Si es una promoción
+                    if ($detalle->promocion_id) {
+                        $item['tipo'] = 'promocion';
+                        $item['promocion'] = [
+                            'id' => $detalle->promocion->id,
+                            'nombre' => $detalle->promocion->nombre,
+                        ];
+                    } else {
+                        // Es un producto regular
+                        $item['tipo'] = 'producto';
+                        $item['producto'] = [
+                            'id' => $detalle->producto->id,
+                            'nombre' => $detalle->producto->nombre,
+                        ];
+                    }
+
+                    return $item;
                 }),
                 'created_at' => $this->pedido->created_at->toIso8601String(),
             ],

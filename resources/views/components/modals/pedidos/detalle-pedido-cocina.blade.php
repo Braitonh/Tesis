@@ -305,13 +305,6 @@
                         <i class="fas fa-times mr-2"></i>
                         Cerrar
                     </button>
-                    @if($pedido->estado !== 'cancelado')
-                        <button wire:click="abrirModalEstado({{ $pedido->id }})"
-                                class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                            <i class="fas fa-edit mr-2"></i>
-                            Cambiar Estado
-                        </button>
-                    @endif
                 </div>
             </div>
         </div>

@@ -62,26 +62,57 @@
                     <h3 class="text-lg font-bold text-gray-800 mb-4">Detalles del Pedido</h3>
                     <div class="space-y-3">
                         @foreach($pedido->detalles as $detalle)
-                            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                                <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
-                                    <img src="{{ $detalle->producto->image_url }}"
-                                         alt="{{ $detalle->producto->nombre }}"
-                                         class="w-full h-full object-cover"
-                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="w-full h-full flex items-center justify-center" style="display: none;">
-                                        <i class="fas fa-utensils text-gray-400 text-xl"></i>
+                            @if($detalle->promocion_id)
+                                {{-- Es una promoción --}}
+                                <div class="flex items-center gap-4 p-3 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-200">
+                                    <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-orange-100">
+                                        <img src="{{ $detalle->promocion->image_url }}"
+                                             alt="{{ $detalle->promocion->nombre }}"
+                                             class="w-full h-full object-cover"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                            <i class="fas fa-gift text-orange-400 text-xl"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-semibold text-gray-800">{{ $detalle->producto->nombre }}</p>
-                                    <p class="text-sm text-gray-500">
-                                        {{ $detalle->cantidad }} x ${{ number_format($detalle->precio_unitario, 2) }}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-gray-800">
+                                            <i class="fas fa-gift text-orange-500 mr-1"></i>
+                                            {{ $detalle->promocion->nombre }}
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $detalle->cantidad }} x ${{ number_format($detalle->precio_unitario, 2, ',', '.') }}
+                                        </p>
+                                        <span class="inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold mt-1">
+                                            -{{ $detalle->promocion->precio_descuento_porcentaje }}% OFF
+                                        </span>
+                                    </div>
+                                    <p class="text-lg font-bold text-orange-600">
+                                        ${{ number_format($detalle->subtotal, 2, ',', '.') }}
                                     </p>
                                 </div>
-                                <p class="font-bold text-gray-800">
-                                    ${{ number_format($detalle->subtotal, 2) }}
-                                </p>
-                            </div>
+                            @else
+                                {{-- Es un producto --}}
+                                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                                    <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                                        <img src="{{ $detalle->producto->image_url }}"
+                                             alt="{{ $detalle->producto->nombre }}"
+                                             class="w-full h-full object-cover"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                                            <i class="fas fa-utensils text-gray-400 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-gray-800">{{ $detalle->producto->nombre }}</p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $detalle->cantidad }} x ${{ number_format($detalle->precio_unitario, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+                                    <p class="text-lg font-bold text-gray-800">
+                                        ${{ number_format($detalle->subtotal, 2, ',', '.') }}
+                                    </p>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
                 </div>

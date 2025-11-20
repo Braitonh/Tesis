@@ -98,8 +98,11 @@ class ClienteBienvenida extends Component
             ->active()
             ->destacado()
             ->ordered()
-            ->limit(3)
-            ->get();
+            ->get()
+            ->filter(function ($promocion) {
+                return $promocion->verificarStock(1);
+            })
+            ->take(3);
     }
 
     #[On('agregar-promocion-al-carrito')]

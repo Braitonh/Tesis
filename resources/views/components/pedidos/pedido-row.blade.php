@@ -10,14 +10,21 @@
     </td>
     <td class="px-6 py-4">
         @foreach($pedido->detalles->take(2) as $detalle)
-            <div class="text-sm text-gray-900">{{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}</div>
+            <div class="text-sm text-gray-900">
+                @if($detalle->promocion_id)
+                    <i class="fas fa-gift text-orange-500 mr-1"></i>
+                    {{ $detalle->cantidad }}x {{ $detalle->promocion->nombre }}
+                @else
+                    {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                @endif
+            </div>
         @endforeach
         @if($pedido->detalles->count() > 2)
             <div class="text-sm text-gray-500">+{{ $pedido->detalles->count() - 2 }} más</div>
         @endif
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm font-semibold text-gray-900">Gs. {{ number_format($pedido->total, 0, ',', '.') }}</div>
+        <div class="text-sm font-semibold text-gray-900">$. {{ number_format($pedido->total, 0, ',', '.') }}</div>
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full

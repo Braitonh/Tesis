@@ -84,7 +84,7 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($pedidosEnPreparacion as $pedido)
-                            <div class="@if($pedido->es_urgente) bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                            <div class="@if($pedido->es_urgente) animate-pulse bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="text-sm font-bold @if($pedido->es_urgente) text-red-800 @else text-blue-800 @endif">
                                         {{ $pedido->numero_pedido }}
@@ -97,8 +97,13 @@
                                 <div class="mb-3 space-y-1">
                                     @foreach($pedido->detalles->take(3) as $detalle)
                                         <div class="text-sm text-gray-700 font-medium">
-                                            <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
-                                            {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                            @if($detalle->promocion_id)
+                                                <i class="fas fa-gift text-orange-500 text-xs mr-2"></i>
+                                                {{ $detalle->cantidad }}x {{ $detalle->promocion->nombre }}
+                                            @else
+                                                <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
+                                                {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                            @endif
                                         </div>
                                     @endforeach
                                     @if($pedido->detalles->count() > 3)
@@ -186,8 +191,13 @@
                                 <div class="space-y-1">
                                     @foreach($pedido->detalles->take(2) as $detalle)
                                         <div class="text-sm text-gray-700 font-medium">
-                                            <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
-                                            {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                            @if($detalle->promocion_id)
+                                                <i class="fas fa-gift text-orange-500 text-xs mr-2"></i>
+                                                {{ $detalle->cantidad }}x {{ $detalle->promocion->nombre }}
+                                            @else
+                                                <i class="fas fa-utensils text-gray-400 text-xs mr-2"></i>
+                                                {{ $detalle->cantidad }}x {{ $detalle->producto->nombre }}
+                                            @endif
                                         </div>
                                     @endforeach
                                     @if($pedido->detalles->count() > 2)
@@ -206,7 +216,7 @@
     </div>
 
     <!-- Modal Ver Detalles -->
-    <x-modals.pedidos.detalle-pedido
+    <x-modals.pedidos.detalle-pedido-cocina
         :show="$showDetailModal"
         :pedido="$pedidoSeleccionado" />
 
@@ -237,7 +247,7 @@
                     const itemsCount = e.pedido.items_count || 'varios';
                     
                     window.showToast(
-                        `🔥 ¡NUEVO PEDIDO! ${e.pedido.numero_pedido} - ${itemsCount} items - Gs. ${total}`,
+                        `¡NUEVO PEDIDO! ${e.pedido.numero_pedido} - ${itemsCount} items - $. ${total}`,
                         'warning',
                         6000
                     );

@@ -22,7 +22,7 @@ class ClienteBienvenida extends Component
 
     public function mount()
     {
-        $this->usuario = Auth::user();
+        $this->usuario = Auth::user(); // Puede ser null si no hay usuario autenticado
     }
 
     public function getProductosDestacados()
@@ -62,6 +62,14 @@ class ClienteBienvenida extends Component
     #[On('agregar-al-carrito')]
     public function agregarAlCarrito($productoId)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            // Guardar la URL actual para redirigir después del registro
+            session()->put('url.intended', url()->current());
+            session()->flash('info', 'Por favor, regístrate para agregar productos al carrito');
+            return $this->redirect(route('register'));
+        }
+
         Log::info('Método agregarAlCarrito llamado', ['productoId' => $productoId]);
 
         $producto = Producto::find($productoId);
@@ -108,6 +116,14 @@ class ClienteBienvenida extends Component
     #[On('agregar-promocion-al-carrito')]
     public function agregarPromocionAlCarrito($promocionId)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            // Guardar la URL actual para redirigir después del registro
+            session()->put('url.intended', url()->current());
+            session()->flash('info', 'Por favor, regístrate para agregar promociones al carrito');
+            return $this->redirect(route('register'));
+        }
+
         Log::info('Método agregarPromocionAlCarrito llamado', ['promocionId' => $promocionId]);
 
         $promocion = Promocion::with('productos')->find($promocionId);

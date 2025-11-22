@@ -42,7 +42,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="font-semibold">Monto:</span>
-                            <span class="text-green-600 font-bold">${{ number_format($transaccion->monto, 2) }}</span>
+                            <span class="text-green-600 font-bold">${{ number_format($transaccion->monto, 2, ',', '.') }}</span>
                         </div>
                         @if($transaccion->detalles_tarjeta)
                             <div class="flex justify-between">

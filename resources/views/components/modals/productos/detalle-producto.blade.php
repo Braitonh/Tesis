@@ -112,14 +112,14 @@
                         <div class="space-y-2">
                             @if($producto->precio_descuento)
                                 <div class="flex items-center space-x-3">
-                                    <span class="text-2xl font-bold text-orange-600">${{ number_format($producto->precio_descuento, 2) }}</span>
-                                    <span class="text-lg text-gray-400 line-through">${{ number_format($producto->precio, 2) }}</span>
+                                    <span class="text-2xl font-bold text-orange-600">${{ number_format($producto->precio_descuento, 2, ',', '.') }}</span>
+                                    <span class="text-lg text-gray-400 line-through">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                                     <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">
                                         -{{ round((($producto->precio - $producto->precio_descuento) / $producto->precio) * 100) }}%
                                     </span>
                                 </div>
                             @else
-                                <span class="text-2xl font-bold text-orange-600">${{ number_format($producto->precio, 2) }}</span>
+                                <span class="text-2xl font-bold text-orange-600">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                             @endif
                         </div>
                     </div>

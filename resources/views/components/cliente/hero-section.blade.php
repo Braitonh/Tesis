@@ -15,7 +15,7 @@
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
-                ¡Hola{{ $usuario->name ? ', ' . $usuario->name : '' }}!
+                ¡Hola{{ $usuario && $usuario->name ? ', ' . $usuario->name : '' }}!
             </h1>
 
             <p class="text-xl text-orange-100 leading-relaxed max-w-lg">

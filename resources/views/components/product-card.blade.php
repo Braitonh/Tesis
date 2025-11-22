@@ -78,10 +78,10 @@
         <div class="flex items-center justify-between mb-4">
             <div class="flex flex-col">
                 @if($producto->precio_descuento)
-                    <span class="text-2xl font-bold {{ $precioClass }}">${{ number_format($producto->precio_descuento, 2) }}</span>
-                    <span class="text-sm text-gray-400 line-through">${{ number_format($producto->precio, 2) }}</span>
+                    <span class="text-2xl font-bold {{ $precioClass }}">${{ number_format($producto->precio_descuento, 2, ',', '.') }}</span>
+                    <span class="text-sm text-gray-400 line-through">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                 @else
-                    <span class="text-2xl font-bold {{ $precioClass }}">${{ number_format($producto->precio, 2) }}</span>
+                    <span class="text-2xl font-bold {{ $precioClass }}">${{ number_format($producto->precio, 2, ',', '.') }}</span>
                 @endif
             </div>
             <span class="text-sm {{ $stockClass }}">Stock: {{ $producto->stock }}</span>

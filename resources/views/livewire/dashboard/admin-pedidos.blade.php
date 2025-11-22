@@ -242,7 +242,7 @@
                             <div class="flex items-center gap-4 lg:flex-col lg:items-end">
                                 <div class="text-right">
                                     <p class="text-sm text-gray-500 mb-1">Total</p>
-                                    <p class="text-2xl font-bold text-orange-600">$. {{ number_format($pedido->total, 0, ',', '.') }}</p>
+                                    <p class="text-2xl font-bold text-orange-600">$ {{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button wire:click="verDetalles({{ $pedido->id }})"
@@ -392,7 +392,7 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Total:</span>
-                                <span class="font-bold text-orange-600">$. {{ number_format($pedidoSeleccionado->total, 0, ',', '.') }}</span>
+                                <span class="font-bold text-orange-600">$ {{ number_format($pedidoSeleccionado->total, 2, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Estado:</span>

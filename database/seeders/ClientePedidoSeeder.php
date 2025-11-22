@@ -91,7 +91,11 @@ class ClientePedidoSeeder extends Seeder
                 }
 
                 // Recalcular el total del pedido
+                // Guardar la fecha de creación antes de calcularTotal() para restaurarla después
+                $fechaOriginal = $pedido->created_at;
                 $pedido->calcularTotal();
+                // Restaurar updated_at al mismo valor que created_at
+                $pedido->updateQuietly(['updated_at' => $fechaOriginal]);
             }
 
             $this->command->info("  → 5 pedidos creados para {$cliente->name}");

@@ -24,7 +24,7 @@
         @endif
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm font-semibold text-gray-900">$. {{ number_format($pedido->total, 0, ',', '.') }}</div>
+        <div class="text-sm font-semibold text-gray-900">$ {{ number_format($pedido->total, 2, ',', '.') }}</div>
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full

@@ -320,7 +320,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm text-gray-600 font-medium">Total Gastado</p>
-                                    <p class="text-3xl font-bold text-gray-800 mt-1">${{ number_format($estadisticasCliente['total_gastado'], 0, ',', '.') }}</p>
+                                    <p class="text-3xl font-bold text-gray-800 mt-1">${{ number_format($estadisticasCliente['total_gastado'], 2, ',', '.') }}</p>
                                 </div>
                                 <i class="fas fa-dollar-sign text-orange-500 text-3xl"></i>
                             </div>
@@ -342,7 +342,7 @@
                                 </div>
                                 <div>
                                     <span class="text-gray-500">Total:</span>
-                                    <span class="ml-2 font-medium">${{ number_format($estadisticasCliente['ultimo_pedido']['total'], 0, ',', '.') }}</span>
+                                    <span class="ml-2 font-medium">${{ number_format($estadisticasCliente['ultimo_pedido']['total'], 2, ',', '.') }}</span>
                                 </div>
                                 <div>
                                     <span class="text-gray-500">Estado:</span>

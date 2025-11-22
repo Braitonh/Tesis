@@ -82,19 +82,19 @@
             <div class="flex items-center justify-between mb-2">
                 <span class="text-sm text-gray-500">Precio normal:</span>
                 <span class="text-lg text-gray-400 line-through font-semibold">
-                    ${{ number_format($promocion->precio_original, 2, '.', ',') }}
+                    ${{ number_format($promocion->precio_original, 2, ',', '.') }}
                 </span>
             </div>
             <div class="flex items-center justify-between mb-2">
                 <span class="text-base font-semibold text-gray-700">Precio promoción:</span>
                 <span class="text-3xl font-black {{ $precioClass }}">
-                    ${{ number_format($promocion->precio_final, 2, '.', ',') }}
+                    ${{ number_format($promocion->precio_final, 2, ',', '.') }}
                 </span>
             </div>
             <div class="flex items-center justify-center pt-2 border-t border-orange-200">
                 <div class="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-bold">
                     <i class="fas fa-piggy-bank mr-1"></i>
-                    Ahorrás ${{ number_format($promocion->descuento_aplicado, 2, '.', ',') }}
+                    Ahorrás ${{ number_format($promocion->descuento_aplicado, 2, ',', '.') }}
                 </div>
             </div>
         </div>

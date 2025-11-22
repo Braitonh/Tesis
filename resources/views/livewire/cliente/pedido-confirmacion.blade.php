@@ -121,7 +121,7 @@
                 <div class="border-t border-gray-200 mt-6 pt-6">
                     <div class="flex justify-between items-center text-2xl font-bold">
                         <span class="text-gray-800">Total</span>
-                        <span class="text-orange-600">${{ number_format($pedido->total, 2) }}</span>
+                        <span class="text-orange-600">${{ number_format($pedido->total, 2, ',', '.') }}</span>
                     </div>
                 </div>
 

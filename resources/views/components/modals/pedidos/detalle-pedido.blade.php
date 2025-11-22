@@ -288,7 +288,7 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-orange-100 text-sm mb-1">Total del Pedido</p>
-                            <p class="text-3xl font-bold text-white">${{ number_format($pedido->total, 2) }}</p>
+                            <p class="text-3xl font-bold text-white">${{ number_format($pedido->total, 2, ',', '.') }}</p>
                         </div>
                         <div class="bg-white/20 p-4 rounded-full">
                             <i class="fas fa-receipt text-white text-3xl"></i>

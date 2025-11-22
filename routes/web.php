@@ -74,11 +74,11 @@ Route::middleware(['auth', 'verified', 'role:admin,delivery'])->group(function (
     Route::get('/delivery', Delivery::class)->name('delivery');
 });
 
-
+// Ruta pública para bienvenida de clientes (accesible sin autenticación)
+Route::get('/cliente/bienvenida', App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
 
 // Ruta específica para clientes (no requiere email verificado)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/cliente/bienvenida', App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
     Route::get('/cliente/pedidos', App\Livewire\Cliente\MisPedidos::class)->name('cliente.pedidos');
     Route::get('/cliente/perfil', App\Livewire\Cliente\ClientePerfil::class)->name('cliente.perfil');
     Route::get('/cliente/carrito/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.carrito.checkout');

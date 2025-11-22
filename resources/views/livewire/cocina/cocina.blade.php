@@ -247,7 +247,7 @@
                     const itemsCount = e.pedido.items_count || 'varios';
                     
                     window.showToast(
-                        `¡NUEVO PEDIDO! ${e.pedido.numero_pedido} - ${itemsCount} items - $. ${total}`,
+                        `¡NUEVO PEDIDO! ${e.pedido.numero_pedido} - ${itemsCount} items - $ ${total}`,
                         'warning',
                         6000
                     );

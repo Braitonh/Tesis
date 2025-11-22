@@ -213,7 +213,7 @@
 
                                 <div class="mb-3 text-right">
                                     <p class="text-xs text-gray-500">Total</p>
-                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
 
                                 @if($isAdmin)
@@ -319,7 +319,7 @@
 
                                 <div class="mb-3 text-right">
                                     <p class="text-xs text-gray-500">Total</p>
-                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2) }}</p>
+                                    <p class="text-lg font-bold text-orange-600">${{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
 
                                 <button wire:click="verDetalles({{ $pedido->id }})"
@@ -389,7 +389,7 @@
 
                                 <div class="mb-3 text-right">
                                     <p class="text-xs text-gray-500">Total</p>
-                                    <p class="text-lg font-bold text-green-600">${{ number_format($pedido->total, 2) }}</p>
+                                    <p class="text-lg font-bold text-green-600">${{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
 
                                 <div class="flex gap-2">
@@ -566,7 +566,7 @@
                     <div class="border-t border-gray-200 pt-4">
                         <div class="flex justify-between items-center text-2xl font-bold">
                             <span class="text-gray-800">Total</span>
-                            <span class="text-orange-600">${{ number_format($pedidoSeleccionado->total, 2) }}</span>
+                            <span class="text-orange-600">${{ number_format($pedidoSeleccionado->total, 2, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -616,7 +616,7 @@
                     // Pedido listo para delivery
                     if (estadoNuevo === 'listo') {
                         window.showToast(
-                            `¡Pedido listo para entregar! ${numeroPedido} - $. ${total}`,
+                            `¡Pedido listo para entregar! ${numeroPedido} - $ ${total}`,
                             'success',
                             6000
                         );

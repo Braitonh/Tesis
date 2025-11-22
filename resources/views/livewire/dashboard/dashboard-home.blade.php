@@ -14,7 +14,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Ventas del Mes</p>
-                            <p class="text-3xl font-bold text-gray-800">${{ number_format($this->kpis['ventas_mes'], 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-gray-800">${{ number_format($this->kpis['ventas_mes'], 2, ',', '.') }}</p>
                             @if($this->kpis['variacion_ventas'] != 0)
                                 <p class="text-sm mt-1 {{ $this->kpis['variacion_ventas'] > 0 ? 'text-green-600' : 'text-red-600' }}">
                                     <i class="fas {{ $this->kpis['variacion_ventas'] > 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
@@ -52,7 +52,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-semibold uppercase mb-1">Promedio por Pedido</p>
-                            <p class="text-3xl font-bold text-gray-800">${{ number_format($this->kpis['promedio_por_pedido'], 0, ',', '.') }}</p>
+                            <p class="text-3xl font-bold text-gray-800">${{ number_format($this->kpis['promedio_por_pedido'], 2, ',', '.') }}</p>
                         </div>
                         <div class="bg-green-100 p-4 rounded-full">
                             <i class="fas fa-chart-line text-green-600 text-2xl"></i>

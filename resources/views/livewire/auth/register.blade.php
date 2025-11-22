@@ -23,15 +23,15 @@
                 
                 <h1 class="text-3xl lg:text-4xl font-bold mb-4 leading-tight">¡Únete a nosotros!</h1>
                 <p class="text-lg opacity-90 leading-relaxed mb-8">
-                    Crea tu cuenta y comienza a gestionar tu restaurante con las mejores herramientas para hacer crecer tu negocio.
+                    Crea tu cuenta y comienza a disfrutar de nuestros productos.
                 </p>
-                
+{{--                 
                 <!-- Food illustration -->
                 <div class="flex justify-center gap-5 mt-8">
                     <span class="food-item text-4xl">👨‍🍳</span>
                     <span class="food-item text-4xl">📱</span>
                     <span class="food-item text-4xl">🚀</span>
-                </div>
+                </div> --}}
             </div>
         </div>
 

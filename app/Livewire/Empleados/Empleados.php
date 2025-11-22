@@ -44,6 +44,27 @@ class Empleados extends Component
         'telefono' => 'required|string|max:20',
     ];
 
+    protected $messages = [
+        'name.required' => 'El nombre es obligatorio.',
+        'name.string' => 'El nombre debe ser un texto válido.',
+        'name.max' => 'El nombre no puede tener más de 255 caracteres.',
+        'email.required' => 'El correo electrónico es obligatorio.',
+        'email.email' => 'Debe ser un correo electrónico válido.',
+        'email.unique' => 'Este correo electrónico ya está registrado.',
+        'role.required' => 'El rol es obligatorio.',
+        'role.in' => 'El rol seleccionado no es válido.',
+        'dni.required' => 'El DNI es obligatorio.',
+        'dni.string' => 'El DNI debe ser un texto válido.',
+        'dni.max' => 'El DNI no puede tener más de 20 caracteres.',
+        'dni.unique' => 'Este DNI ya está registrado.',
+        'direccion.required' => 'La dirección es obligatoria.',
+        'direccion.string' => 'La dirección debe ser un texto válido.',
+        'direccion.max' => 'La dirección no puede tener más de 500 caracteres.',
+        'telefono.required' => 'El teléfono es obligatorio.',
+        'telefono.string' => 'El teléfono debe ser un texto válido.',
+        'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
+    ];
+
     public function updatingSearch()
     {
         $this->resetPage();

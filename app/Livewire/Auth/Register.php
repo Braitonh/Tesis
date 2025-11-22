@@ -24,10 +24,22 @@ class Register extends Component
     #[Rule('required|min:8')]
     public string $password_confirmation = '';
 
-    #[Rule('accepted')]
-    public bool $terms = false;
-
     public bool $loading = false;
+
+    protected $messages = [
+        'name.required' => 'El nombre es obligatorio.',
+        'name.string' => 'El nombre debe ser un texto válido.',
+        'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+        'name.max' => 'El nombre no puede tener más de 255 caracteres.',
+        'email.required' => 'El correo electrónico es obligatorio.',
+        'email.email' => 'Debe ser un correo electrónico válido.',
+        'email.unique' => 'Este correo electrónico ya está registrado.',
+        'password.required' => 'La contraseña es obligatoria.',
+        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        'password.confirmed' => 'Las contraseñas no coinciden.',
+        'password_confirmation.required' => 'La confirmación de contraseña es obligatoria.',
+        'password_confirmation.min' => 'La confirmación de contraseña debe tener al menos 8 caracteres.',
+    ];
 
     public function register()
     {

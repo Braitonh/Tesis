@@ -129,22 +129,6 @@
                     @enderror
                 </div>
 
-                <!-- Terms checkbox -->
-                <div class="space-y-2">
-                    <label class="flex items-start gap-3 text-sm text-gray-600 cursor-pointer">
-                        <input type="checkbox" 
-                               wire:model="terms" 
-                               class="w-4 h-4 text-emerald-500 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 mt-0.5 @error('terms') border-red-500 @enderror">
-                        <span>
-                            Acepto los <a href="#" class="text-emerald-600 hover:underline">términos y condiciones</a> 
-                            y la <a href="#" class="text-emerald-600 hover:underline">política de privacidad</a>
-                        </span>
-                    </label>
-                    @error('terms')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
-                </div>
-
                 <!-- Register button -->
                 <button 
                     type="submit" 
@@ -158,25 +142,6 @@
  
                 </button>
             </form>
-
-            <!-- Divider -->
-            <div class="flex items-center gap-4 my-6">
-                <div class="flex-1 h-px bg-gray-200"></div>
-                <span class="text-gray-600 text-sm bg-white px-2">o regístrate con</span>
-                <div class="flex-1 h-px bg-gray-200"></div>
-            </div>
-
-            <!-- Social register -->
-            <div class="flex gap-3 flex-col sm:flex-row">
-                <button class="flex-1 p-3 border-2 border-gray-200 bg-white rounded-xl cursor-pointer transition-all duration-300 hover:border-emerald-500 hover:bg-red-50 flex items-center justify-center gap-2 font-medium text-gray-800">
-                    <i class="fab fa-google text-red-500"></i>
-                    Google
-                </button>
-                <button class="flex-1 p-3 border-2 border-gray-200 bg-white rounded-xl cursor-pointer transition-all duration-300 hover:border-emerald-500 hover:bg-blue-50 flex items-center justify-center gap-2 font-medium text-gray-800">
-                    <i class="fab fa-facebook-f text-blue-600"></i>
-                    Facebook
-                </button>
-            </div>
 
             <!-- Login link -->
             <div class="text-center mt-6 text-gray-600 text-sm">

@@ -22,7 +22,7 @@
                 
                 <h1 class="text-3xl lg:text-4xl font-bold mb-4 leading-tight">¡Bienvenido de vuelta!</h1>
                 <p class="text-lg opacity-90 leading-relaxed mb-8">
-                    Ingresa a tu cuenta para gestionar tu restaurante y seguir deleitando a tus clientes con la mejor comida.
+                    Ingresa a tu cuenta para gestionar tus pedidos y seguir disfrutando de nuestros productos.
                 </p>
                 
                 <!-- Food illustration -->

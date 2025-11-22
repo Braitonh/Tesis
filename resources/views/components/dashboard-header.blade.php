@@ -47,13 +47,9 @@
                             x-cloak
                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-[100]"
                         >
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
+                            <a href="{{ Auth::user()->role === 'cliente' ? route('cliente.perfil') : route('empleado.perfil') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
                                 <i class="fas fa-user"></i>
                                 Mi Perfil
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
-                                <i class="fas fa-cog"></i>
-                                Configuración
                             </a>
                             <hr class="my-2 border-gray-100">
                             <form method="POST" action="{{ route('logout') }}" class="block">

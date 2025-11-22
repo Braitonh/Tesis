@@ -10,6 +10,7 @@ use App\Livewire\Dashboard\AdminProductos;
 use App\Livewire\Dashboard\AdminPromociones;
 use App\Livewire\Delivery\Delivery;
 use App\Livewire\Empleados\Empleados;
+use App\Livewire\Empleados\EmpleadoPerfil;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
 
     Route::get('/cocina', Cocina::class)->name('cocina');
     Route::get('/empleados', Empleados::class)->name('empleados');
+    Route::get('/empleado/perfil', EmpleadoPerfil::class)->name('empleado.perfil');
     Route::get('/productos', AdminProductos::class)->name('productos');
     Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
     Route::get('/promociones', AdminPromociones::class)->name('promociones');

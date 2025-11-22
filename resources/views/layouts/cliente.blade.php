@@ -163,9 +163,9 @@
                                         <i class="fas fa-user"></i>
                                         Mi Perfil
                                     </a>
-                                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
-                                        <i class="fas fa-cog"></i>
-                                        Configuración
+                                    <a href="{{ route('cliente.pedidos') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200">
+                                        <i class="fas fa-receipt"></i>
+                                        Mis Pedidos
                                     </a>
                                     <hr class="my-2 border-gray-100">
                                     <form method="POST" action="{{ route('logout') }}" class="block">

@@ -19,7 +19,7 @@ class PedidoConfirmacion extends Component
             abort(403, 'No tienes permiso para ver este pedido');
         }
 
-        $this->pedido = $pedido->load(['detalles.producto', 'user', 'transaccion']);
+        $this->pedido = $pedido->load(['detalles.producto', 'detalles.promocion', 'user', 'transaccion']);
     }
 
     public function render()

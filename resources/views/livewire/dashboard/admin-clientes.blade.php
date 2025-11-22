@@ -132,7 +132,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($clientes as $cliente)
-                                    <tr class="hover:bg-gray-50">
+                                    <tr wire:key="cliente-{{ $cliente->id }}" class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="flex-shrink-0 h-10 w-10">
@@ -170,23 +170,23 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex items-center space-x-2">
-                                                <button wire:click="verEstadisticas({{ $cliente->id }})" 
+                                                <button wire:click.prevent="verEstadisticas({{ $cliente->id }})" 
                                                         class="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
                                                         title="Ver estadísticas">
                                                     <i class="fas fa-chart-bar"></i>
                                                 </button>
                                                 
-                                                <button wire:click="toggleBlock({{ $cliente->id }})" 
+                                                <button wire:click.prevent="toggleBlock({{ $cliente->id }})" 
                                                         class="p-2 rounded-lg transition-colors {{ $cliente->is_blocked ? 'text-green-600 hover:text-green-900 hover:bg-green-50' : 'text-red-600 hover:text-red-900 hover:bg-red-50' }}"
                                                         title="{{ $cliente->is_blocked ? 'Desbloquear cliente' : 'Bloquear cliente' }}">
-                                                    <span wire:loading.remove wire:target="toggleBlock({{ $cliente->id }})">
+                                                    <span wire:loading.remove wire:target="toggleBlock">
                                                         @if($cliente->is_blocked)
                                                             <i class="fas fa-unlock"></i>
                                                         @else
                                                             <i class="fas fa-lock"></i>
                                                         @endif
                                                     </span>
-                                                    <span wire:loading wire:target="toggleBlock({{ $cliente->id }})">
+                                                    <span wire:loading wire:target="toggleBlock">
                                                         <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

@@ -51,3 +51,18 @@ Chart.register(
 
 // Hacer Chart.js disponible globalmente
 window.Chart = Chart;
+
+// Importar y inicializar sistema de títulos dinámicos
+import { initPageTitles } from './page-titles';
+
+// Inicializar títulos dinámicos
+// Se ejecuta después de que Alpine esté inicializado o cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Pequeño delay para asegurar que Livewire esté listo
+        setTimeout(initPageTitles, 100);
+    });
+} else {
+    // DOM ya está listo, inicializar con un pequeño delay
+    setTimeout(initPageTitles, 100);
+}

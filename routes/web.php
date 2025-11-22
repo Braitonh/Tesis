@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordCreationController;
+use App\Http\Controllers\FacturaController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Cocina\Cocina;
@@ -84,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/carrito/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.carrito.checkout');
     Route::get('/cliente/pago/procesando/{transaccionId}', App\Livewire\Cliente\ProcesoPago::class)->name('cliente.pago.procesando');
     Route::get('/cliente/pedido/{pedido}/confirmacion', App\Livewire\Cliente\PedidoConfirmacion::class)->name('cliente.pedido.confirmacion');
+    Route::get('/cliente/pedido/{pedido}/factura/pdf', [FacturaController::class, 'generarPDF'])->name('cliente.pedido.factura.pdf');
 
     // Mantener alias de ruta antigua para compatibilidad
     Route::get('/cliente/checkout', function () {

@@ -228,11 +228,11 @@
                     <i class="fas fa-home mr-2"></i>
                     Volver al Inicio
                 </a>
-                <button onclick="window.print()"
-                        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-bold transition-colors text-center">
-                    <i class="fas fa-print mr-2"></i>
-                    Imprimir Pedido
-                </button>
+                <a href="{{ route('cliente.pedido.factura.pdf', $pedido->id) }}" target="_blank"
+                   class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-bold transition-colors text-center">
+                    <i class="fas fa-file-pdf mr-2"></i>
+                    Ver Factura PDF
+                </a>
             </div>
 
             <!-- Mensaje de Agradecimiento -->

@@ -21,8 +21,8 @@ $currentPath = request()->path();
                     </a>
                 @endif
 
-                <!-- Pedidos Module (visible para admin y empleado) -->
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'empleado')
+                <!-- Pedidos Module (visible para admin, empleado y ventas) -->
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'empleado' || auth()->user()->role === 'ventas')
                     @php
                     $pedidosRoutes = ['pedidos', 'pedidos.show', 'pedidos.edit'];
                     $isPedidosActive = in_array($currentRouteName, $pedidosRoutes) || str_contains($currentRoute ?? '', 'pedidos');
@@ -34,8 +34,8 @@ $currentPath = request()->path();
                     </a>
                 @endif
 
-                <!-- Cocina Module (visible para admin) -->
-                @if(auth()->user()->role === 'admin')
+                <!-- Cocina Module (visible para admin y cocina) -->
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'cocina')
                     @php
                     $cocinaRoutes = ['cocina'];
                     $isCocinaActive = in_array($currentRouteName, $cocinaRoutes);
@@ -153,16 +153,16 @@ $currentPath = request()->path();
                 </a>
             @endif
 
-            <!-- Pedidos (visible para admin y empleado) -->
-            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'empleado')
+            <!-- Pedidos (visible para admin, empleado y ventas) -->
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'empleado' || auth()->user()->role === 'ventas')
                 <a href="{{ route('pedidos') }}" class="block px-3 py-2 text-sm rounded transition-colors duration-200
                     {{ $isPedidosActive ?? false ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                     <i class="fas fa-shopping-cart mr-2"></i> Pedidos
                 </a>
             @endif
 
-            <!-- Cocina (visible para admin) -->
-            @if(auth()->user()->role === 'admin')
+            <!-- Cocina (visible para admin y cocina) -->
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'cocina')
                 <a href="{{ route('cocina') }}" class="block px-3 py-2 text-sm rounded transition-colors duration-200
                     {{ $isCocinaActive ?? false ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                     <i class="fas fa-utensils mr-2"></i> Cocina

@@ -5,6 +5,7 @@ namespace App\Livewire\Cocina;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
@@ -20,7 +21,15 @@ class Cocina extends Component
     // Para auto-refresh (polling cada 30 segundos)
     public function mount()
     {
-        //
+        // Verificar que el usuario esté autenticado y tenga rol adecuado
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+        if (!in_array($user->role, ['admin', 'cocina'])) {
+            abort(403, 'No tienes permisos para acceder a este módulo.');
+        }
     }
 
     /**

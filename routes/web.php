@@ -52,13 +52,21 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/cocina', Cocina::class)->name('cocina');
     Route::get('/empleados', Empleados::class)->name('empleados');
     Route::get('/empleado/perfil', EmpleadoPerfil::class)->name('empleado.perfil');
     Route::get('/productos', AdminProductos::class)->name('productos');
-    Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
     Route::get('/promociones', AdminPromociones::class)->name('promociones');
     Route::get('/clientes', AdminClientes::class)->name('clientes');
+});
+
+// Ruta para módulo Cocina (admin y cocina)
+Route::middleware(['auth', 'verified', 'role:admin,cocina'])->group(function () {
+    Route::get('/cocina', Cocina::class)->name('cocina');
+});
+
+// Ruta para módulo Ventas (admin, ventas y empleado)
+Route::middleware(['auth', 'verified', 'role:admin,ventas,empleado'])->group(function () {
+    Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
 });
 
 // Ruta para módulo Delivery (admin y delivery)

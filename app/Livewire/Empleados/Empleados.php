@@ -26,7 +26,7 @@ class Empleados extends Component
     // Form fields
     public $name = '';
     public $email = '';
-    public $role = 'empleado';
+    public $role = 'cocina';
     public $dni = '';
     public $direccion = '';
     public $telefono = '';
@@ -67,7 +67,7 @@ class Empleados extends Component
         $this->empleadoId = $id;
         $this->name = $empleado->name;
         $this->email = $empleado->email;
-        $this->role = $empleado->role ?? 'empleado';
+        $this->role = $empleado->role ?? 'cocina';
         $this->dni = $empleado->dni ?? '';
         $this->direccion = $empleado->direccion ?? '';
         $this->telefono = $empleado->telefono ?? '';

@@ -31,6 +31,14 @@ class EnsureUserRole
                 return redirect()->route('delivery');
             }
 
+            if ('cocina' === $user->role) {
+                return redirect()->route('cocina');
+            }
+
+            if ('ventas' === $user->role) {
+                return redirect()->route('pedidos');
+            }
+
             // Para otros roles no permitidos, redirigir al login
             return redirect()->route('login');
         }

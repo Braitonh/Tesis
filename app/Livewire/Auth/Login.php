@@ -61,6 +61,10 @@ class Login extends Component
                 return redirect()->intended('/cliente/bienvenida');
             } elseif ('delivery' === $user->role) {
                 return redirect()->intended('/delivery');
+            } elseif ('cocina' === $user->role) {
+                return redirect()->intended('/cocina');
+            } elseif ('ventas' === $user->role) {
+                return redirect()->intended('/pedidos');
             } else {
                 return redirect()->intended('/dashboard');
             }

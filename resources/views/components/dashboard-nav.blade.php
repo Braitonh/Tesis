@@ -79,7 +79,7 @@ $currentPath = request()->path();
                     $clientesRoutes = ['clientes', 'clientes.show'];
                     $isClientesActive = in_array($currentRouteName, $clientesRoutes) || str_contains($currentRoute ?? '', 'clientes');
                     @endphp
-                    <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
+                    <a href="{{ route('clientes') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300
                             {{ $isClientesActive ? 'bg-orange-100 text-orange-700 shadow-sm' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                         <i class="fas fa-users"></i>
                         <span class="hidden sm:block">Clientes</span>
@@ -125,21 +125,6 @@ $currentPath = request()->path();
                                {{ $currentRouteName === 'promociones' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                                 <i class="fas fa-tags"></i>
                                 Promociones
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
-                               {{ $currentRouteName === 'admin.analitica' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
-                                <i class="fas fa-chart-bar"></i>
-                                Analítica
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
-                               {{ $currentRouteName === 'admin.usuarios' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
-                                <i class="fas fa-users-cog"></i>
-                                Usuarios
-                            </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
-                               {{ $currentRouteName === 'admin.personalizacion' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
-                                <i class="fas fa-palette"></i>
-                                Personalización
                             </a>
                         </div>
                     </div>
@@ -202,7 +187,7 @@ $currentPath = request()->path();
 
             <!-- Clientes (Admin only) -->
             @if(auth()->user()->role === 'admin')
-                <a href="#" class="block px-3 py-2 text-sm rounded transition-colors duration-200
+                <a href="{{ route('clientes') }}" class="block px-3 py-2 text-sm rounded transition-colors duration-200
                     {{ $isClientesActive ?? false ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                     <i class="fas fa-users mr-2"></i> Clientes
                 </a>

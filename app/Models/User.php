@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'telefono',
         'verification_token',
         'password_created',
+        'is_blocked',
     ];
 
     /**
@@ -54,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'password_created' => 'boolean',
+            'is_blocked' => 'boolean',
         ];
     }
 
@@ -90,5 +92,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function pedidosAsignados(): HasMany
     {
         return $this->hasMany(Pedido::class, 'delivery_id');
+    }
+
+    /**
+     * Get all pedidos for this user (as client).
+     */
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class, 'user_id');
+    }
+
+    /**
+     * Scope a query to only include clientes.
+     */
+    public function scopeClientes($query)
+    {
+        return $query->where('role', 'cliente');
+    }
+
+    /**
+     * Scope a query to only include blocked users.
+     */
+    public function scopeBloqueados($query)
+    {
+        return $query->where('is_blocked', true);
     }
 }

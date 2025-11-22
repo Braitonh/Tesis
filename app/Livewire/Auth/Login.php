@@ -40,9 +40,21 @@ class Login extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($key);
 
-            session()->regenerate();
-
             $user = Auth::user();
+
+            // Verificar si el cliente está bloqueado ANTES de regenerar la sesión
+            if ('cliente' === $user->role && $user->is_blocked) {
+                // Hacer logout sin invalidar la sesión completa para evitar problemas con el token CSRF
+                Auth::logout();
+                
+                $this->addError('email', 'Tu cuenta ha sido bloqueada. Por favor, contacta con el administrador para más información.');
+                $this->loading = false;
+                
+                return;
+            }
+
+            // Solo regenerar la sesión si el usuario no está bloqueado
+            session()->regenerate();
 
             // Redireccionar según el rol del usuario
             if ('cliente' === $user->role) {

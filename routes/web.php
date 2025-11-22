@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\PasswordCreationController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Cocina\Cocina;
+use App\Livewire\Dashboard\AdminClientes;
 use App\Livewire\Dashboard\AdminPedidos;
 use App\Livewire\Dashboard\AdminProductos;
 use App\Livewire\Dashboard\AdminPromociones;
@@ -57,6 +58,7 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
     Route::get('/productos', AdminProductos::class)->name('productos');
     Route::get('/pedidos', AdminPedidos::class)->name('pedidos');
     Route::get('/promociones', AdminPromociones::class)->name('promociones');
+    Route::get('/clientes', AdminClientes::class)->name('clientes');
 });
 
 // Ruta para módulo Delivery (admin y delivery)

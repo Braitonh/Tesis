@@ -44,8 +44,66 @@
                 <p class="text-gray-600">Completa tus datos para comenzar</p>
             </div>
 
-            <!-- Register form -->
-            <form wire:submit.prevent="register" class="space-y-5">
+            @if($emailSent)
+                <!-- Success message -->
+                <div class="space-y-6">
+                    <div class="p-6 bg-green-50 border-2 border-green-200 rounded-xl">
+                        <div class="flex items-start gap-4">
+                            <div class="text-green-600 text-3xl">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-green-800 mb-2 text-lg">¡Cuenta creada exitosamente!</h3>
+                                <p class="text-sm text-green-700 mb-3">
+                                    Hemos enviado un email de verificación a tu correo electrónico.
+                                </p>
+                                <p class="text-xs text-green-600">
+                                    Por favor, revisa tu bandeja de entrada y haz clic en el enlace de activación para activar tu cuenta.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div class="flex items-start gap-4">
+                            <div class="text-amber-600 text-2xl">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-amber-800 mb-2">Instrucciones:</h3>
+                                <ul class="text-sm text-amber-700 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check text-amber-600 mt-1"></i>
+                                        <span>Revisa tu bandeja de entrada</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check text-amber-600 mt-1"></i>
+                                        <span>También revisa la carpeta de spam o correo no deseado</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check text-amber-600 mt-1"></i>
+                                        <span>Haz clic en el enlace "Activar Mi Cuenta" del email</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check text-amber-600 mt-1"></i>
+                                        <span>Una vez activada, podrás iniciar sesión</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('login') }}" 
+                       class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 py-4 px-6 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,107,53,0.3)] active:translate-y-0 text-center block">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Ir a Iniciar Sesión
+                        </span>
+                    </a>
+                </div>
+            @else
+                <!-- Register form -->
+                <form wire:submit.prevent="register" class="space-y-5">
                 
                 <!-- Name field -->
                 <div class="space-y-2">
@@ -150,6 +208,7 @@
                     Inicia sesión aquí
                 </a>
             </div>
+            @endif
         </div>
     </div>
 </div>

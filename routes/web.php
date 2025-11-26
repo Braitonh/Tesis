@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ClienteVerificationController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordCreationController;
 use App\Http\Controllers\FacturaController;
@@ -29,6 +30,9 @@ Route::middleware('guest')->group(function () {
 // Password creation routes - accessible without authentication
 Route::get('/create-password/{token}', [PasswordCreationController::class, 'show'])->name('password.show');
 Route::post('/create-password/{token}', [PasswordCreationController::class, 'store'])->name('password.create');
+
+// Email verification route for clients - accessible without authentication
+Route::get('/email/verify/{token}', [ClienteVerificationController::class, 'verify'])->name('cliente.verify');
 
 // Email verification routes (authenticated but not necessarily verified)
 Route::middleware('auth')->group(function () {
@@ -78,8 +82,8 @@ Route::middleware(['auth', 'verified', 'role:admin,delivery'])->group(function (
 // Ruta pública para bienvenida de clientes (accesible sin autenticación)
 Route::get('/cliente/bienvenida', App\Livewire\Cliente\ClienteBienvenida::class)->name('cliente.bienvenida');
 
-// Ruta específica para clientes (no requiere email verificado)
-Route::middleware(['auth'])->group(function () {
+// Rutas para clientes (requieren autenticación y email verificado)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cliente/pedidos', App\Livewire\Cliente\MisPedidos::class)->name('cliente.pedidos');
     Route::get('/cliente/perfil', App\Livewire\Cliente\ClientePerfil::class)->name('cliente.perfil');
     Route::get('/cliente/carrito/checkout', App\Livewire\Cliente\CarritoCheckout::class)->name('cliente.carrito.checkout');

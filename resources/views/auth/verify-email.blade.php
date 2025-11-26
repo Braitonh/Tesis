@@ -142,6 +142,8 @@
                         <p class="text-lg opacity-90 leading-relaxed mb-8">
                             @if(!$user->password_created && $user->role !== 'cliente')
                                 Hemos enviado un email con instrucciones para que crees tu contraseña de forma segura.
+                            @elseif($user->role === 'cliente')
+                                Hemos enviado un email de verificación a tu correo electrónico. Por favor, revisa tu bandeja de entrada para activar tu cuenta.
                             @else
                                 Tu cuenta necesita verificación para acceder al sistema completo.
                             @endif
@@ -237,8 +239,67 @@
                                 </button>
                             </form>
                         </div>
+                    @elseif($user->role === 'cliente')
+                        <!-- Client verification info -->
+                        <div class="space-y-6">
+                            <!-- Email info -->
+                            <div class="p-6 bg-amber-50 border border-amber-200 rounded-xl">
+                                <div class="flex items-start gap-4">
+                                    <div class="text-amber-600 text-2xl">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-800 mb-2">Email de verificación enviado</h3>
+                                        <p class="text-sm text-amber-700 mb-3">
+                                            Hemos enviado un email a <strong>{{ $user->email }}</strong> con un enlace para activar tu cuenta.
+                                        </p>
+                                        <p class="text-xs text-amber-600">
+                                            Una vez que actives tu cuenta, podrás realizar pedidos y acceder a todas las funcionalidades.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Instructions -->
+                            <div class="p-6 bg-gray-50 rounded-xl">
+                                <h3 class="text-sm font-semibold text-gray-800 mb-4">
+                                    <i class="fas fa-list-ol mr-2 text-orange-500"></i>Instrucciones:
+                                </h3>
+                                <ul class="text-sm text-gray-600 space-y-3">
+                                    <li class="flex items-start gap-3">
+                                        <span class="bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium mt-0.5">1</span>
+                                        <span>Revisa tu bandeja de entrada de email</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium mt-0.5">2</span>
+                                        <span>También revisa la carpeta de spam o correo no deseado</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium mt-0.5">3</span>
+                                        <span>Haz clic en el enlace "Activar Mi Cuenta" del email</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium mt-0.5">4</span>
+                                        <span>Tu cuenta será activada automáticamente</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Resend email button -->
+                            <form method="POST" action="{{ route('verification.resend') }}" class="space-y-4">
+                                @csrf
+                                <button 
+                                    type="submit" 
+                                    class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 py-4 px-6 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,107,53,0.3)] active:translate-y-0 relative overflow-hidden">
+                                    <span class="flex items-center justify-center gap-2">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Reenviar Email de Verificación
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
                     @else
-                        <!-- For clients or other cases -->
+                        <!-- For other cases -->
                         <div class="space-y-6">
                             <div class="p-6 bg-blue-50 border border-blue-200 rounded-xl">
                                 <div class="flex items-start gap-4">

@@ -17,16 +17,12 @@ class EnsureEmailIsVerified
         $user = $request->user();
 
         if ($user && !$user->hasVerifiedEmail()) {
-            // Los usuarios cliente no requieren verificación de email
-            if ('cliente' === $user->role) {
-                return $next($request);
-            }
-
             // Permitir acceso a páginas de verificación y creación de contraseña
             if ($request->routeIs('verification.notice')
                 || $request->routeIs('verification.resend')
                 || $request->routeIs('password.show')
-                || $request->routeIs('password.create')) {
+                || $request->routeIs('password.create')
+                || $request->routeIs('cliente.verify')) {
                 return $next($request);
             }
 

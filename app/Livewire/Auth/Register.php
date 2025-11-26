@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Notifications\ClienteVerificationNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
@@ -25,6 +26,8 @@ class Register extends Component
     public string $password_confirmation = '';
 
     public bool $loading = false;
+
+    public bool $emailSent = false;
 
     protected $messages = [
         'name.required' => 'El nombre es obligatorio.',
@@ -63,13 +66,21 @@ class Register extends Component
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'role' => 'cliente',
-                'email_verified_at' => now(), // Clients are automatically verified
                 'password_created' => true,
             ]);
 
+            // Generar token de verificación y enviar email
+            $token = $user->generateVerificationToken();
+            $user->notify(new ClienteVerificationNotification($user, $token));
+
             RateLimiter::clear($key);
 
-            return redirect()->intended('/login');
+            // Limpiar formulario
+            $this->reset(['name', 'email', 'password', 'password_confirmation']);
+            
+            // Mostrar mensaje de éxito
+            $this->emailSent = true;
+            $this->loading = false;
         } catch (\Exception $e) {
             RateLimiter::hit($key, 60);
             $this->addError('email', 'Error al crear la cuenta. Inténtelo de nuevo.');

@@ -53,7 +53,18 @@ class Login extends Component
                 return;
             }
 
-            // Solo regenerar la sesión si el usuario no está bloqueado
+            // Verificar si el cliente ha verificado su email
+            if ('cliente' === $user->role && !$user->hasVerifiedEmail()) {
+                // Hacer logout sin invalidar la sesión completa para evitar problemas con el token CSRF
+                Auth::logout();
+                
+                $this->addError('email', 'Debes verificar tu correo electrónico antes de iniciar sesión. Por favor, revisa tu bandeja de entrada y haz clic en el enlace de activación.');
+                $this->loading = false;
+                
+                return;
+            }
+
+            // Solo regenerar la sesión si el usuario no está bloqueado y está verificado (para clientes)
             session()->regenerate();
 
             // Redireccionar según el rol del usuario

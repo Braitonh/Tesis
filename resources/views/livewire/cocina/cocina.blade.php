@@ -334,5 +334,19 @@
     } else {
         console.log('✅ Echo listeners de cocina inicializados inmediatamente');
     }
+    
+    // Auto-refresh cada minuto (60 segundos) para actualizar urgencia de pedidos
+    setInterval(() => {
+        // Usar Livewire.visit si está disponible para un refresh más suave
+        if (typeof Livewire !== 'undefined' && Livewire.visit) {
+            Livewire.visit(window.location.href, { 
+                method: 'get',
+                preserveScroll: true 
+            });
+        } else {
+            // Fallback a location.reload si Livewire no está disponible
+            location.reload();
+        }
+    }, 60000); // 60000 ms = 60 segundos = 1 minuto
 </script>
 @endpush

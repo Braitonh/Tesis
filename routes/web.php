@@ -11,6 +11,7 @@ use App\Livewire\Dashboard\AdminClientes;
 use App\Livewire\Dashboard\AdminPedidos;
 use App\Livewire\Dashboard\AdminProductos;
 use App\Livewire\Dashboard\AdminPromociones;
+use App\Livewire\Dashboard\AdminRegistros;
 use App\Livewire\Delivery\Delivery;
 use App\Livewire\Empleados\Empleados;
 use App\Livewire\Empleados\EmpleadoPerfil;
@@ -62,6 +63,7 @@ Route::middleware(['auth', 'verified', 'role:admin,empleado'])->group(function (
     Route::get('/productos', AdminProductos::class)->name('productos');
     Route::get('/promociones', AdminPromociones::class)->name('promociones');
     Route::get('/clientes', AdminClientes::class)->name('clientes');
+    Route::get('/registros', AdminRegistros::class)->name('registros');
 });
 
 // Ruta para módulo Cocina (admin y cocina)

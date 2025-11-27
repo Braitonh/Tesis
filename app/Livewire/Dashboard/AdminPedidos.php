@@ -4,6 +4,7 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Pedido;
 use App\Models\User;
+use App\Traits\LogsActivity;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
@@ -12,6 +13,7 @@ use Livewire\Attributes\Layout;
 class AdminPedidos extends Component
 {
     use WithPagination;
+    use LogsActivity;
 
     // Filtros
     public $filtroEstado = '';
@@ -119,9 +121,19 @@ class AdminPedidos extends Component
         ]);
 
         if ($this->pedidoSeleccionado) {
+            $estadoAnterior = $this->pedidoSeleccionado->estado;
             $this->pedidoSeleccionado->update([
                 'estado' => $this->nuevoEstado
             ]);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.estado_cambiado',
+                "Cambió el estado del pedido {$this->pedidoSeleccionado->numero_pedido} de {$estadoAnterior} a {$this->nuevoEstado}",
+                $this->pedidoSeleccionado,
+                ['estado' => $estadoAnterior],
+                ['estado' => $this->nuevoEstado]
+            );
 
             session()->flash('message', 'Estado del pedido actualizado correctamente');
             $this->closeEstadoModal();
@@ -169,17 +181,49 @@ class AdminPedidos extends Component
                 'estado' => $this->nuevoEstado,
             ];
 
+            $oldValues = ['estado' => $this->pedidoSeleccionado->estado];
+            $newValues = ['estado' => $this->nuevoEstado];
+
             // Solo actualizar campos editables
             if ($puedeEditarDireccion) {
+                $oldValues['direccion_entrega'] = $this->pedidoSeleccionado->direccion_entrega;
+                $oldValues['telefono_contacto'] = $this->pedidoSeleccionado->telefono_contacto;
+                $newValues['direccion_entrega'] = $this->nuevaDireccion;
+                $newValues['telefono_contacto'] = $this->nuevoTelefono;
                 $datosActualizar['direccion_entrega'] = $this->nuevaDireccion;
                 $datosActualizar['telefono_contacto'] = $this->nuevoTelefono;
             }
 
             if ($puedeEditarNotas) {
+                $oldValues['notas'] = $this->pedidoSeleccionado->notas;
+                $newValues['notas'] = $this->nuevasNotas;
                 $datosActualizar['notas'] = $this->nuevasNotas;
             }
 
             $this->pedidoSeleccionado->update($datosActualizar);
+
+            // Registrar actividad
+            $cambios = [];
+            if ($oldValues['estado'] !== $newValues['estado']) {
+                $cambios[] = "estado: {$oldValues['estado']} → {$newValues['estado']}";
+            }
+            if (isset($oldValues['direccion_entrega']) && $oldValues['direccion_entrega'] !== $newValues['direccion_entrega']) {
+                $cambios[] = "dirección actualizada";
+            }
+            if (isset($oldValues['telefono_contacto']) && $oldValues['telefono_contacto'] !== $newValues['telefono_contacto']) {
+                $cambios[] = "teléfono actualizado";
+            }
+            if (isset($oldValues['notas']) && $oldValues['notas'] !== $newValues['notas']) {
+                $cambios[] = "notas actualizadas";
+            }
+
+            self::logActivity(
+                'pedido.actualizado',
+                "Actualizó el pedido {$this->pedidoSeleccionado->numero_pedido}: " . implode(', ', $cambios),
+                $this->pedidoSeleccionado,
+                $oldValues,
+                $newValues
+            );
 
             session()->flash('message', 'Pedido actualizado correctamente');
             $this->closeEstadoModal();
@@ -206,9 +250,19 @@ class AdminPedidos extends Component
     public function cancelarPedido()
     {
         if ($this->pedidoSeleccionado) {
+            $estadoAnterior = $this->pedidoSeleccionado->estado;
             $this->pedidoSeleccionado->update([
                 'estado' => 'cancelado'
             ]);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.cancelado',
+                "Canceló el pedido {$this->pedidoSeleccionado->numero_pedido}",
+                $this->pedidoSeleccionado,
+                ['estado' => $estadoAnterior],
+                ['estado' => 'cancelado']
+            );
 
             session()->flash('message', 'Pedido cancelado correctamente');
             $this->closeDeleteModal();

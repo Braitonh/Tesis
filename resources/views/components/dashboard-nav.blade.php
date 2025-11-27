@@ -102,7 +102,7 @@ $currentPath = request()->path();
                 <!-- Administración Module (Admin only) -->
                 @if(auth()->user()->role === 'admin')
                     @php
-                    $adminRoutes = ['admin.analitica', 'admin.usuarios', 'admin.personalizacion', 'promociones'];
+                    $adminRoutes = ['admin.analitica', 'admin.usuarios', 'admin.personalizacion', 'promociones', 'registros'];
                     $isAdminActive = in_array($currentRouteName, $adminRoutes) || str_contains($currentRoute ?? '', 'admin') || str_contains($currentRoute ?? '', 'promociones');
                     @endphp
                     <div class="relative" x-data="{ open: false }">
@@ -125,6 +125,11 @@ $currentPath = request()->path();
                                {{ $currentRouteName === 'promociones' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                                 <i class="fas fa-tags"></i>
                                 Promociones
+                            </a>
+                            <a href="{{ route('registros') }}" class="flex items-center gap-3 px-4 py-2 text-sm w-full text-left transition-colors duration-200
+                                {{ $currentRouteName === 'registros' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                                <i class="fas fa-file-alt"></i>
+                                Registros
                             </a>
                         </div>
                     </div>

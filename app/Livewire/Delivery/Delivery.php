@@ -5,6 +5,7 @@ namespace App\Livewire\Delivery;
 use App\Models\Pedido;
 use App\Models\User;
 use App\Notifications\PedidoEnCaminoNotification;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -13,6 +14,7 @@ use Livewire\Component;
 #[Layout('components.dashboard-layout')]
 class Delivery extends Component
 {
+    use LogsActivity;
     public $vistaActiva = 'disponibles';
     public $pedidoSeleccionado = null;
     public $mostrarDetalles = false;
@@ -85,6 +87,7 @@ class Delivery extends Component
                 return;
             }
 
+            $estadoAnterior = $pedido->estado;
             $pedido->update([
                 'delivery_id' => $user->id,
                 'estado' => 'en_camino'
@@ -95,6 +98,15 @@ class Delivery extends Component
             // Cargar relaciones necesarias para la notificación
             $pedido->refresh();
             $pedido->load(['user', 'delivery']);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.asignado_delivery',
+                "Tomó el pedido {$pedido->numero_pedido} para entrega",
+                $pedido,
+                ['estado' => $estadoAnterior, 'delivery_id' => null],
+                ['estado' => 'en_camino', 'delivery_id' => $user->id]
+            );
 
             // Enviar notificación al cliente de forma asíncrona
             // NOTA: Para que esto funcione correctamente, QUEUE_CONNECTION debe estar
@@ -144,6 +156,8 @@ class Delivery extends Component
                 return;
             }
 
+            $estadoAnterior = $pedido->estado;
+            $deliveryAnterior = $pedido->delivery_id;
             $pedido->update([
                 'delivery_id' => $this->deliverySeleccionado,
                 'estado' => 'en_camino'
@@ -152,6 +166,16 @@ class Delivery extends Component
             // Cargar relaciones necesarias para la notificación
             $pedido->refresh();
             $pedido->load(['user', 'delivery']);
+
+            // Registrar actividad
+            $deliveryAsignado = User::find($this->deliverySeleccionado);
+            self::logActivity(
+                'pedido.asignado_delivery',
+                "Asignó el pedido {$pedido->numero_pedido} al delivery {$deliveryAsignado->name}",
+                $pedido,
+                ['estado' => $estadoAnterior, 'delivery_id' => $deliveryAnterior],
+                ['estado' => 'en_camino', 'delivery_id' => $this->deliverySeleccionado]
+            );
 
             // Enviar notificación al cliente de forma asíncrona
             // NOTA: Para que esto funcione correctamente, QUEUE_CONNECTION debe estar
@@ -196,7 +220,17 @@ class Delivery extends Component
                 return;
             }
 
+            $estadoAnterior = $pedido->estado;
             $pedido->update(['estado' => 'entregado']);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.estado_cambiado',
+                "Marcó como entregado el pedido {$pedido->numero_pedido}",
+                $pedido,
+                ['estado' => $estadoAnterior],
+                ['estado' => 'entregado']
+            );
 
             session()->flash('message', 'Pedido marcado como entregado exitosamente.');
             $this->cerrarDetalles();

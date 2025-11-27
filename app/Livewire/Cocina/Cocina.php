@@ -4,6 +4,7 @@ namespace App\Livewire\Cocina;
 
 use App\Models\Pedido;
 use App\Models\Producto;
+use App\Traits\LogsActivity;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,7 @@ use Livewire\Component;
 #[Layout('components.dashboard-layout')]
 class Cocina extends Component
 {
+    use LogsActivity;
     // Modal de detalles
     public $showDetailModal = false;
     public $pedidoSeleccionado;
@@ -152,7 +154,17 @@ class Cocina extends Component
         $pedido = Pedido::findOrFail($pedidoId);
 
         if ($pedido->estado === 'pendiente' && $pedido->estado_pago === 'pagado') {
+            $estadoAnterior = $pedido->estado;
             $pedido->update(['estado' => 'en_preparacion']);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.estado_cambiado',
+                "Inició preparación del pedido {$pedido->numero_pedido}",
+                $pedido,
+                ['estado' => $estadoAnterior],
+                ['estado' => 'en_preparacion']
+            );
 
             session()->flash('message', "Pedido {$pedido->numero_pedido} iniciado en cocina");
         }
@@ -228,12 +240,22 @@ class Cocina extends Component
             }
 
             // Actualizar el estado del pedido a "listo"
+            $estadoAnterior = $pedido->estado;
             $pedido->update([
                 'estado' => 'listo',
                 'listo_at' => now()
             ]);
 
             DB::commit();
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.estado_cambiado',
+                "Marcó como listo el pedido {$pedido->numero_pedido}",
+                $pedido,
+                ['estado' => $estadoAnterior],
+                ['estado' => 'listo', 'listo_at' => now()->toDateTimeString()]
+            );
 
             session()->flash('message', "Pedido {$pedido->numero_pedido} está listo para entregar");
 

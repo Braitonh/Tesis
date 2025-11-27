@@ -117,4 +117,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->where('is_blocked', true);
     }
+
+    /**
+     * Get the activity logs for this user.
+     */
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }

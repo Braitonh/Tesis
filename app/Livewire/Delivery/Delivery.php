@@ -4,6 +4,7 @@ namespace App\Livewire\Delivery;
 
 use App\Models\Pedido;
 use App\Models\User;
+use App\Notifications\PedidoEnCaminoNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -91,6 +92,22 @@ class Delivery extends Component
 
             DB::commit();
 
+            // Cargar relaciones necesarias para la notificación
+            $pedido->refresh();
+            $pedido->load(['user', 'delivery']);
+
+            // Enviar notificación al cliente de forma asíncrona
+            // NOTA: Para que esto funcione correctamente, QUEUE_CONNECTION debe estar
+            // configurado como 'database' (o 'redis') en el archivo .env, NO como 'sync'.
+            // Si está en 'sync', la notificación se ejecutará de forma síncrona y bloqueará la respuesta.
+            if ($pedido->user) {
+                $user = $pedido->user;
+                $pedidoData = $pedido;
+                dispatch(function () use ($user, $pedidoData) {
+                    $user->notify(new PedidoEnCaminoNotification($pedidoData));
+                });
+            }
+
             session()->flash('message', 'Pedido asignado exitosamente. ¡Buena entrega!');
             $this->vistaActiva = 'mis_entregas';
 
@@ -131,6 +148,22 @@ class Delivery extends Component
                 'delivery_id' => $this->deliverySeleccionado,
                 'estado' => 'en_camino'
             ]);
+
+            // Cargar relaciones necesarias para la notificación
+            $pedido->refresh();
+            $pedido->load(['user', 'delivery']);
+
+            // Enviar notificación al cliente de forma asíncrona
+            // NOTA: Para que esto funcione correctamente, QUEUE_CONNECTION debe estar
+            // configurado como 'database' (o 'redis') en el archivo .env, NO como 'sync'.
+            // Si está en 'sync', la notificación se ejecutará de forma síncrona y bloqueará la respuesta.
+            if ($pedido->user) {
+                $user = $pedido->user;
+                $pedidoData = $pedido;
+                dispatch(function () use ($user, $pedidoData) {
+                    $user->notify(new PedidoEnCaminoNotification($pedidoData));
+                });
+            }
 
             session()->flash('message', 'Delivery asignado exitosamente.');
             $this->deliverySeleccionado = null;

@@ -591,6 +591,10 @@
             </div>
         </div>
     @endif
+
+    <!-- Loading Overlays -->
+    <x-loading-overlay target="tomarPedido" message="Tomando pedido..." />
+    <x-loading-overlay target="asignarDelivery" message="Asignando delivery..." />
 </div>
 
 @push('scripts')

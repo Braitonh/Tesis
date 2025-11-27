@@ -244,7 +244,74 @@
                                     <p class="text-sm text-gray-500 mb-1">Total</p>
                                     <p class="text-2xl font-bold text-orange-600">$ {{ number_format($pedido->total, 2, ',', '.') }}</p>
                                 </div>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <!-- Botón de Acción Rápida (varía según estado) -->
+                                    @if($pedido->estado === 'pendiente')
+                                        <button wire:key="accion-rapida-{{ $pedido->id }}-pendiente"
+                                                wire:click="avanzarEstado({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Mover a preparación">
+                                            <span wire:loading.remove wire:target="avanzarEstado({{ $pedido->id }})">
+                                                <i class="fas fa-arrow-right mr-2"></i>
+                                                En Preparación
+                                            </span>
+                                            <span wire:loading wire:target="avanzarEstado({{ $pedido->id }})">
+                                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    @elseif($pedido->estado === 'en_preparacion')
+                                        <button wire:key="accion-rapida-{{ $pedido->id }}-en_preparacion"
+                                                wire:click="avanzarEstado({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Marcar como listo">
+                                            <span wire:loading.remove wire:target="avanzarEstado({{ $pedido->id }})">
+                                                <i class="fas fa-check-circle mr-2"></i>
+                                                Marcar Listo
+                                            </span>
+                                            <span wire:loading wire:target="avanzarEstado({{ $pedido->id }})">
+                                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    @elseif($pedido->estado === 'listo')
+                                        <button wire:key="accion-rapida-{{ $pedido->id }}-listo"
+                                                wire:click="abrirModalDelivery({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Asignar delivery">
+                                            <span wire:loading.remove wire:target="abrirModalDelivery({{ $pedido->id }})">
+                                                <i class="fas fa-motorcycle mr-2"></i>
+                                                Asignar Delivery
+                                            </span>
+                                            <span wire:loading wire:target="abrirModalDelivery({{ $pedido->id }})">
+                                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    @elseif($pedido->estado === 'en_camino')
+                                        <button wire:key="accion-rapida-{{ $pedido->id }}-en_camino"
+                                                wire:click="marcarComoEntregado({{ $pedido->id }})"
+                                                class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                                title="Marcar como entregado">
+                                            <span wire:loading.remove wire:target="marcarComoEntregado({{ $pedido->id }})">
+                                                <i class="fas fa-check-double mr-2"></i>
+                                                Marcar Entregado
+                                            </span>
+                                            <span wire:loading wire:target="marcarComoEntregado({{ $pedido->id }})">
+                                                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    @endif
+
                                     <button wire:click="verDetalles({{ $pedido->id }})"
                                             class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                                             title="Ver detalles">
@@ -343,7 +410,8 @@
         :nuevoEstado="$nuevoEstado"
         :nuevaDireccion="$nuevaDireccion"
         :nuevoTelefono="$nuevoTelefono"
-        :nuevasNotas="$nuevasNotas" />
+        :nuevasNotas="$nuevasNotas"
+        :userRole="$userRole" />
 
     <!-- Modal Cancelar Pedido -->
     @if($showDeleteModal && $pedidoSeleccionado)
@@ -450,6 +518,121 @@
         </div>
     @endif
 
+    <!-- Modal Asignar Delivery -->
+    @if($showDeliveryModal && $pedidoSeleccionado)
+        <!-- Backdrop -->
+        <div wire:click="cerrarModalDelivery"
+             class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-fade-in">
+        </div>
+
+        <!-- Modal Centrado -->
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col animate-scale-in pointer-events-auto">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white/20 p-3 rounded-full">
+                                <i class="fas fa-motorcycle text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold">Asignar Delivery</h2>
+                                <p class="text-orange-100 text-sm">Selecciona un delivery para el pedido</p>
+                            </div>
+                        </div>
+                        <button wire:click="cerrarModalDelivery" class="text-white hover:text-orange-100 transition-colors">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenido -->
+                <div class="p-6 space-y-6">
+                    <!-- Información del Pedido -->
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border-l-4 border-orange-500">
+                        <h4 class="text-sm font-semibold text-orange-800 mb-3 flex items-center">
+                            <i class="fas fa-receipt mr-2"></i>
+                            Detalles del Pedido
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Número:</span>
+                                <span class="font-bold text-gray-800">{{ $pedidoSeleccionado->numero_pedido }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Cliente:</span>
+                                <span class="font-semibold text-gray-800">{{ $pedidoSeleccionado->user->name }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Total:</span>
+                                <span class="font-bold text-orange-600">$ {{ number_format($pedidoSeleccionado->total, 2, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Delivery -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 flex items-center">
+                            <i class="fas fa-user-tie text-orange-600 mr-2"></i>
+                            Seleccionar Delivery
+                            <span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Requerido</span>
+                        </label>
+                        <select wire:model="deliverySeleccionado" 
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white">
+                            <option value="">Selecciona un delivery</option>
+                            @foreach($this->deliverysDisponibles as $delivery)
+                                <option value="{{ $delivery->id }}">{{ $delivery->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('deliverySeleccionado')
+                            <p class="mt-1 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                        @if($this->deliverysDisponibles->isEmpty())
+                            <p class="text-xs text-amber-600 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                No hay deliverys disponibles en el sistema
+                            </p>
+                        @endif
+                    </div>
+
+                    <!-- Información -->
+                    <div class="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-orange-600 mt-0.5 mr-3"></i>
+                            <div class="text-sm text-orange-700">
+                                <p class="font-semibold mb-1">Información importante</p>
+                                <ul class="list-disc list-inside space-y-1 text-xs">
+                                    <li>Al asignar el delivery, el pedido cambiará automáticamente a "En Camino"</li>
+                                    <li>El cliente será notificado cuando el pedido esté en camino</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer con Acciones -->
+                <div class="border-t border-gray-200 p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button wire:click="cerrarModalDelivery"
+                                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancelar
+                        </button>
+                        <button wire:click="asignarDeliveryYAvanzar"
+                                class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                {{ $this->deliverysDisponibles->isEmpty() ? 'disabled' : '' }}>
+                            <i class="fas fa-check mr-2"></i>
+                            Asignar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Loading Overlays -->
     <x-loading-overlay target="verDetalles" message="Cargando detalles del pedido..." />
     <x-loading-overlay target="closeDetailModal" message="Cerrando..." />
@@ -459,6 +642,11 @@
     <x-loading-overlay target="confirmarCancelar" message="Preparando cancelación..." />
     <x-loading-overlay target="cancelarPedido" message="Cancelando pedido..." />
     <x-loading-overlay target="closeDeleteModal" message="Cerrando..." />
+    <x-loading-overlay target="avanzarEstado" message="Actualizando estado..." />
+    <x-loading-overlay target="abrirModalDelivery" message="Cargando..." />
+    <x-loading-overlay target="asignarDeliveryYAvanzar" message="Asignando delivery..." />
+    <x-loading-overlay target="marcarComoEntregado" message="Marcando como entregado..." />
+    <x-loading-overlay target="cerrarModalDelivery" message="Cerrando..." />
 </div>
 
 @push('scripts')

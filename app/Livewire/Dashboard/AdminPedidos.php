@@ -4,7 +4,9 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Pedido;
 use App\Models\User;
+use App\Notifications\PedidoEnCaminoNotification;
 use App\Traits\LogsActivity;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
@@ -25,6 +27,7 @@ class AdminPedidos extends Component
     public $showDetailModal = false;
     public $showEstadoModal = false;
     public $showDeleteModal = false;
+    public $showDeliveryModal = false;
 
     // Datos del pedido seleccionado
     public $pedidoSeleccionado;
@@ -32,6 +35,7 @@ class AdminPedidos extends Component
     public $nuevaDireccion = '';
     public $nuevoTelefono = '';
     public $nuevasNotas = '';
+    public $deliverySeleccionado = null;
 
     // Query string
     protected $updatesQueryString = [
@@ -142,31 +146,47 @@ class AdminPedidos extends Component
 
     public function actualizarPedido()
     {
+        $userRole = Auth::user()->role;
+        $esVentas = $userRole === 'ventas';
+        $esAdmin = $userRole === 'admin';
+        
         // Determinar qué campos son editables según el estado actual
+        // El admin siempre puede editar todo sin restricciones
         $estadosOrden = ['pendiente', 'en_preparacion', 'listo', 'en_camino', 'entregado'];
         $estadoActualIndex = array_search($this->pedidoSeleccionado->estado, $estadosOrden);
         $estadoListoIndex = array_search('listo', $estadosOrden);
         $estadoPreparacionIndex = array_search('en_preparacion', $estadosOrden);
         
-        $puedeEditarDireccion = $estadoActualIndex !== false && $estadoActualIndex <= $estadoListoIndex;
-        $puedeEditarNotas = $estadoActualIndex !== false && $estadoActualIndex <= $estadoPreparacionIndex;
+        // Si es admin, siempre puede editar todo
+        $puedeEditarDireccion = $esAdmin || ($estadoActualIndex !== false && $estadoActualIndex <= $estadoListoIndex);
+        $puedeEditarNotas = $esAdmin || ($estadoActualIndex !== false && $estadoActualIndex <= $estadoPreparacionIndex);
 
         // Validaciones dinámicas
-        $rules = [
-            'nuevoEstado' => 'required|in:pendiente,en_preparacion,listo,en_camino,entregado,cancelado',
-        ];
+        $rules = [];
+        
+        // Solo validar nuevoEstado si el usuario NO es ventas
+        if (!$esVentas) {
+            $rules['nuevoEstado'] = 'required|in:pendiente,en_preparacion,listo,en_camino,entregado,cancelado';
+        }
 
-        if ($puedeEditarDireccion) {
+        // Si es admin, siempre validar dirección y teléfono
+        // Si no es admin, validar solo si puede editar
+        if ($esAdmin || $puedeEditarDireccion) {
             $rules['nuevaDireccion'] = 'required|string|min:10|max:500';
             $rules['nuevoTelefono'] = 'required|string|min:6|max:20';
         }
 
-        if ($puedeEditarNotas) {
+        // Si es admin, siempre validar notas
+        // Si no es admin, validar solo si puede editar
+        if ($esAdmin || $puedeEditarNotas) {
             $rules['nuevasNotas'] = 'nullable|string|max:1000';
         }
 
-        $this->validate($rules, [
-            'nuevoEstado.required' => 'El estado es obligatorio',
+        $messages = [];
+        if (!$esVentas) {
+            $messages['nuevoEstado.required'] = 'El estado es obligatorio';
+        }
+        $messages = array_merge($messages, [
             'nuevaDireccion.required' => 'La dirección de entrega es obligatoria',
             'nuevaDireccion.min' => 'La dirección debe tener al menos 10 caracteres',
             'nuevaDireccion.max' => 'La dirección no puede exceder 500 caracteres',
@@ -176,15 +196,28 @@ class AdminPedidos extends Component
             'nuevasNotas.max' => 'Las notas no pueden exceder 1000 caracteres',
         ]);
 
+        $this->validate($rules, $messages);
+
         if ($this->pedidoSeleccionado) {
-            $datosActualizar = [
-                'estado' => $this->nuevoEstado,
-            ];
+            $datosActualizar = [];
+            
+            // Solo actualizar estado si el usuario NO es ventas
+            if (!$esVentas) {
+                $datosActualizar['estado'] = $this->nuevoEstado;
+            }
 
-            $oldValues = ['estado' => $this->pedidoSeleccionado->estado];
-            $newValues = ['estado' => $this->nuevoEstado];
+            $oldValues = [];
+            $newValues = [];
+            
+            // Solo registrar cambios de estado si NO es ventas
+            if (!$esVentas) {
+                $oldValues['estado'] = $this->pedidoSeleccionado->estado;
+                $newValues['estado'] = $this->nuevoEstado;
+            }
 
-            // Solo actualizar campos editables
+            // Actualizar campos editables
+            // Si es admin, siempre actualizar dirección, teléfono y notas
+            // Si no es admin, solo actualizar si puede editar según el estado
             if ($puedeEditarDireccion) {
                 $oldValues['direccion_entrega'] = $this->pedidoSeleccionado->direccion_entrega;
                 $oldValues['telefono_contacto'] = $this->pedidoSeleccionado->telefono_contacto;
@@ -204,7 +237,7 @@ class AdminPedidos extends Component
 
             // Registrar actividad
             $cambios = [];
-            if ($oldValues['estado'] !== $newValues['estado']) {
+            if (!$esVentas && isset($oldValues['estado']) && isset($newValues['estado']) && $oldValues['estado'] !== $newValues['estado']) {
                 $cambios[] = "estado: {$oldValues['estado']} → {$newValues['estado']}";
             }
             if (isset($oldValues['direccion_entrega']) && $oldValues['direccion_entrega'] !== $newValues['direccion_entrega']) {
@@ -275,6 +308,185 @@ class AdminPedidos extends Component
         $this->pedidoSeleccionado = null;
     }
 
+    /**
+     * Avanzar al siguiente estado del pedido
+     */
+    public function avanzarEstado($pedidoId)
+    {
+        $pedido = Pedido::findOrFail($pedidoId);
+        $estadoAnterior = $pedido->estado;
+        $nuevoEstado = null;
+        $mensaje = '';
+
+        switch ($pedido->estado) {
+            case 'pendiente':
+                $nuevoEstado = 'en_preparacion';
+                $mensaje = 'Pedido movido a preparación';
+                break;
+            case 'en_preparacion':
+                $nuevoEstado = 'listo';
+                $mensaje = 'Pedido marcado como listo';
+                break;
+            case 'listo':
+                // Para "listo" necesitamos abrir el modal de delivery
+                $this->abrirModalDelivery($pedidoId);
+                return;
+            case 'en_camino':
+                // Para "en_camino" llamamos al método de marcar como entregado
+                $this->marcarComoEntregado($pedidoId);
+                return;
+            default:
+                session()->flash('error', 'No se puede avanzar el estado desde ' . $estadoAnterior);
+                return;
+        }
+
+        if ($nuevoEstado) {
+            $pedido->update(['estado' => $nuevoEstado]);
+
+            // Registrar actividad
+            self::logActivity(
+                'pedido.estado_cambiado',
+                "Avanzó el estado del pedido {$pedido->numero_pedido} de {$estadoAnterior} a {$nuevoEstado}",
+                $pedido,
+                ['estado' => $estadoAnterior],
+                ['estado' => $nuevoEstado]
+            );
+
+            session()->flash('message', $mensaje);
+        }
+    }
+
+    /**
+     * Abrir modal para seleccionar delivery
+     */
+    public function abrirModalDelivery($pedidoId)
+    {
+        $this->pedidoSeleccionado = Pedido::with('user')->findOrFail($pedidoId);
+        
+        if ($this->pedidoSeleccionado->estado !== 'listo') {
+            session()->flash('error', 'Solo se puede asignar delivery a pedidos en estado "Listo"');
+            return;
+        }
+
+        $this->deliverySeleccionado = null;
+        $this->showDeliveryModal = true;
+    }
+
+    /**
+     * Asignar delivery y avanzar a en_camino
+     */
+    public function asignarDeliveryYAvanzar()
+    {
+        $this->validate([
+            'deliverySeleccionado' => 'required|exists:users,id'
+        ], [
+            'deliverySeleccionado.required' => 'Debes seleccionar un delivery',
+            'deliverySeleccionado.exists' => 'El delivery seleccionado no existe'
+        ]);
+
+        if (!$this->pedidoSeleccionado) {
+            session()->flash('error', 'Pedido no encontrado');
+            return;
+        }
+
+        $pedido = $this->pedidoSeleccionado;
+        
+        if ($pedido->estado !== 'listo') {
+            session()->flash('error', 'Solo se puede asignar delivery a pedidos en estado "Listo"');
+            $this->cerrarModalDelivery();
+            return;
+        }
+
+        $delivery = User::findOrFail($this->deliverySeleccionado);
+        
+        if ($delivery->role !== 'delivery') {
+            session()->flash('error', 'El usuario seleccionado no es un delivery');
+            return;
+        }
+
+        $estadoAnterior = $pedido->estado;
+        $deliveryAnterior = $pedido->delivery_id;
+
+        $pedido->update([
+            'delivery_id' => $this->deliverySeleccionado,
+            'estado' => 'en_camino'
+        ]);
+
+        // Cargar relaciones para notificación si es necesario
+        $pedido->refresh();
+        $pedido->load(['user', 'delivery']);
+
+        // Enviar notificación al cliente de forma asíncrona
+        // NOTA: Para que esto funcione correctamente, QUEUE_CONNECTION debe estar
+        // configurado como 'database' (o 'redis') en el archivo .env, NO como 'sync'.
+        // Si está en 'sync', la notificación se ejecutará de forma síncrona y bloqueará la respuesta.
+        if ($pedido->user) {
+            $user = $pedido->user;
+            $pedidoData = $pedido;
+            dispatch(function () use ($user, $pedidoData) {
+                $user->notify(new PedidoEnCaminoNotification($pedidoData));
+            });
+        }
+
+        // Registrar actividad
+        self::logActivity(
+            'pedido.asignado_delivery',
+            "Asignó el pedido {$pedido->numero_pedido} al delivery {$delivery->name} y cambió a en_camino",
+            $pedido,
+            ['estado' => $estadoAnterior, 'delivery_id' => $deliveryAnterior],
+            ['estado' => 'en_camino', 'delivery_id' => $this->deliverySeleccionado]
+        );
+
+        session()->flash('message', "Delivery {$delivery->name} asignado y pedido en camino");
+        $this->cerrarModalDelivery();
+    }
+
+    /**
+     * Marcar pedido como entregado
+     */
+    public function marcarComoEntregado($pedidoId)
+    {
+        $pedido = Pedido::findOrFail($pedidoId);
+
+        if ($pedido->estado !== 'en_camino') {
+            session()->flash('error', 'Solo se pueden marcar como entregados los pedidos en camino');
+            return;
+        }
+
+        $estadoAnterior = $pedido->estado;
+        $pedido->update(['estado' => 'entregado']);
+
+        // Registrar actividad
+        self::logActivity(
+            'pedido.estado_cambiado',
+            "Marcó como entregado el pedido {$pedido->numero_pedido}",
+            $pedido,
+            ['estado' => $estadoAnterior],
+            ['estado' => 'entregado']
+        );
+
+        session()->flash('message', 'Pedido marcado como entregado exitosamente');
+    }
+
+    /**
+     * Cerrar modal de delivery
+     */
+    public function cerrarModalDelivery()
+    {
+        $this->showDeliveryModal = false;
+        $this->pedidoSeleccionado = null;
+        $this->deliverySeleccionado = null;
+        $this->resetValidation();
+    }
+
+    /**
+     * Obtener lista de deliverys disponibles
+     */
+    public function getDeliverysDisponiblesProperty()
+    {
+        return User::where('role', 'delivery')->orderBy('name')->get();
+    }
+
     public function getPedidos()
     {
         $query = Pedido::with(['user', 'detalles'])
@@ -314,9 +526,12 @@ class AdminPedidos extends Component
 
     public function render()
     {
+        $userRole = Auth::user()->role ?? 'cliente';
+        
         return view('livewire.dashboard.admin-pedidos', [
             'pedidos' => $this->getPedidos(),
             'stats' => $this->stats,
+            'userRole' => $userRole,
         ]);
     }
 }

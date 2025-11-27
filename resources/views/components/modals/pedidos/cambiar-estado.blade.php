@@ -1,15 +1,18 @@
-@props(['show' => false, 'pedido' => null, 'nuevoEstado' => '', 'nuevaDireccion' => '', 'nuevoTelefono' => '', 'nuevasNotas' => ''])
+@props(['show' => false, 'pedido' => null, 'nuevoEstado' => '', 'nuevaDireccion' => '', 'nuevoTelefono' => '', 'nuevasNotas' => '', 'userRole' => 'cliente'])
 
 @if($show && $pedido)
     @php
         // Determinar qué campos son editables según el estado
+        // El admin siempre puede editar todo sin restricciones
+        $esAdmin = $userRole === 'admin';
         $estadosOrden = ['pendiente', 'en_preparacion', 'listo', 'en_camino', 'entregado'];
         $estadoActualIndex = array_search($pedido->estado, $estadosOrden);
         $estadoListoIndex = array_search('listo', $estadosOrden);
         $estadoPreparacionIndex = array_search('en_preparacion', $estadosOrden);
         
-        $puedeEditarDireccion = $estadoActualIndex !== false && $estadoActualIndex <= $estadoListoIndex;
-        $puedeEditarNotas = $estadoActualIndex !== false && $estadoActualIndex <= $estadoPreparacionIndex;
+        // Si es admin, siempre puede editar todo
+        $puedeEditarDireccion = $esAdmin || ($estadoActualIndex !== false && $estadoActualIndex <= $estadoListoIndex);
+        $puedeEditarNotas = $esAdmin || ($estadoActualIndex !== false && $estadoActualIndex <= $estadoPreparacionIndex);
     @endphp
 
     <!-- Backdrop -->
@@ -51,33 +54,35 @@
                     </div>
                 </div>
 
-                <!-- Estado del Pedido - Siempre Editable -->
-                <div class="space-y-2">
-                    <label class="block text-sm font-bold text-gray-700 flex items-center">
-                        <i class="fas fa-sync-alt text-orange-600 mr-2"></i>
-                        Estado del Pedido
-                        <span class="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Siempre editable</span>
-                    </label>
-                    <select wire:model="nuevoEstado" 
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white">
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_preparacion">En preparación</option>
-                        <option value="listo">Listo</option>
-                        <option value="en_camino">En camino</option>
-                        <option value="entregado">Entregado</option>
-                        <option value="cancelado">Cancelado</option>
-                    </select>
-                    @error('nuevoEstado')
-                        <p class="mt-1 text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
-                            {{ $message }}
+                <!-- Estado del Pedido - Siempre Editable (oculto para rol ventas) -->
+                @if($userRole !== 'ventas')
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700 flex items-center">
+                            <i class="fas fa-sync-alt text-orange-600 mr-2"></i>
+                            Estado del Pedido
+                            <span class="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Siempre editable</span>
+                        </label>
+                        <select wire:model="nuevoEstado" 
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 bg-white">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="en_preparacion">En preparación</option>
+                            <option value="listo">Listo</option>
+                            <option value="en_camino">En camino</option>
+                            <option value="entregado">Entregado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                        @error('nuevoEstado')
+                            <p class="mt-1 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-lightbulb mr-1"></i>
+                            Puedes cambiar el estado del pedido en cualquier momento
                         </p>
-                    @enderror
-                    <p class="text-xs text-gray-500 mt-1">
-                        <i class="fas fa-lightbulb mr-1"></i>
-                        Puedes cambiar el estado del pedido en cualquier momento
-                    </p>
-                </div>
+                    </div>
+                @endif
 
                 <!-- Dirección de Entrega -->
                 <div class="space-y-2">
@@ -111,7 +116,11 @@
                     @else
                         <p class="text-xs text-gray-500">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Solo editable hasta que el pedido esté listo
+                            @if($esAdmin)
+                                Siempre editable para administradores
+                            @else
+                                Solo editable hasta que el pedido esté listo
+                            @endif
                         </p>
                     @endif
                 </div>
@@ -144,6 +153,11 @@
                         <p class="text-xs text-amber-600 flex items-center">
                             <i class="fas fa-lock mr-1"></i>
                             No se puede editar el teléfono cuando el pedido está en camino o entregado
+                        </p>
+                    @elseif($esAdmin)
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Siempre editable para administradores
                         </p>
                     @endif
                 </div>
@@ -180,7 +194,11 @@
                     @else
                         <p class="text-xs text-gray-500">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Solo editable hasta que el pedido esté en preparación
+                            @if($esAdmin)
+                                Siempre editable para administradores
+                            @else
+                                Solo editable hasta que el pedido esté en preparación
+                            @endif
                         </p>
                     @endif
                 </div>

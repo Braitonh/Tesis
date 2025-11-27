@@ -125,6 +125,38 @@
                     </div>
                 </div>
 
+                <!-- Información de Pago en Efectivo -->
+                @if($pedido->metodo_pago_preferido === 'efectivo' && $pedido->monto_recibido)
+                <div class="border-t border-gray-200 mt-6 pt-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Información de Pago en Efectivo</h3>
+                    <div class="bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Monto Recibido:</span>
+                                <span class="font-semibold text-gray-800">${{ number_format($pedido->monto_recibido, 2, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total del Pedido:</span>
+                                <span class="font-semibold text-gray-800">${{ number_format($pedido->total, 2, ',', '.') }}</span>
+                            </div>
+                            @if($pedido->vuelto > 0)
+                            <div class="flex justify-between items-center pt-3 border-t border-green-300">
+                                <span class="font-bold text-green-700">Vuelto a Devolver:</span>
+                                <span class="text-2xl font-bold text-green-600">${{ number_format($pedido->vuelto, 2, ',', '.') }}</span>
+                            </div>
+                            @else
+                            <div class="pt-3 border-t border-green-300 text-center">
+                                <span class="font-semibold text-green-700">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Pago exacto - No hay vuelto
+                                </span>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Información de Pago -->
                 @if($pedido->transaccion)
                 <div class="border-t border-gray-200 mt-6 pt-6">

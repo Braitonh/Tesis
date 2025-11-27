@@ -22,6 +22,8 @@ class Pedido extends Model
         'metodo_pago_preferido',
         'subtotal',
         'total',
+        'monto_recibido',
+        'vuelto',
         'direccion_entrega',
         'telefono_contacto',
         'notas',
@@ -31,6 +33,8 @@ class Pedido extends Model
     protected $casts = [
         'subtotal' => 'decimal:2',
         'total' => 'decimal:2',
+        'monto_recibido' => 'decimal:2',
+        'vuelto' => 'decimal:2',
     ];
 
     /**

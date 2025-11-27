@@ -30,6 +30,7 @@ class CarritoCheckout extends Component
     public $nombre_tarjeta = '';
     public $fecha_vencimiento = '';
     public $cvv = '';
+    public $monto_recibido = '';
 
     // Modal de error
     public $mostrarModalError = false;
@@ -44,6 +45,25 @@ class CarritoCheckout extends Component
             'notas' => 'nullable|string|max:500',
             'metodo_pago' => 'required|in:efectivo,tarjeta_credito,tarjeta_debito,billetera_digital',
         ];
+
+        // Si el método de pago es efectivo, validar monto recibido si está presente
+        if ($this->metodo_pago === 'efectivo' && !empty($this->monto_recibido)) {
+            $rules['monto_recibido'] = [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    // Convertir formato de moneda a número
+                    $montoRecibido = (float) str_replace(['.', ','], ['', '.'], $value);
+                    
+                    if (!is_numeric($montoRecibido) || $montoRecibido <= 0) {
+                        $fail('El monto recibido debe ser un número válido mayor a cero.');
+                    }
+                    
+                    if ($montoRecibido < $this->total) {
+                        $fail('El monto recibido debe ser mayor o igual al total del pedido ($' . number_format($this->total, 2, ',', '.') . ').');
+                    }
+                },
+            ];
+        }
 
         // Si el método de pago no es efectivo, validar datos de tarjeta
         if ($this->metodo_pago !== 'efectivo') {
@@ -78,6 +98,8 @@ class CarritoCheckout extends Component
         'fecha_vencimiento.regex' => 'El formato de fecha debe ser MM/AA',
         'cvv.required' => 'El CVV es obligatorio',
         'cvv.digits_between' => 'El CVV debe tener entre 3 y 4 dígitos',
+        'monto_recibido.numeric' => 'El monto recibido debe ser un número válido',
+        'monto_recibido.min' => 'El monto recibido debe ser mayor o igual al total del pedido',
     ];
 
     public function mount()
@@ -124,6 +146,27 @@ class CarritoCheckout extends Component
     }
 
     /**
+     * Calcular el vuelto basado en el monto recibido
+     */
+    public function getVueltoProperty()
+    {
+        if (empty($this->monto_recibido) || $this->metodo_pago !== 'efectivo') {
+            return 0;
+        }
+
+        // Convertir formato de moneda a número (maneja tanto 1.234,56 como 1234.56)
+        $montoRecibido = str_replace(['.', ','], ['', '.'], $this->monto_recibido);
+        $montoRecibido = (float) $montoRecibido;
+        $total = $this->total;
+
+        if ($montoRecibido > $total) {
+            return round($montoRecibido - $total, 2);
+        }
+
+        return 0;
+    }
+
+    /**
      * Validar fecha de vencimiento
      */
     private function validarFechaVencimiento($valor): bool
@@ -154,6 +197,22 @@ class CarritoCheckout extends Component
         try {
             DB::beginTransaction();
 
+            // Calcular monto recibido y vuelto para efectivo
+            $montoRecibido = null;
+            $vuelto = null;
+            
+            if ($this->metodo_pago === 'efectivo' && !empty($this->monto_recibido)) {
+                // Convertir formato de moneda a número (maneja tanto 1.234,56 como 1234.56)
+                $montoRecibido = str_replace(['.', ','], ['', '.'], $this->monto_recibido);
+                $montoRecibido = (float) $montoRecibido;
+                
+                if ($montoRecibido > $this->total) {
+                    $vuelto = round($montoRecibido - $this->total, 2);
+                } else {
+                    $vuelto = 0;
+                }
+            }
+
             // Crear el pedido
             $pedido = Pedido::create([
                 'user_id' => Auth::id(),
@@ -163,6 +222,8 @@ class CarritoCheckout extends Component
                 'metodo_pago_preferido' => $this->metodo_pago,
                 'subtotal' => $this->total,
                 'total' => $this->total,
+                'monto_recibido' => $montoRecibido,
+                'vuelto' => $vuelto,
                 'direccion_entrega' => $this->direccion_entrega,
                 'telefono_contacto' => $this->telefono_contacto,
                 'notas' => $this->notas,

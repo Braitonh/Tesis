@@ -183,6 +183,66 @@
                                     @enderror
                                 </div>
 
+                                <!-- Campo de Monto Recibido (Solo para Efectivo) -->
+                                @if($metodo_pago === 'efectivo')
+                                <div id="monto-recibido-container" class="bg-green-50 border-2 border-green-200 rounded-xl p-6 space-y-4">
+                                    <div class="flex items-center mb-4">
+                                        <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
+                                        <span class="text-sm font-semibold text-green-800">Información de Pago en Efectivo</span>
+                                    </div>
+
+                                    <div>
+                                        <label for="monto_recibido" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Monto Recibido
+                                            <span class="text-gray-500 text-xs font-normal">(Opcional)</span>
+                                        </label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 font-semibold">$</span>
+                                            </div>
+                                            <input type="text"
+                                                   id="monto_recibido"
+                                                   wire:model.live="monto_recibido"
+                                                   placeholder="Ej: {{ number_format($total, 2, ',', '.') }}"
+                                                   class="block w-full pl-8 pr-3 py-3 border @error('monto_recibido') border-red-500 @else border-gray-300 @enderror rounded-xl focus:ring-green-500 focus:border-green-500 bg-white">
+                                        </div>
+                                        @error('monto_recibido')
+                                            <p class="mt-1 text-sm text-red-500">
+                                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Si no indicas un monto, se asumirá pago exacto
+                                        </p>
+                                    </div>
+
+                                    @if(!empty($this->monto_recibido) && $this->vuelto > 0)
+                                    <div class="bg-white border-2 border-green-300 rounded-lg p-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm text-gray-600 mb-1">Total del Pedido:</p>
+                                                <p class="text-sm text-gray-600 mb-1">Monto Recibido:</p>
+                                                <p class="text-sm font-semibold text-green-700 mt-2">Vuelto a Devolver:</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-sm font-semibold text-gray-800 mb-1">${{ number_format($total, 2, ',', '.') }}</p>
+                                                <p class="text-sm font-semibold text-gray-800 mb-1">${{ number_format((float) str_replace(['.', ','], ['', '.'], $this->monto_recibido), 2, ',', '.') }}</p>
+                                                <p class="text-lg font-bold text-green-600 mt-2">${{ number_format($this->vuelto, 2, ',', '.') }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @elseif(!empty($this->monto_recibido) && (float) str_replace(['.', ','], ['', '.'], $this->monto_recibido) == $total)
+                                    <div class="bg-white border-2 border-green-300 rounded-lg p-4">
+                                        <div class="flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                            <p class="text-sm font-semibold text-green-700">Pago exacto - No hay vuelto</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                                @endif
+
                                 <!-- Formulario de Tarjeta (Condicional) -->
                             <div id="formulario-tarjeta"
                                  class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4 {{ $metodo_pago === 'efectivo' ? 'hidden' : '' }}"
@@ -583,9 +643,39 @@
     </div>
     @endif
 
-    <!-- Script JavaScript puro para manejar método de pago -->
+    <!-- Script JavaScript puro para manejar método de pago y formato de monto -->
     <script>
         (function() {
+            // Función para formatear número como moneda
+            function formatearMoneda(valor) {
+                // Remover todo excepto números y punto/coma
+                valor = valor.replace(/[^\d.,]/g, '');
+                
+                // Si tiene punto y coma, asumir formato europeo (1.234,56)
+                if (valor.includes(',') && valor.includes('.')) {
+                    // Si el punto está antes de la coma, es formato europeo
+                    if (valor.indexOf('.') < valor.indexOf(',')) {
+                        valor = valor.replace(/\./g, '').replace(',', '.');
+                    } else {
+                        // Si la coma está antes, es formato americano
+                        valor = valor.replace(/,/g, '');
+                    }
+                } else if (valor.includes(',')) {
+                    // Solo coma, reemplazar por punto
+                    valor = valor.replace(',', '.');
+                }
+                
+                // Convertir a número y formatear
+                const numero = parseFloat(valor);
+                if (isNaN(numero)) return '';
+                
+                // Formatear con separador de miles y decimales
+                return numero.toLocaleString('es-PY', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+            }
+
             // Esperar a que el DOM esté listo
             document.addEventListener('DOMContentLoaded', function() {
                 const radioButtons = document.querySelectorAll('.metodo-pago-radio');
@@ -645,6 +735,30 @@
                 // Inicializar el estado al cargar la página
                 actualizarMetodoPago();
                 
+                // Manejar formato de monto recibido
+                const montoRecibidoInput = document.getElementById('monto_recibido');
+                if (montoRecibidoInput) {
+                    montoRecibidoInput.addEventListener('input', function(e) {
+                        const valor = e.target.value;
+                        if (valor) {
+                            // Permitir que el usuario escriba, solo formatear al perder el foco
+                            // O formatear en tiempo real si se prefiere
+                        }
+                    });
+                    
+                    montoRecibidoInput.addEventListener('blur', function(e) {
+                        const valor = e.target.value;
+                        if (valor) {
+                            const formateado = formatearMoneda(valor);
+                            if (formateado && formateado !== valor) {
+                                e.target.value = formateado;
+                                // Disparar evento para que Livewire actualice
+                                e.target.dispatchEvent(new Event('input'));
+                            }
+                        }
+                    });
+                }
+                
                 // Escuchar eventos de Livewire para actualizar después de las actualizaciones del servidor
                 document.addEventListener('livewire:init', function() {
                     Livewire.hook('morph.updated', function({ el }) {
@@ -652,6 +766,22 @@
                         const container = document.getElementById('metodo-pago-container');
                         if (container && container.contains(el)) {
                             setTimeout(actualizarMetodoPago, 50);
+                        }
+                        
+                        // Re-aplicar listeners si el campo de monto recibido fue recreado
+                        const nuevoInput = document.getElementById('monto_recibido');
+                        if (nuevoInput && !nuevoInput.hasAttribute('data-listener-attached')) {
+                            nuevoInput.setAttribute('data-listener-attached', 'true');
+                            nuevoInput.addEventListener('blur', function(e) {
+                                const valor = e.target.value;
+                                if (valor) {
+                                    const formateado = formatearMoneda(valor);
+                                    if (formateado && formateado !== valor) {
+                                        e.target.value = formateado;
+                                        e.target.dispatchEvent(new Event('input'));
+                                    }
+                                }
+                            });
                         }
                     });
                 });

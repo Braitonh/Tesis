@@ -285,6 +285,30 @@
                 </tr>
             </tfoot>
         </table>
+
+        @if($pedido->metodo_pago_preferido === 'efectivo' && $pedido->monto_recibido)
+        <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 8px; padding: 14px; margin-top: 18px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: #166534;">Información de Pago en Efectivo</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: #6b7280; font-size: 13px;">Monto Recibido:</span>
+                <span style="font-weight: 600; color: #1f2937; font-size: 13px;">${{ number_format($pedido->monto_recibido, 2, ',', '.') }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: #6b7280; font-size: 13px;">Total del Pedido:</span>
+                <span style="font-weight: 600; color: #1f2937; font-size: 13px;">${{ number_format($pedido->total, 2, ',', '.') }}</span>
+            </div>
+            @if($pedido->vuelto > 0)
+            <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 2px solid #86efac;">
+                <span style="font-weight: 700; color: #166534; font-size: 14px;">Vuelto a Devolver:</span>
+                <span style="font-weight: 700; color: #166534; font-size: 16px;">${{ number_format($pedido->vuelto, 2, ',', '.') }}</span>
+            </div>
+            @else
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 2px solid #86efac; text-align: center;">
+                <span style="font-weight: 600; color: #166534; font-size: 13px;">✓ Pago exacto - No hay vuelto</span>
+            </div>
+            @endif
+        </div>
+        @endif
     </div>
 </body>
 </html>

@@ -3,7 +3,9 @@
 use App\Http\Controllers\Auth\ClienteVerificationController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordCreationController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\FacturaController;
+use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Cocina\Cocina;
@@ -26,11 +28,16 @@ Broadcast::routes(['middleware' => ['auth']]);
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
 });
 
 // Password creation routes - accessible without authentication
 Route::get('/create-password/{token}', [PasswordCreationController::class, 'show'])->name('password.show');
 Route::post('/create-password/{token}', [PasswordCreationController::class, 'store'])->name('password.create');
+
+// Password reset routes - accessible without authentication
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'show'])->name('password.reset');
+Route::post('/reset-password', [ResetPasswordController::class, 'store'])->name('password.update');
 
 // Email verification route for clients - accessible without authentication
 Route::get('/email/verify/{token}', [ClienteVerificationController::class, 'verify'])->name('cliente.verify');

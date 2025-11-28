@@ -63,7 +63,7 @@
             @endif
 
             <!-- Login form -->
-            <form wire:submit.prevent="login" class="space-y-6">
+            <form method="POST" wire:submit.prevent="login" class="space-y-6">
                 
                 <!-- Email field -->
                 <div class="space-y-2">
@@ -114,7 +114,7 @@
                                class="w-4 h-4 text-orange-500 bg-gray-100 border-gray-300 rounded focus:ring-orange-500">
                         Recordarme
                     </label>
-                    <a href="#" class="text-orange-500 text-sm font-medium hover:text-orange-600 hover:underline transition-colors duration-300">
+                    <a href="{{ route('password.request') }}" class="text-orange-500 text-sm font-medium hover:text-orange-600 hover:underline transition-colors duration-300" wire:navigate>
                         ¿Olvidaste tu contraseña?
                     </a>
                 </div>

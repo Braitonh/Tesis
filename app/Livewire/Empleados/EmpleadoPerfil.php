@@ -22,8 +22,8 @@ class EmpleadoPerfil extends Component
         
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'dni' => 'required|string|max:20|unique:users,dni,'.$userId,
+            'email' => 'required|email:filter|unique:users,email,'.$userId,
+            'dni' => 'required|string|regex:/^\d{8}$/|unique:users,dni,'.$userId,
             'direccion' => 'required|string|max:500',
             'telefono' => 'required|string|max:20',
         ];
@@ -35,6 +35,7 @@ class EmpleadoPerfil extends Component
         'email.email' => 'El email debe ser válido.',
         'email.unique' => 'Este email ya está en uso.',
         'dni.required' => 'El DNI es obligatorio.',
+        'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
         'dni.unique' => 'Este DNI ya está en uso.',
         'direccion.required' => 'La dirección es obligatoria.',
         'telefono.required' => 'El teléfono es obligatorio.',

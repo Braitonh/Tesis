@@ -16,7 +16,7 @@ class Register extends Component
     #[Rule('required|string|min:2|max:255')]
     public string $name = '';
 
-    #[Rule('required|email|unique:users,email')]
+    #[Rule('required|email:filter|unique:users,email')]
     public string $email = '';
 
     #[Rule('required|min:8|confirmed')]

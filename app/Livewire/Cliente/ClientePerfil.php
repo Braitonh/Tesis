@@ -22,8 +22,8 @@ class ClientePerfil extends Component
         
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'dni' => 'nullable|string|max:20|unique:users,dni,'.$userId,
+            'email' => 'required|email:filter|unique:users,email,'.$userId,
+            'dni' => 'nullable|string|regex:/^\d{8}$/|unique:users,dni,'.$userId,
             'direccion' => 'nullable|string|max:500',
             'telefono' => 'nullable|string|max:20',
         ];
@@ -34,6 +34,7 @@ class ClientePerfil extends Component
         'email.required' => 'El email es obligatorio.',
         'email.email' => 'El email debe ser válido.',
         'email.unique' => 'Este email ya está en uso.',
+        'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
         'dni.unique' => 'Este DNI ya está en uso.',
     ];
 

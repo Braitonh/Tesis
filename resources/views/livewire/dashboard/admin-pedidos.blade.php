@@ -40,7 +40,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-semibold uppercase mb-1">En Delivery</p>
-                            <p class="text-3xl font-bold text-gray-800">{{ $stats['en_proceso'] }}</p>
+                            <p class="text-3xl font-bold text-gray-800">{{ $stats['en_delivery'] }}</p>
                         </div>
                         <div class="bg-red-100 p-4 rounded-full">
                             <i class="fas fa-motorcycle text-red-600 text-2xl"></i>

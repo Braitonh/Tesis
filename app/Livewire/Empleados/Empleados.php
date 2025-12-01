@@ -37,9 +37,9 @@ class Empleados extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
+        'email' => 'required|email:filter|unique:users,email',
         'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
-        'dni' => 'required|string|max:20|unique:users,dni',
+        'dni' => 'required|string|regex:/^\d{8}$/|unique:users,dni',
         'direccion' => 'required|string|max:500',
         'telefono' => 'required|string|max:20',
     ];
@@ -55,7 +55,7 @@ class Empleados extends Component
         'role.in' => 'El rol seleccionado no es válido.',
         'dni.required' => 'El DNI es obligatorio.',
         'dni.string' => 'El DNI debe ser un texto válido.',
-        'dni.max' => 'El DNI no puede tener más de 20 caracteres.',
+        'dni.regex' => 'El DNI debe tener exactamente 8 dígitos numéricos.',
         'dni.unique' => 'Este DNI ya está registrado.',
         'direccion.required' => 'La dirección es obligatoria.',
         'direccion.string' => 'La dirección debe ser un texto válido.',
@@ -103,9 +103,9 @@ class Empleados extends Component
             // Edit - exclude current user from unique validation
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,'.$this->empleadoId,
+                'email' => 'required|email:filter|unique:users,email,'.$this->empleadoId,
                 'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
-                'dni' => 'required|string|max:20|unique:users,dni,'.$this->empleadoId,
+                'dni' => 'required|string|regex:/^\d{8}$/|unique:users,dni,'.$this->empleadoId,
                 'direccion' => 'required|string|max:500',
                 'telefono' => 'required|string|max:20',
             ];
@@ -113,9 +113,9 @@ class Empleados extends Component
             // Create - strict unique validation (no password required for new employees)
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email:filter|unique:users,email',
                 'role' => 'required|in:admin,empleado,cocina,delivery,ventas',
-                'dni' => 'required|string|max:20|unique:users,dni',
+                'dni' => 'required|string|regex:/^\d{8}$/|unique:users,dni',
                 'direccion' => 'required|string|max:500',
                 'telefono' => 'required|string|max:20',
             ];

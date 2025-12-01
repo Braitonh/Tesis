@@ -487,9 +487,12 @@ class AdminPedidos extends Component
         return User::where('role', 'delivery')->orderBy('name')->get();
     }
 
-    public function getPedidos()
+    /**
+     * Construir query base con todos los filtros aplicados
+     */
+    private function getBaseQuery()
     {
-        $query = Pedido::with(['user', 'detalles'])
+        return Pedido::query()
             ->when($this->busquedaCliente, function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('name', 'like', '%' . $this->busquedaCliente . '%')
@@ -504,23 +507,30 @@ class AdminPedidos extends Component
             })
             ->when($this->filtroFecha, function ($query) {
                 $query->whereDate('created_at', $this->filtroFecha);
-            })
-            ->orderBy('created_at', 'desc');
+            });
+    }
 
-        return $query->paginate(10);
+    public function getPedidos()
+    {
+        return $this->getBaseQuery()
+            ->with(['user', 'detalles'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 
     public function getStatsProperty()
     {
+        $baseQuery = $this->getBaseQuery();
+
         return [
-            'total' => Pedido::count(),
-            'pendientes' => Pedido::where('estado', 'pendiente')->count(),
-            'en_proceso' => Pedido::whereIn('estado', ['en_preparacion'])->count(),
-            'en_delivery' => Pedido::whereIn('estado', ['en_camino'])->count(),
-            'entregados' => Pedido::where('estado', 'entregado')->count(),
-            'cancelados' => Pedido::where('estado', 'cancelado')->count(),
-            'pagados' => Pedido::where('estado_pago', 'pagado')->count(),
-            'pago_pendiente' => Pedido::where('estado_pago', 'pendiente')->count(),
+            'total' => $baseQuery->count(),
+            'pendientes' => (clone $baseQuery)->where('estado', 'pendiente')->count(),
+            'en_proceso' => (clone $baseQuery)->whereIn('estado', ['en_preparacion'])->count(),
+            'en_delivery' => (clone $baseQuery)->whereIn('estado', ['en_camino'])->count(),
+            'entregados' => (clone $baseQuery)->where('estado', 'entregado')->count(),
+            'cancelados' => (clone $baseQuery)->where('estado', 'cancelado')->count(),
+            'pagados' => (clone $baseQuery)->where('estado_pago', 'pagado')->count(),
+            'pago_pendiente' => (clone $baseQuery)->where('estado_pago', 'pendiente')->count(),
         ];
     }
 

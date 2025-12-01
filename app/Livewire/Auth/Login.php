@@ -11,7 +11,7 @@ use Livewire\Component;
 #[Layout('layouts.auth')]
 class Login extends Component
 {
-    #[Rule('required|email')]
+    #[Rule('required|email:filter')]
     public string $email = '';
 
     #[Rule('required|min:6')]

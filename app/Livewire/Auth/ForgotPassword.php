@@ -13,7 +13,7 @@ use Livewire\Component;
 #[Layout('layouts.auth')]
 class ForgotPassword extends Component
 {
-    #[Rule('required|email')]
+    #[Rule('required|email:filter')]
     public string $email = '';
 
     public bool $loading = false;

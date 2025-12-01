@@ -38,7 +38,7 @@ class ResetPasswordController extends Controller
 
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email:filter',
             'password' => ['required', 'confirmed', PasswordRule::defaults()],
         ], $messages);
 

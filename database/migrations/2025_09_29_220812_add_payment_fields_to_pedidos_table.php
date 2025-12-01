@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('pedidos', function (Blueprint $table) {
             $table->enum('estado_pago', ['pendiente', 'pagado', 'fallido'])->default('pendiente')->after('estado');
-            $table->enum('metodo_pago_preferido', ['efectivo', 'tarjeta_credito', 'tarjeta_debito', 'billetera_digital'])->default('efectivo')->after('estado_pago');
+            $table->enum('metodo_pago_preferido', ['efectivo', 'tarjeta_credito', 'tarjeta_debito', 'billetera_digital', 'mercado_pago'])->default('efectivo')->after('estado_pago');
         });
     }
 

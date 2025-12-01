@@ -173,6 +173,26 @@
                                                 <p class="text-xs text-gray-500 mt-1">Zimple, Tigo Money, Personal Pay</p>
                                             </div>
                                         </label>
+
+                                        <!-- Mercado Pago -->
+                                        <label class="flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-gray-50 transition metodo-pago-option {{ $metodo_pago === 'mercado_pago' ? 'border-orange-500 bg-orange-50' : 'border-gray-300' }}"
+                                               data-metodo="mercado_pago">
+                                            <input type="radio"
+                                                   name="metodo_pago"
+                                                   value="mercado_pago"
+                                                   wire:model.live="metodo_pago"
+                                                   class="w-5 h-5 text-orange-600 focus:ring-orange-500 metodo-pago-radio">
+                                            <div class="ml-3 flex-1">
+                                                <div class="flex items-center">
+                                                    <i class="fab fa-cc-mastercard text-blue-600 mr-2"></i>
+                                                    <span class="font-semibold text-gray-800">Mercado Pago</span>
+                                                    @if(config('services.mercadopago.mode') === 'test')
+                                                        <span class="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-semibold">TEST</span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Pago seguro con tarjetas, efectivo y más</p>
+                                            </div>
+                                        </label>
                                     </div>
 
                                     @error('metodo_pago')
@@ -245,7 +265,7 @@
 
                                 <!-- Formulario de Tarjeta (Condicional) -->
                             <div id="formulario-tarjeta"
-                                 class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4 {{ $metodo_pago === 'efectivo' ? 'hidden' : '' }}"
+                                 class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 space-y-4 {{ $metodo_pago === 'efectivo' || $metodo_pago === 'mercado_pago' ? 'hidden' : '' }}"
                                  style="transition: all 0.2s ease-out;">
 
                                 <div class="flex items-center mb-4">
@@ -489,6 +509,8 @@
                                 <i class="fas fa-check-circle mr-2"></i>
                                 @if($metodo_pago === 'efectivo')
                                     Confirmar Pedido
+                                @elseif($metodo_pago === 'mercado_pago')
+                                    Pagar con Mercado Pago
                                 @else
                                     Proceder al Pago
                                 @endif
@@ -704,7 +726,7 @@
                     
                     // Mostrar/ocultar formulario de tarjeta
                     if (formularioTarjeta) {
-                        if (metodoPago === 'efectivo') {
+                        if (metodoPago === 'efectivo' || metodoPago === 'mercado_pago') {
                             formularioTarjeta.classList.add('hidden');
                         } else {
                             formularioTarjeta.classList.remove('hidden');

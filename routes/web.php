@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordCreationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\MercadoPagoCallbackController;
+use App\Http\Controllers\MercadoPagoWebhookController;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -100,11 +102,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cliente/pedido/{pedido}/confirmacion', App\Livewire\Cliente\PedidoConfirmacion::class)->name('cliente.pedido.confirmacion');
     Route::get('/cliente/pedido/{pedido}/factura/pdf', [FacturaController::class, 'generarPDF'])->name('cliente.pedido.factura.pdf');
 
+    // Callback de Mercado Pago (requiere autenticación)
+    Route::get('/cliente/pago/mercado-pago/callback', [MercadoPagoCallbackController::class, 'handle'])
+        ->name('cliente.pago.mercado-pago.callback');
+
     // Mantener alias de ruta antigua para compatibilidad
     Route::get('/cliente/checkout', function () {
         return redirect()->route('cliente.carrito.checkout');
     })->name('cliente.checkout');
 });
+
+// Webhook de Mercado Pago (público, sin autenticación)
+Route::post('/api/mercado-pago/webhook', [MercadoPagoWebhookController::class, 'handle'])
+    ->name('api.mercado-pago.webhook');
 
 // Fallback route - redirect any unregistered route to login
 Route::fallback(function () {

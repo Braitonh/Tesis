@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'mercadopago' => [
+        'access_token_test' => env('MERCADOPAGO_ACCESS_TOKEN_TEST'),
+        'public_key_test' => env('MERCADOPAGO_PUBLIC_KEY_TEST'),
+        'access_token_production' => env('MERCADOPAGO_ACCESS_TOKEN_PRODUCTION'),
+        'public_key_production' => env('MERCADOPAGO_PUBLIC_KEY_PRODUCTION'),
+        'mode' => env('MERCADOPAGO_MODE', 'test'),
+    ],
+
 ];

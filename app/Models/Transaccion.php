@@ -18,6 +18,9 @@ class Transaccion extends Model
         'detalles_tarjeta',
         'mensaje_respuesta',
         'fecha_procesamiento',
+        'mercado_pago_preference_id',
+        'mercado_pago_payment_id',
+        'mercado_pago_status',
     ];
 
     protected $casts = [

@@ -6,6 +6,7 @@ use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Transaccion;
 use App\Rules\Luhn;
+use App\Services\MercadoPagoService;
 use App\Services\PagoSimuladoService;
 use App\Traits\HasShoppingCart;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ class CarritoCheckout extends Component
             'direccion_entrega' => 'required|string|min:10|max:255',
             'telefono_contacto' => 'required|string|min:9|max:20',
             'notas' => 'nullable|string|max:500',
-            'metodo_pago' => 'required|in:efectivo,tarjeta_credito,tarjeta_debito,billetera_digital',
+            'metodo_pago' => 'required|in:efectivo,tarjeta_credito,tarjeta_debito,billetera_digital,mercado_pago',
         ];
 
         // Si el método de pago es efectivo, validar monto recibido si está presente
@@ -65,8 +66,8 @@ class CarritoCheckout extends Component
             ];
         }
 
-        // Si el método de pago no es efectivo, validar datos de tarjeta
-        if ($this->metodo_pago !== 'efectivo') {
+        // Si el método de pago no es efectivo ni mercado_pago, validar datos de tarjeta
+        if ($this->metodo_pago !== 'efectivo' && $this->metodo_pago !== 'mercado_pago') {
             $rules['numero_tarjeta'] = ['required', 'string', new Luhn()];
             $rules['nombre_tarjeta'] = 'required|string|min:3|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/';
             $rules['fecha_vencimiento'] = [
@@ -250,70 +251,126 @@ class CarritoCheckout extends Component
                 ]);
             }
 
-            // Procesar el pago
-            $pagoService = new PagoSimuladoService();
-
-            $datosPago = [
-                'pedido_id' => $pedido->id,
-                'metodo_pago' => $this->metodo_pago,
-                'monto' => $this->total,
-                'numero_tarjeta' => preg_replace('/\D/', '', $this->numero_tarjeta),
-                'nombre_tarjeta' => $this->nombre_tarjeta,
-                'fecha_vencimiento' => $this->fecha_vencimiento,
-                'cvv' => $this->cvv,
-            ];
-
-            $resultadoPago = $pagoService->procesarPago($datosPago);
-            if (!$resultadoPago['success']) {
-                DB::rollBack();
-
-                Log::warning('Pago rechazado', [
+            // Procesar el pago según el método seleccionado
+            if ($this->metodo_pago === 'mercado_pago') {
+                // Crear transacción para Mercado Pago
+                $transaccion = Transaccion::create([
                     'pedido_id' => $pedido->id,
-                    'mensaje' => $resultadoPago['mensaje'],
+                    'metodo_pago' => 'mercado_pago',
+                    'estado' => 'pendiente',
+                    'monto' => $this->total,
+                    'numero_transaccion' => Transaccion::generarNumeroTransaccion(),
                 ]);
 
-                // Determinar tipo de error para el modal
-                $mensaje = $resultadoPago['mensaje'];
-                $tipo = 'general';
+                DB::commit();
 
-                if (str_contains(strtolower($mensaje), 'rechazada')) {
-                    $tipo = 'rechazado';
-                } elseif (str_contains(strtolower($mensaje), 'fondos insuficientes')) {
-                    $tipo = 'fondos';
-                } elseif (str_contains(strtolower($mensaje), 'vencida')) {
-                    $tipo = 'vencida';
-                } elseif (str_contains(strtolower($mensaje), 'bloqueada')) {
-                    $tipo = 'bloqueada';
-                } elseif (str_contains(strtolower($mensaje), 'inválido')) {
-                    $tipo = 'invalido';
+                // Crear preferencia de Mercado Pago
+                $mercadoPagoService = new MercadoPagoService();
+                $resultadoPreferencia = $mercadoPagoService->crearPreferencia($pedido, $transaccion);
+
+                if (!$resultadoPreferencia['success']) {
+                    Log::error('Error al crear preferencia de Mercado Pago', [
+                        'pedido_id' => $pedido->id,
+                        'error' => $resultadoPreferencia['error'] ?? 'Error desconocido',
+                    ]);
+
+                    $this->mensajeError = $resultadoPreferencia['error'] ?? 'Error al procesar el pago con Mercado Pago';
+                    $this->tipoError = 'general';
+                    $this->mostrarModalError = true;
+                    $this->dispatch('scroll-to-top');
+                    return;
                 }
 
-                $this->mensajeError = $mensaje;
-                $this->tipoError = $tipo;
-                $this->mostrarModalError = true;
-                $this->dispatch('scroll-to-top');
-                return;
-            }
-            $pedido->update(['estado_pago' => 'pagado']);
+                // Obtener URL de redirección (usar sandbox_init_point en modo test)
+                $initPoint = $mercadoPagoService->isTestMode()
+                    ? ($resultadoPreferencia['sandbox_init_point'] ?? $resultadoPreferencia['init_point'])
+                    : $resultadoPreferencia['init_point'];
 
-            DB::commit();
+                if (!$initPoint) {
+                    $this->mensajeError = 'No se pudo obtener la URL de pago de Mercado Pago';
+                    $this->tipoError = 'general';
+                    $this->mostrarModalError = true;
+                    $this->dispatch('scroll-to-top');
+                    return;
+                }
 
-            Log::info('Pedido creado exitosamente', [
-                'pedido_id' => $pedido->id,
-                'numero_pedido' => $pedido->numero_pedido,
-                'transaccion_id' => $resultadoPago['transaccion']->id,
-                'user_id' => Auth::id(),
-            ]);
+                Log::info('Preferencia de Mercado Pago creada exitosamente', [
+                    'pedido_id' => $pedido->id,
+                    'preference_id' => $resultadoPreferencia['preference_id'],
+                ]);
 
-            // Vaciar el carrito (productos y promociones)
-            $this->clearAllCarts();
+                // Vaciar el carrito antes de redirigir
+                $this->clearAllCarts();
 
-            // Redirigir según el método de pago
-            if ($this->metodo_pago === 'efectivo') {
-                return redirect()->route('cliente.pedido.confirmacion', $pedido->id)
-                    ->with('success', '¡Pedido realizado con éxito!');
+                // Redirigir a Mercado Pago
+                return redirect($initPoint);
+
             } else {
-                return redirect()->route('cliente.pago.procesando', $resultadoPago['transaccion']->id);
+                // Procesar con sistema simulado (efectivo o tarjeta)
+                $pagoService = new PagoSimuladoService();
+
+                $datosPago = [
+                    'pedido_id' => $pedido->id,
+                    'metodo_pago' => $this->metodo_pago,
+                    'monto' => $this->total,
+                    'numero_tarjeta' => preg_replace('/\D/', '', $this->numero_tarjeta),
+                    'nombre_tarjeta' => $this->nombre_tarjeta,
+                    'fecha_vencimiento' => $this->fecha_vencimiento,
+                    'cvv' => $this->cvv,
+                ];
+
+                $resultadoPago = $pagoService->procesarPago($datosPago);
+                if (!$resultadoPago['success']) {
+                    DB::rollBack();
+
+                    Log::warning('Pago rechazado', [
+                        'pedido_id' => $pedido->id,
+                        'mensaje' => $resultadoPago['mensaje'],
+                    ]);
+
+                    // Determinar tipo de error para el modal
+                    $mensaje = $resultadoPago['mensaje'];
+                    $tipo = 'general';
+
+                    if (str_contains(strtolower($mensaje), 'rechazada')) {
+                        $tipo = 'rechazado';
+                    } elseif (str_contains(strtolower($mensaje), 'fondos insuficientes')) {
+                        $tipo = 'fondos';
+                    } elseif (str_contains(strtolower($mensaje), 'vencida')) {
+                        $tipo = 'vencida';
+                    } elseif (str_contains(strtolower($mensaje), 'bloqueada')) {
+                        $tipo = 'bloqueada';
+                    } elseif (str_contains(strtolower($mensaje), 'inválido')) {
+                        $tipo = 'invalido';
+                    }
+
+                    $this->mensajeError = $mensaje;
+                    $this->tipoError = $tipo;
+                    $this->mostrarModalError = true;
+                    $this->dispatch('scroll-to-top');
+                    return;
+                }
+                $pedido->update(['estado_pago' => 'pagado']);
+
+                DB::commit();
+
+                Log::info('Pedido creado exitosamente', [
+                    'pedido_id' => $pedido->id,
+                    'numero_pedido' => $pedido->numero_pedido,
+                    'transaccion_id' => $resultadoPago['transaccion']->id,
+                    'user_id' => Auth::id(),
+                ]);
+
+                // Vaciar el carrito (productos y promociones)
+                $this->clearAllCarts();
+
+                // Redirigir según el método de pago
+                if ($this->metodo_pago === 'efectivo') {
+                    return redirect()->route('cliente.pedido.confirmacion', $pedido->id)
+                        ->with('success', '¡Pedido realizado con éxito!');
+                } else {
+                    return redirect()->route('cliente.pago.procesando', $resultadoPago['transaccion']->id);
+                }
             }
 
         } catch (\Exception $e) {

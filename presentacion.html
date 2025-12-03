@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Pedidos Digital - Presentación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .slide {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide-title::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .slide-title::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite 2s;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'orange-primary': '#FF6600',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-orange-50 to-white overflow-hidden font-sans text-gray-800">
+    <div class="w-screen h-screen relative flex items-center justify-center">
+        <!-- Slide 1: Título -->
+        <div class="slide slide-title w-screen h-screen hidden flex-col items-center justify-center text-center bg-gradient-to-br from-orange-500 to-orange-600 text-white relative overflow-hidden active">
+            <h1 class="text-5xl md:text-6xl font-bold mb-5 text-shadow-lg relative z-10 mt-10">Sistema de Gestión de Pedidos Digital</h1>
+            <p class="text-xl md:text-2xl opacity-95 font-light relative z-10">Presentación del Proyecto</p>
+        </div>
+
+        <!-- Slide 2: Introducción -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-lightbulb text-orange-500"></i> Introducción
+            </h2>
+            
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-8 mb-5">La Problemática de los Sistemas Tradicionales</h3>
+            <p class="text-lg md:text-xl leading-relaxed mb-5 text-gray-700">Los sistemas de registro de pedidos en papel han sido durante décadas el método estándar en el sector de comida rápida. Sin embargo, estos sistemas presentan múltiples limitaciones que afectan significativamente la eficiencia operativa:</p>
+            
+            <ul class="ml-8 mb-5">
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Errores humanos frecuentes</strong>: Transcripción manual de pedidos genera confusiones y equivocaciones</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Pérdida de información</strong>: Los pedidos en papel pueden extraviarse o dañarse</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Falta de trazabilidad</strong>: Es difícil rastrear el estado de un pedido en tiempo real</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Ineficiencia en la comunicación</strong>: La coordinación entre cocina, delivery y administración es lenta</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Análisis limitado</strong>: No hay datos históricos para tomar decisiones informadas</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700"><strong class="text-orange-600">Escalabilidad nula</strong>: A medida que crece el negocio, el sistema en papel se vuelve inmanejable</li>
+            </ul>
+
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-8 mb-5">La Necesidad de Digitalización</h3>
+            <p class="text-lg md:text-xl leading-relaxed mb-5 text-gray-700">En un mundo cada vez más digitalizado, los sistemas de gestión de pedidos digitales ofrecen ventajas significativas:</p>
+            
+            <ul class="ml-8 mb-5">
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Actualización en tiempo real del estado de los pedidos</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Reducción drástica de errores</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Mejor experiencia para clientes y empleados</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Capacidad de análisis y reportes</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Integración con sistemas de pago modernos</li>
+                <li class="text-base md:text-lg leading-relaxed mb-3 text-gray-700">Escalabilidad para crecer con el negocio</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3: Cuadro Comparativo -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-balance-scale text-orange-500"></i> Cuadro Comparativo
+            </h2>
+            
+            <div class="overflow-x-auto my-8">
+                <table class="w-full border-collapse shadow-lg rounded-xl overflow-hidden">
+                    <thead class="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+                        <tr>
+                            <th class="px-4 py-4 text-left font-semibold text-base md:text-lg">Característica</th>
+                            <th class="px-4 py-4 text-left font-semibold text-base md:text-lg">Sistema en Papel</th>
+                            <th class="px-4 py-4 text-left font-semibold text-base md:text-lg">Sistema de Terceros</th>
+                            <th class="px-4 py-4 text-left font-semibold text-base md:text-lg">Sistema Propio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-orange-50 hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Costo inicial</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">Bajo</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Medio</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Medio-Alto</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Costo mensual</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">Bajo (papel, tinta)</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Alto (comisiones 3-5% por venta)</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Bajo (solo hosting)</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Comisiones por venta</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">No aplica</td>
+                            <td class="px-4 py-4 border-b border-gray-200">3-5% de cada transacción</td>
+                            <td class="px-4 py-4 border-b border-gray-200">0%</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Control del sistema</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">Total (limitado)</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Ninguno</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Total</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Personalización</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">No aplica</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Limitada</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Completa</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Datos del negocio</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">Físicos</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Propiedad de terceros</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Propios</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200"><strong>Escalabilidad</strong></td>
+                            <td class="px-4 py-4 border-b border-gray-200">Baja</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Media</td>
+                            <td class="px-4 py-4 border-b border-gray-200">Alta</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100 transition-colors">
+                            <td class="px-4 py-4"><strong>Tiempo de respuesta</strong></td>
+                            <td class="px-4 py-4">Lento</td>
+                            <td class="px-4 py-4">Medio</td>
+                            <td class="px-4 py-4">Inmediato</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 p-5 bg-orange-50 border-l-5 border-orange-500 rounded-lg">
+                <p class="text-base md:text-lg text-gray-700"><strong>Sistema Propio</strong>: Requiere inversión inicial en desarrollo, pero ofrece control total, sin comisiones recurrentes, y la capacidad de adaptarse completamente a las necesidades del negocio.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Ventajas del Sistema Propio -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-star text-orange-500"></i> Ventajas del Sistema Propio
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-shield-alt text-orange-500"></i> Control Total y Autonomía
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Sin dependencia de terceros</li>
+                        <li class="text-gray-700">Decisiones propias sobre funcionalidades</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-dollar-sign text-orange-500"></i> Rentabilidad a Largo Plazo
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Sin comisiones por transacción</li>
+                        <li class="text-gray-700">Ahorro de $1,500-$2,500 mensuales</li>
+                        <li class="text-gray-700">ROI positivo en pocos meses</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-paint-brush text-orange-500"></i> Personalización Completa
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Adaptado a tus procesos</li>
+                        <li class="text-gray-700">Funcionalidades a medida</li>
+                        <li class="text-gray-700">Interfaz personalizada</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-chart-line text-orange-500"></i> Escalabilidad
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Crecimiento sin límites</li>
+                        <li class="text-gray-700">Múltiples sucursales</li>
+                        <li class="text-gray-700">Integración futura</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-database text-orange-500"></i> Propiedad de Datos
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Datos propios</li>
+                        <li class="text-gray-700">Privacidad garantizada</li>
+                        <li class="text-gray-700">Análisis profundo</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h4 class="text-xl text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-cogs text-orange-500"></i> Mantenimiento y Evolución
+                    </h4>
+                    <ul class="ml-5 space-y-2">
+                        <li class="text-gray-700">Actualizaciones a demanda</li>
+                        <li class="text-gray-700">Corrección rápida</li>
+                        <li class="text-gray-700">Tecnología moderna</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Flujo del Sistema -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-project-diagram text-orange-500"></i> Flujo del Sistema
+            </h2>
+            
+            <div class="space-y-4 my-8">
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-shopping-cart"></i> 1. Cliente Realiza Pedido
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Navega catálogo de productos</li>
+                        <li>Agrega items al carrito</li>
+                        <li>Selecciona método de pago (Efectivo/MercadoPago)</li>
+                        <li>Confirma pedido con dirección de entrega</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-credit-card"></i> 2. Procesamiento de Pago
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Si es Efectivo: Pedido creado directamente</li>
+                        <li>Si es MercadoPago: Procesamiento de pago online
+                            <ul class="ml-6 mt-2 space-y-1">
+                                <li>Validación de tarjeta</li>
+                                <li>Autorización de pago</li>
+                                <li>Confirmación de transacción</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-utensils"></i> 3. Cocina Recibe Pedido
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Notificación en tiempo real (WebSocket)</li>
+                        <li>Visualiza detalles del pedido</li>
+                        <li>Inicia preparación</li>
+                        <li>Marca como "Listo" cuando termina</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-truck"></i> 4. Delivery Asigna Pedido
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Ve pedidos disponibles en tiempo real</li>
+                        <li>Selecciona pedido para entregar</li>
+                        <li>Estado cambia a "En Camino"</li>
+                        <li>Cliente recibe notificación</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i> 5. Entrega y Completado
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Delivery confirma entrega</li>
+                        <li>Estado final: "Entregado"</li>
+                        <li>Cliente puede calificar</li>
+                        <li>Sistema registra datos para análisis</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 p-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl">
+                <h4 class="text-xl text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-check-double"></i> Características del Flujo
+                </h4>
+                <ul class="ml-6 space-y-2 text-white">
+                    <li>✓ Actualización en tiempo real para todos los usuarios</li>
+                    <li>✓ Notificaciones automáticas en cada cambio de estado</li>
+                    <li>✓ Trazabilidad completa del pedido</li>
+                    <li>✓ Sincronización automática entre módulos</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Tecnologías Utilizadas -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-code text-orange-500"></i> Tecnologías Utilizadas
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-8">
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fab fa-laravel text-orange-500 text-2xl"></i> Laravel 12 (PHP 8.2)
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Laravel?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Framework robusto y maduro</li>
+                        <li>Arquitectura MVC clara</li>
+                        <li>ORM Eloquent intuitivo</li>
+                        <li>Ecosistema completo</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-bolt text-orange-500 text-2xl"></i> Livewire 3.6
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Livewire?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Interfaces interactivas sin JS complejo</li>
+                        <li>Actualización en tiempo real</li>
+                        <li>Integración perfecta con Laravel</li>
+                        <li>Desarrollo más rápido</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-satellite-dish text-orange-500 text-2xl"></i> Laravel Reverb
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Reverb?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Comunicación bidireccional en tiempo real</li>
+                        <li>Notificaciones instantáneas</li>
+                        <li>Nativo de Laravel</li>
+                        <li>Escalable y eficiente</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-palette text-orange-500 text-2xl"></i> Tailwind CSS 4
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Tailwind?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Desarrollo rápido</li>
+                        <li>Diseño responsive</li>
+                        <li>Optimización automática</li>
+                        <li>Consistencia visual</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fab fa-js text-orange-500 text-2xl"></i> Alpine.js
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Alpine.js?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Ligero (solo 15KB)</li>
+                        <li>Sintaxis simple</li>
+                        <li>Perfecto complemento para Livewire</li>
+                        <li>Ideal para componentes pequeños</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-wallet text-orange-500 text-2xl"></i> MercadoPago
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué MercadoPago?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Líder en Latinoamérica</li>
+                        <li>Múltiples métodos de pago</li>
+                        <li>API robusta</li>
+                        <li>Procesamiento seguro</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-chart-bar text-orange-500 text-2xl"></i> Chart.js
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Chart.js?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Librería moderna y ligera</li>
+                        <li>Múltiples tipos de gráficos</li>
+                        <li>Responsive y animado</li>
+                        <li>Ideal para dashboards</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <h4 class="text-lg text-orange-600 mb-4 flex items-center gap-3">
+                        <i class="fas fa-rocket text-orange-500 text-2xl"></i> Vite
+                    </h4>
+                    <p class="font-semibold mb-2 text-gray-700">¿Por qué Vite?</p>
+                    <ul class="ml-5 space-y-1 text-sm text-gray-700">
+                        <li>Compilación extremadamente rápida</li>
+                        <li>Hot Module Replacement</li>
+                        <li>Optimización automática</li>
+                        <li>Mejor experiencia de desarrollo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Arquitectura Monolítica -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-sitemap text-orange-500"></i> Arquitectura Monolítica
+            </h2>
+            
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-8 mb-5">¿Qué es una Arquitectura Monolítica?</h3>
+            <p class="text-lg md:text-xl leading-relaxed mb-8 text-gray-700">Una arquitectura monolítica es un modelo donde toda la aplicación se desarrolla como una sola unidad. Todos los componentes (interfaz de usuario, lógica de negocio, acceso a datos) están integrados y se despliegan juntos.</p>
+
+            <div class="bg-gradient-to-br from-orange-50 to-white border-2 border-orange-200 p-8 rounded-xl my-8">
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-layer-group"></i> Simplicidad de Desarrollo
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Un solo repositorio</li>
+                        <li>Debugging más fácil</li>
+                        <li>Testing simplificado</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-cloud-upload-alt"></i> Despliegue Simplificado
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Un solo despliegue</li>
+                        <li>Menos complejidad operativa</li>
+                        <li>Rollback simple</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-tachometer-alt"></i> Rendimiento
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Sin latencia de red</li>
+                        <li>Transacciones ACID</li>
+                        <li>Menor overhead</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 my-4 border-l-5 border-orange-500 rounded-lg shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-dollar-sign"></i> Costos
+                    </h4>
+                    <ul class="ml-6 space-y-2 text-gray-700">
+                        <li>Infraestructura simple</li>
+                        <li>Menos servicios</li>
+                        <li>Mantenimiento económico</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-8 mb-5">Patrones de Diseño Utilizados</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-5">
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-eye text-orange-500"></i> Observer Pattern
+                    </h4>
+                    <p class="text-gray-700">PedidoObserver observa cambios y dispara eventos automáticamente</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-cogs text-orange-500"></i> Service Layer
+                    </h4>
+                    <p class="text-gray-700">PagoSimuladoService encapsula lógica de negocio</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 p-6 rounded-xl shadow-md">
+                    <h4 class="text-xl text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-broadcast-tower text-orange-500"></i> Event-Driven
+                    </h4>
+                    <p class="text-gray-700">Events para desacoplamiento y extensibilidad</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Conclusión -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-16 overflow-y-auto">
+            <h2 class="text-3xl md:text-4xl text-orange-600 mb-8 pb-4 border-b-4 border-orange-500 flex items-center gap-4">
+                <i class="fas fa-flag-checkered text-orange-500"></i> Conclusión
+            </h2>
+            
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-8 mb-5">Resumen de Beneficios</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-8">
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl text-center shadow-lg">
+                    <div class="text-5xl font-bold mb-3">⚡</div>
+                    <div class="text-lg font-semibold mb-2 opacity-95">Eficiencia Operativa</div>
+                    <p class="text-sm mt-3 opacity-90">Reducción de errores y tiempo de respuesta</p>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl text-center shadow-lg">
+                    <div class="text-5xl font-bold mb-3">💰</div>
+                    <div class="text-lg font-semibold mb-2 opacity-95">Rentabilidad</div>
+                    <p class="text-sm mt-3 opacity-90">Ahorro de $1,500-$2,500 mensuales</p>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl text-center shadow-lg">
+                    <div class="text-5xl font-bold mb-3">😊</div>
+                    <div class="text-lg font-semibold mb-2 opacity-95">Experiencia del Cliente</div>
+                    <p class="text-sm mt-3 opacity-90">Transparencia y conveniencia</p>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl text-center shadow-lg">
+                    <div class="text-5xl font-bold mb-3">📊</div>
+                    <div class="text-lg font-semibold mb-2 opacity-95">Datos y Análisis</div>
+                    <p class="text-sm mt-3 opacity-90">Toma de decisiones informada</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl md:text-3xl text-orange-600 mt-10 mb-5">Impacto en la Eficiencia Operativa</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
+                <div class="p-5 bg-gray-100 rounded-xl">
+                    <h4 class="text-xl text-gray-700 mb-4">Antes (Sistema en Papel)</h4>
+                    <ul class="ml-5 space-y-2 text-gray-700">
+                        <li>⏱️ Tiempo: 15-20 minutos</li>
+                        <li>❌ Tasa de error: ~8-10%</li>
+                        <li>📞 Llamadas: 3-5 por pedido</li>
+                        <li>📊 Análisis: Manual, horas</li>
+                    </ul>
+                </div>
+                <div class="p-5 bg-gradient-to-br from-orange-50 to-white border-l-5 border-orange-500 rounded-xl">
+                    <h4 class="text-xl text-orange-600 mb-4">Después (Sistema Digital)</h4>
+                    <ul class="ml-5 space-y-2 text-gray-700">
+                        <li>⚡ Tiempo: 5-8 minutos</li>
+                        <li>✅ Tasa de error: &lt;1%</li>
+                        <li>📱 Notificaciones: Automáticas</li>
+                        <li>📈 Análisis: Tiempo real</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl">
+                <h3 class="text-2xl text-white mb-4">Reflexión Final</h3>
+                <p class="text-lg leading-relaxed text-white">
+                    La digitalización de procesos no es solo una tendencia, es una necesidad para competir en el mercado actual. Un sistema propio de gestión de pedidos no solo mejora la eficiencia operativa, sino que también empodera al negocio con control total, mejora la rentabilidad eliminando comisiones recurrentes, y proporciona datos valiosos para tomar decisiones estratégicas.
+                </p>
+            </div>
+
+            <div class="mt-8 text-center p-5 bg-orange-50 rounded-xl">
+                <p class="italic text-orange-700 text-base md:text-lg">
+                    <i class="fas fa-code"></i> Sistema desarrollado con Laravel 12, Livewire 3.6 y tecnologías modernas<br>
+                    <i class="fas fa-architecture"></i> Arquitectura monolítica optimizada para eficiencia y escalabilidad
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <div class="fixed top-8 right-8 bg-white bg-opacity-90 px-5 py-3 rounded-full shadow-lg font-semibold text-orange-600 z-50">
+        <span id="current-slide">1</span> / <span id="total-slides">8</span>
+    </div>
+
+    <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex gap-4 z-50">
+        <button id="prev-btn" onclick="changeSlide(-1)" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-none px-6 py-3 rounded-full cursor-pointer text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg">
+            <i class="fas fa-chevron-left"></i> Anterior
+        </button>
+        <button id="next-btn" onclick="changeSlide(1)" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-none px-6 py-3 rounded-full cursor-pointer text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg">
+            Siguiente <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            if (n >= totalSlides) {
+                currentSlide = 0;
+            } else if (n < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = n;
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                slide.classList.add('hidden');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Actualizar estado de botones
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (currentSlide === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+            
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        }
+
+        function changeSlide(direction) {
+            if (direction === -1 && currentSlide === 0) {
+                return; // No hacer nada si estamos en el primer slide
+            }
+            if (direction === 1 && currentSlide === totalSlides - 1) {
+                return; // No hacer nada si estamos en el último slide
+            }
+            showSlide(currentSlide + direction);
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) {
+                    changeSlide(1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    changeSlide(-1);
+                }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+    </script>
+</body>
+</html>

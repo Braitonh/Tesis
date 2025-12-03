@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Pedidos Digital - Presentación V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.9;
+            }
+        }
+
+        .slide {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .blob-shape {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-shape-2 {
+            animation: float 10s ease-in-out infinite 2s;
+        }
+
+        .circle-decorative {
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .progress-bar {
+            transition: width 1s ease-out;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'orange-primary': '#FF6600',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white overflow-hidden font-sans text-gray-800">
+    <div class="w-screen h-screen relative flex items-center justify-center">
+        
+        <!-- Slide 1: Título -->
+        <div class="slide w-screen h-screen hidden flex items-center justify-center text-center bg-gradient-to-br from-orange-500 to-orange-600 text-white relative overflow-hidden active">
+            <!-- Blob shapes decorativos -->
+            <svg class="absolute top-0 left-0 w-full h-full opacity-20 blob-shape" viewBox="0 0 1200 800" preserveAspectRatio="none">
+                <path d="M0,200 Q300,100 600,200 T1200,200 L1200,0 L0,0 Z" fill="white"/>
+            </svg>
+            <svg class="absolute bottom-0 right-0 w-96 h-96 opacity-15 blob-shape-2" viewBox="0 0 400 400">
+                <path d="M200,200 Q250,150 300,200 T400,200 Q350,250 300,200 T200,200 Q150,150 100,200 T0,200 Q50,250 100,200 T200,200" fill="white"/>
+            </svg>
+            
+            <!-- Círculos decorativos -->
+            <div class="absolute top-20 right-20 w-64 h-64 bg-white bg-opacity-10 rounded-full circle-decorative"></div>
+            <div class="absolute bottom-20 left-20 w-48 h-48 bg-white bg-opacity-10 rounded-full circle-decorative" style="animation-delay: 2s;"></div>
+            
+            <!-- Contenido -->
+            <div class="relative z-10">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">SISTEMA DE GESTIÓN</h1>
+                <h2 class="text-4xl md:text-6xl font-bold mb-4">DE PEDIDOS DIGITAL</h2>
+            </div>
+        </div>
+
+        <!-- Slide 2: Introducción - Problemática -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-8 font-bold">INTRODUCCIÓN</h2>
+            
+            <div class="mb-12">
+                <h3 class="text-2xl md:text-3xl text-orange-600 mb-6 font-bold">La Problemática de los Sistemas Tradicionales</h3>
+                <p class="text-lg md:text-xl leading-relaxed mb-6 text-gray-700">
+                    Los sistemas de registro de pedidos en papel han sido durante décadas el método estándar en el sector de comida rápida. Sin embargo, estos sistemas presentan múltiples limitaciones que afectan significativamente la eficiencia operativa.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Errores humanos frecuentes</h4>
+                        <p class="text-sm text-gray-700">Transcripción manual genera confusiones</p>
+                    </div>
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Pérdida de información</h4>
+                        <p class="text-sm text-gray-700">Pedidos en papel pueden extraviarse</p>
+                    </div>
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Falta de trazabilidad</h4>
+                        <p class="text-sm text-gray-700">Difícil rastrear estado en tiempo real</p>
+                    </div>
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Ineficiencia en comunicación</h4>
+                        <p class="text-sm text-gray-700">Coordinación lenta entre departamentos</p>
+                    </div>
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Análisis limitado</h4>
+                        <p class="text-sm text-gray-700">No hay datos históricos para decisiones</p>
+                    </div>
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600 mb-2">Escalabilidad nula</h4>
+                        <p class="text-sm text-gray-700">Sistema se vuelve inmanejable al crecer</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Slide 3: Cuadro Comparativo -->
+        <div class="slide w-screen h-screen hidden bg-white p-8 md:p-12 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-8 font-bold text-center">CUADRO COMPARATIVO</h2>
+            
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full border-collapse shadow-lg rounded-xl overflow-hidden text-sm md:text-base">
+                    <thead class="bg-orange-500 text-white">
+                        <tr>
+                            <th class="px-3 py-3 text-left font-semibold">Característica</th>
+                            <th class="px-3 py-3 text-left font-semibold">Sistema en Papel</th>
+                            <th class="px-3 py-3 text-left font-semibold">Sistema de Terceros</th>
+                            <th class="px-3 py-3 text-left font-semibold">Sistema Propio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-orange-50 hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Costo inicial</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Bajo</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Medio</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Medio-Alto</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Costo mensual</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Bajo</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Alto (3-5% comisión)</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Bajo (solo hosting)</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Comisiones</td>
+                            <td class="px-3 py-3 border-b border-gray-200">No aplica</td>
+                            <td class="px-3 py-3 border-b border-gray-200">3-5% por venta</td>
+                            <td class="px-3 py-3 border-b border-gray-200">0%</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Control</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Total (limitado)</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Ninguno</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Total</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Personalización</td>
+                            <td class="px-3 py-3 border-b border-gray-200">No aplica</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Limitada</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Completa</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Datos</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Físicos</td>
+                            <td class="px-3 py-3 border-b border-gray-200">De terceros</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Propios</td>
+                        </tr>
+                        <tr class="bg-orange-50 hover:bg-orange-100">
+                            <td class="px-3 py-3 border-b border-gray-200 font-semibold">Escalabilidad</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Baja</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Media</td>
+                            <td class="px-3 py-3 border-b border-gray-200">Alta</td>
+                        </tr>
+                        <tr class="hover:bg-orange-100">
+                            <td class="px-3 py-3 font-semibold">Tiempo respuesta</td>
+                            <td class="px-3 py-3">Lento</td>
+                            <td class="px-3 py-3">Medio</td>
+                            <td class="px-3 py-3">Inmediato</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-lg">
+                <p class="text-gray-700"><strong class="text-orange-600">Sistema Propio</strong>: Requiere inversión inicial en desarrollo, pero ofrece control total, sin comisiones recurrentes, y la capacidad de adaptarse completamente a las necesidades del negocio.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Ventajas del Sistema Propio -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">VENTAJAS DEL SISTEMA PROPIO</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Control Total</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Sin dependencia de terceros</li>
+                        <li>• Decisiones propias</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-dollar-sign text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Rentabilidad</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Sin comisiones por transacción</li>
+                        <li>• Ahorro $1,500-$2,500/mes</li>
+                        <li>• ROI positivo en pocos meses</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paint-brush text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Personalización</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Adaptado a tus procesos</li>
+                        <li>• Funcionalidades a medida</li>
+                        <li>• Interfaz personalizada</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Escalabilidad</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Crecimiento sin límites</li>
+                        <li>• Múltiples sucursales</li>
+                        <li>• Integración futura</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-database text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Propiedad de Datos</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Datos propios</li>
+                        <li>• Privacidad garantizada</li>
+                        <li>• Análisis profundo</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cogs text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-orange-600 mb-3 text-center">Mantenimiento</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>• Actualizaciones a demanda</li>
+                        <li>• Corrección rápida</li>
+                        <li>• Tecnología moderna</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Flujo del Sistema - Detallado -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DEL SISTEMA</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-shopping-cart text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">1. Cliente Realiza Pedido</h3>
+                        <p class="text-xs text-gray-700">Navega catálogo, agrega items, selecciona pago, confirma</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-credit-card text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">2. Procesamiento de Pago</h3>
+                        <p class="text-xs text-gray-700">Efectivo directo o MercadoPago online</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-utensils text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">3. Cocina Recibe</h3>
+                        <p class="text-xs text-gray-700">Notificación WebSocket, prepara, marca "Listo"</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-truck text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">4. Delivery Asigna</h3>
+                        <p class="text-xs text-gray-700">Selecciona pedido, estado "En Camino"</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-check-circle text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">5. Entrega</h3>
+                        <p class="text-xs text-gray-700">Confirma entrega, estado "Entregado"</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-8">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Estados del Pedido</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-6 gap-3 text-center">
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Pendiente</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-utensils text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">En Preparación</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Listo</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">En Camino</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-check-circle text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Entregado</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg">
+                            <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-times text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-gray-600">Cancelado</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-8 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Características del Flujo</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <i class="fas fa-sync-alt text-3xl mb-2"></i>
+                            <p class="text-sm">Tiempo Real</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-bell text-3xl mb-2"></i>
+                            <p class="text-sm">Notificaciones</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-search text-3xl mb-2"></i>
+                            <p class="text-sm">Trazabilidad</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-link text-3xl mb-2"></i>
+                            <p class="text-sm">Sincronización</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Roles del Sistema y Casos de Uso -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">ROLES DEL SISTEMA</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <p class="text-lg text-gray-700 mb-8 text-center">
+                    Sistema de control de acceso basado en roles con permisos específicos según responsabilidades operativas
+                </p>
+                
+                <div class="flex flex-wrap justify-center gap-6 mb-8">
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all flex-1 min-w-[200px] max-w-[240px]">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-shield text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-orange-600 mb-3 text-center">Administrador</h3>
+                        <p class="text-xs text-gray-700 mb-2 text-center">Acceso completo</p>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>• Gestión de usuarios</li>
+                            <li>• Gestión de productos</li>
+                            <li>• Dashboard analítico</li>
+                            <li>• Configuración</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all flex-1 min-w-[200px] max-w-[240px]">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-orange-600 mb-3 text-center">Cliente</h3>
+                        <p class="text-xs text-gray-700 mb-2 text-center">Realizar pedidos</p>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>• Realizar pedidos</li>
+                            <li>• Ver estado en tiempo real</li>
+                            <li>• Gestionar perfil</li>
+                            <li>• Calificar pedidos</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all flex-1 min-w-[200px] max-w-[240px]">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-utensils text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-orange-600 mb-3 text-center">Cocina</h3>
+                        <p class="text-xs text-gray-700 mb-2 text-center">Preparación</p>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>• Ver pedidos tiempo real</li>
+                            <li>• Actualizar estados</li>
+                            <li>• Marcar como listo</li>
+                            <li>• Notificaciones WebSocket</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all flex-1 min-w-[200px] max-w-[240px]">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-truck text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-orange-600 mb-3 text-center">Delivery</h3>
+                        <p class="text-xs text-gray-700 mb-2 text-center">Entrega</p>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>• Ver pedidos disponibles</li>
+                            <li>• Asignar pedidos</li>
+                            <li>• Confirmar entrega</li>
+                            <li>• Ver detalles entrega</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all flex-1 min-w-[200px] max-w-[240px]">
+                        <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cash-register text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-orange-600 mb-3 text-center">Ventas</h3>
+                        <p class="text-xs text-gray-700 mb-2 text-center">Gestión pedidos</p>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>• Gestionar pedidos</li>
+                            <li>• Procesar pagos</li>
+                            <li>• Ver transacciones</li>
+                            <li>• Reportes básicos</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Control de Acceso</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center text-sm">
+                        <div class="bg-white p-4 rounded-lg">
+                            <i class="fas fa-key text-orange-500 text-2xl mb-2"></i>
+                            <p class="font-semibold text-orange-600">Autenticación</p>
+                            <p class="text-xs text-gray-600">Usuario logueado</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <i class="fas fa-envelope text-orange-500 text-2xl mb-2"></i>
+                            <p class="font-semibold text-orange-600">Verificación Email</p>
+                            <p class="text-xs text-gray-600">Clientes verificados</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <i class="fas fa-shield-alt text-orange-500 text-2xl mb-2"></i>
+                            <p class="font-semibold text-orange-600">Autorización</p>
+                            <p class="text-xs text-gray-600">Por rol</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <i class="fas fa-route text-orange-500 text-2xl mb-2"></i>
+                            <p class="font-semibold text-orange-600">Redirección</p>
+                            <p class="text-xs text-gray-600">Automática</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Flujo del Rol Cliente -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DEL ROL: CLIENTE</h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mb-12">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-shopping-cart text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">1. Realizar Pedido</h3>
+                        <p class="text-xs text-gray-700">Navegar catálogo, carrito, pago, confirmar</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-map-marker-alt text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">2. Seguimiento</h3>
+                        <p class="text-xs text-gray-700">Ver estado en tiempo real</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-bell text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">3. Recibe notificación</h3>
+                        <p class="text-xs text-gray-700">Notificación de pedido en camino</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-check-circle text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">4. Recibe el pedido</h3>
+                        <p class="text-xs text-gray-700">Pedido entregado</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Características Clave</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-sync-alt text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Tiempo Real</p>
+                            <p class="text-xs text-gray-600">Sincronización</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Notificaciones</p>
+                            <p class="text-xs text-gray-600">Automáticas</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-history text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Historial</p>
+                            <p class="text-xs text-gray-600">Completo</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-center">Permisos y Capacidades</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <i class="fas fa-shopping-cart text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Realizar Pedidos</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-map-marker-alt text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Estado</p>
+                            <p class="text-xs opacity-90">Tiempo Real</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-user-edit text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Gestionar Perfil</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-list text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Historial</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Flujo del Rol Ventas -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DEL ROL: VENTAS</h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mb-12">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-tasks text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">1. Gestionar Pedidos</h3>
+                        <p class="text-xs text-gray-700">Lista completa, filtros, búsqueda</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-money-bill-wave text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">2. Procesar Pagos</h3>
+                        <p class="text-xs text-gray-700">Efectivo, actualizar estado</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-edit text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">3. Actualizar Estados</h3>
+                        <p class="text-xs text-gray-700">Modificar, cancelar</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-receipt text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">4. Ver Transacciones</h3>
+                        <p class="text-xs text-gray-700">Historial, MercadoPago</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-chart-line text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">5. Reportes</h3>
+                        <p class="text-xs text-gray-700">Ventas del día, métricas</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Características Clave</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-tasks text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Gestión Completa</p>
+                            <p class="text-xs text-gray-600">Pedidos</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-money-bill-wave text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Procesamiento</p>
+                            <p class="text-xs text-gray-600">Pagos</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-sliders-h text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Control</p>
+                            <p class="text-xs text-gray-600">Estados</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Reportes</p>
+                            <p class="text-xs text-gray-600">Básicos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-center">Permisos y Capacidades</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <i class="fas fa-list text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Gestionar</p>
+                            <p class="text-xs opacity-90">Todos los Pedidos</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-cash-register text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Procesar Pagos</p>
+                            <p class="text-xs opacity-90">Efectivo</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-edit text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Modificar</p>
+                            <p class="text-xs opacity-90">Estados</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-receipt text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver</p>
+                            <p class="text-xs opacity-90">Transacciones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Flujo del Rol Cocina -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DEL ROL: COCINA</h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mb-12">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-bell text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">1. Recibir Notificación</h3>
+                        <p class="text-xs text-gray-700">WebSocket en tiempo real</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-list text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">2. Ver Pendientes</h3>
+                        <p class="text-xs text-gray-700">Lista en tiempo real</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-play-circle text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">3. Iniciar Preparación</h3>
+                        <p class="text-xs text-gray-700">Estado "En Preparación"</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-info-circle text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">4. Ver Detalles</h3>
+                        <p class="text-xs text-gray-700">Productos y observaciones</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-check-circle text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">5. Marcar Listo</h3>
+                        <p class="text-xs text-gray-700">Notificar a delivery</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Características Clave</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-satellite-dish text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">WebSocket</p>
+                            <p class="text-xs text-gray-600">Notificaciones</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-sync-alt text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Tiempo Real</p>
+                            <p class="text-xs text-gray-600">Actualización</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-info-circle text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Vista Detallada</p>
+                            <p class="text-xs text-gray-600">Pedidos</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-link text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Sincronización</p>
+                            <p class="text-xs text-gray-600">Automática</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-center">Permisos y Capacidades</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <i class="fas fa-list text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Pedidos</p>
+                            <p class="text-xs opacity-90">Pendientes</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-edit text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Actualizar</p>
+                            <p class="text-xs opacity-90">Estados</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-info-circle text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Detalles</p>
+                            <p class="text-xs opacity-90">Completos</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-check-circle text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Marcar Listo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Flujo del Rol Delivery -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DEL ROL: DELIVERY</h2>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mb-12">
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-clipboard-list text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">1. Ver Disponibles</h3>
+                        <p class="text-xs text-gray-700">Pedidos listos, tiempo real</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-hand-paper text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">2. Asignar Pedido</h3>
+                        <p class="text-xs text-gray-700">Estado "En Camino"</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-map-marked-alt text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">3. Ver Detalles</h3>
+                        <p class="text-xs text-gray-700">Dirección, teléfono</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-check-double text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">4. Confirmar Entrega</h3>
+                        <p class="text-xs text-gray-700">Estado "Entregado"</p>
+                    </div>
+                    <div class="hidden md:block text-orange-500 text-3xl">→</div>
+                    <div class="flex flex-col items-center text-center flex-1">
+                        <div class="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                            <i class="fas fa-paper-plane text-white text-4xl"></i>
+                        </div>
+                        <h3 class="font-bold text-orange-600 mb-2">5. Notificar</h3>
+                        <p class="text-xs text-gray-700">Notificación automática</p>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl mb-6">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Características Clave</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-hand-paper text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Asignación</p>
+                            <p class="text-xs text-gray-600">Pedidos</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Notificaciones</p>
+                            <p class="text-xs text-gray-600">Automáticas</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-map-marked-alt text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Vista Detalles</p>
+                            <p class="text-xs text-gray-600">Entrega</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-check-double text-white"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-orange-600">Confirmación</p>
+                            <p class="text-xs text-gray-600">Rápida</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4 text-center">Permisos y Capacidades</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <i class="fas fa-clipboard-list text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Pedidos</p>
+                            <p class="text-xs opacity-90">Disponibles</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-hand-paper text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Asignar</p>
+                            <p class="text-xs opacity-90">Pedidos</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-map-marked-alt text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Ver Detalles</p>
+                            <p class="text-xs opacity-90">Entrega</p>
+                        </div>
+                        <div>
+                            <i class="fas fa-check-double text-3xl mb-2"></i>
+                            <p class="text-sm font-semibold">Confirmar</p>
+                            <p class="text-xs opacity-90">Entrega</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Panel Analítico -->
+        <div class="slide w-screen h-screen hidden bg-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1/2 h-full bg-orange-500"></div>
+            <div class="absolute top-0 left-0 w-96 h-96 bg-orange-400 rounded-full opacity-20 -ml-48 -mt-48 circle-decorative"></div>
+            
+            <div class="relative z-10 h-full flex">
+                <div class="w-1/2 bg-orange-500 flex items-center justify-center p-12 overflow-y-auto">
+                    <div class="text-white w-full">
+                        <h2 class="text-4xl md:text-5xl font-bold mb-8 text-center">PANEL ANALÍTICO</h2>
+                        <p class="text-xl mb-8 opacity-95 text-center">
+                            Dashboard completo con Chart.js para toma de decisiones basada en datos
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white bg-opacity-20 rounded-xl p-6 border border-white border-opacity-30">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-12 h-12 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-dollar-sign text-2xl"></i>
+                                    </div>
+                                    <span class="text-xs bg-green-400 bg-opacity-80 px-2 py-1 rounded">+15%</span>
+                                </div>
+                                <h3 class="text-lg font-bold mb-1">Ventas del Mes</h3>
+                                <p class="text-2xl font-bold">$45,230</p>
+                                <p class="text-xs opacity-80 mt-2">Comparado con mes anterior</p>
+                            </div>
+                            
+                            <div class="bg-white bg-opacity-20 rounded-xl p-6 border border-white border-opacity-30">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-12 h-12 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-shopping-cart text-2xl"></i>
+                                    </div>
+                                    <span class="text-xs bg-green-400 bg-opacity-80 px-2 py-1 rounded">+8%</span>
+                                </div>
+                                <h3 class="text-lg font-bold mb-1">Pedidos del Mes</h3>
+                                <p class="text-2xl font-bold">1,247</p>
+                                <p class="text-xs opacity-80 mt-2">Total de pedidos procesados</p>
+                            </div>
+                            
+                            <div class="bg-white bg-opacity-20 rounded-xl p-6 border border-white border-opacity-30">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-12 h-12 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-chart-line text-2xl"></i>
+                                    </div>
+                                    <span class="text-xs bg-blue-400 bg-opacity-80 px-2 py-1 rounded">Estable</span>
+                                </div>
+                                <h3 class="text-lg font-bold mb-1">Promedio por Pedido</h3>
+                                <p class="text-2xl font-bold">$36.25</p>
+                                <p class="text-xs opacity-80 mt-2">Ticket promedio</p>
+                            </div>
+                            
+                            <div class="bg-white bg-opacity-20 rounded-xl p-6 border border-white border-opacity-30">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="w-12 h-12 bg-white bg-opacity-30 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-times-circle text-2xl"></i>
+                                    </div>
+                                    <span class="text-xs bg-red-400 bg-opacity-80 px-2 py-1 rounded">2.3%</span>
+                                </div>
+                                <h3 class="text-lg font-bold mb-1">Tasa Cancelación</h3>
+                                <p class="text-2xl font-bold">2.3%</p>
+                                <p class="text-xs opacity-80 mt-2">Pedidos cancelados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/2 p-12 md:p-16 flex flex-col justify-center overflow-y-auto">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                                <i class="fas fa-chart-line text-orange-500"></i> Gráficos de Ventas
+                            </h3>
+                            <ul class="text-sm text-gray-700 space-y-2 ml-6">
+                                <li>• Ventas por día (30 días) - Tendencias diarias</li>
+                                <li>• Ventas por semana (12 semanas) - Análisis mediano plazo</li>
+                                <li>• Ventas por mes (12 meses) - Crecimiento anual</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                                <i class="fas fa-shopping-cart text-orange-500"></i> Gráficos de Pedidos
+                            </h3>
+                            <ul class="text-sm text-gray-700 space-y-2 ml-6">
+                                <li>• Pedidos por estado - Distribución actual</li>
+                                <li>• Pedidos por día semana - Patrones demanda</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                                <i class="fas fa-box text-orange-500"></i> Gráficos de Productos
+                            </h3>
+                            <ul class="text-sm text-gray-700 space-y-2 ml-6">
+                                <li>• Top 10 más vendidos - Productos estrella</li>
+                                <li>• Productos por categoría - Distribución</li>
+                                <li>• Stock bajo - Alertas inventario</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                                <i class="fas fa-dollar-sign text-orange-500"></i> Gráficos de Ingresos
+                            </h3>
+                            <ul class="text-sm text-gray-700 space-y-2 ml-6">
+                                <li>• Ingresos por método pago - Efectivo vs MercadoPago</li>
+                                <li>• Ingresos diarios - Flujo de caja</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-6 bg-orange-50 rounded-xl">
+                        <p class="text-sm text-gray-700 text-center">
+                            <strong class="text-orange-600">Valor:</strong> Decisiones operativas, estratégicas y financieras basadas en datos en tiempo real
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Tecnologías -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">TECNOLOGÍAS UTILIZADAS</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-8">
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-laravel text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">Laravel 12 (PHP)</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">Framework robusto y maduro</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Arquitectura MVC</li>
+                        <li>• ORM Eloquent</li>
+                        <li>• Ecosistema completo</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bolt text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">Livewire 3.6</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">Interactividad sin JS complejo</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Actualización tiempo real</li>
+                        <li>• Integración Laravel</li>
+                        <li>• Desarrollo rápido</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-satellite-dish text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">Laravel Reverb</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">WebSockets nativo</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Comunicación bidireccional</li>
+                        <li>• Notificaciones instantáneas</li>
+                        <li>• Escalable</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-palette text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">Tailwind CSS 4</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">Diseño rápido</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Clases utilitarias</li>
+                        <li>• Responsive por defecto</li>
+                        <li>• Optimización automática</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-docker text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">Docker</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">Containerización</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Entorno consistente</li>
+                        <li>• Múltiples servicios</li>
+                        <li>• Desarrollo aislado</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border-2 border-orange-200 p-6 rounded-xl hover:border-orange-500 hover:shadow-lg transition-all">
+                    <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-database text-white text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-orange-600 mb-2 text-center">MySQL 8.0</h3>
+                    <p class="text-xs text-gray-700 text-center mb-2">Base de datos relacional</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• Transacciones ACID</li>
+                        <li>• ORM Eloquent</li>
+                        <li>• Escalable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Metodología de Desarrollo -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">METODOLOGÍA DE DESARROLLO</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-orange-50 p-6 rounded-xl">
+                        <h3 class="text-2xl font-bold text-orange-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-project-diagram text-orange-500"></i> Metodología
+                        </h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li>• Desarrollo incremental por módulos</li>
+                            <li>• Priorización de funcionalidades</li>
+                            <li>• Flexibilidad para cambios</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-6 rounded-xl">
+                        <h3 class="text-2xl font-bold text-orange-600 mb-4 flex items-center gap-2">
+                            <i class="fab fa-git-alt text-orange-500"></i> Control de Versiones
+                        </h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li>• Git para trazabilidad completa</li>
+                            <li>• Estrategia de branches (main, develop, feature)</li>
+                            <li>• Workflow estructurado</li>
+                        </ul>
+                    </div>
+                </div>
+       
+                <div class="bg-orange-50 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Proceso de Desarrollo</h3>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm">
+                        <div class="bg-white p-4 rounded-lg flex-1 min-w-[140px] max-w-[180px]">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white font-bold">1</span>
+                            </div>
+                            <p class="font-semibold text-orange-600 mb-2 text-center">Análisis</p>
+                            <p class="text-xs text-gray-600 text-center">Requisitos y arquitectura</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg flex-1 min-w-[140px] max-w-[180px]">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white font-bold">2</span>
+                            </div>
+                            <p class="font-semibold text-orange-600 mb-2 text-center">Desarrollo</p>
+                            <p class="text-xs text-gray-600 text-center">Módulos base y core</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg flex-1 min-w-[140px] max-w-[180px]">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white font-bold">3</span>
+                            </div>
+                            <p class="font-semibold text-orange-600 mb-2 text-center">Testing</p>
+                            <p class="text-xs text-gray-600 text-center">Unitario e integración</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg flex-1 min-w-[140px] max-w-[180px]">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white font-bold">4</span>
+                            </div>
+                            <p class="font-semibold text-orange-600 mb-2 text-center">Optimización</p>
+                            <p class="text-xs text-gray-600 text-center">Rendimiento y consultas</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg flex-1 min-w-[140px] max-w-[180px]">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-white font-bold">5</span>
+                            </div>
+                            <p class="font-semibold text-orange-600 mb-2 text-center">Documentación</p>
+                            <p class="text-xs text-gray-600 text-center">Técnica y usuario</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Arquitectura Monolítica -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">ARQUITECTURA MONOLÍTICA</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-8">
+                    <h3 class="text-2xl md:text-3xl text-orange-600 mb-4 font-bold">¿Qué es una Arquitectura Monolítica?</h3>
+                    <p class="text-lg text-gray-700 mb-6">
+                        Modelo donde toda la aplicación se desarrolla como una sola unidad. Todos los componentes (interfaz, lógica, datos) están integrados y se despliegan juntos.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-orange-500 text-white p-6 rounded-xl shadow-lg">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-layer-group text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-center">Simplicidad</h3>
+                        <ul class="text-sm opacity-95 space-y-1">
+                            <li>• Un solo repositorio</li>
+                            <li>• Debugging fácil</li>
+                            <li>• Testing simplificado</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-orange-500 text-white p-6 rounded-xl shadow-lg">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cloud-upload-alt text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-center">Despliegue</h3>
+                        <ul class="text-sm opacity-95 space-y-1">
+                            <li>• Un solo despliegue</li>
+                            <li>• Menos complejidad</li>
+                            <li>• Rollback simple</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-orange-500 text-white p-6 rounded-xl shadow-lg">
+                        <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tachometer-alt text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 text-center">Rendimiento</h3>
+                        <ul class="text-sm opacity-95 space-y-1">
+                            <li>• Sin latencia de red</li>
+                            <li>• Transacciones ACID</li>
+                            <li>• Menor overhead</li>
+                        </ul>
+                    </div>
+                </div>
+                
+
+                
+                <div class="bg-orange-50 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-orange-600 mb-4 text-center">Patrones de Diseño</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-lg text-center">
+                            <i class="fas fa-eye text-orange-500 text-3xl mb-2"></i>
+                            <h4 class="font-bold text-orange-600 mb-1">Observer</h4>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg text-center">
+                            <i class="fas fa-cogs text-orange-500 text-3xl mb-2"></i>
+                            <h4 class="font-bold text-orange-600 mb-1">Service Layer</h4>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg text-center">
+                            <i class="fas fa-broadcast-tower text-orange-500 text-3xl mb-2"></i>
+                            <h4 class="font-bold text-orange-600 mb-1">Event-Driven</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Conclusión -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">CONCLUSIÓN</h2>
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-3">
+                            <i class="fas fa-file-alt text-gray-400"></i>
+                            Sistema Tradicional
+                        </h3>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Tiempo de procesamiento: 15-20 min</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Tasa de error: 8-10%</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Análisis manual y limitado</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-orange-50 p-8 rounded-xl border-2 border-orange-200">
+                        <h3 class="text-xl font-bold text-orange-600 mb-4 flex items-center gap-3">
+                            <i class="fas fa-laptop-code text-orange-500"></i>
+                            Sistema Digital Propio
+                        </h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Tiempo de procesamiento: 5-8 min</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Tasa de error: &lt;1%</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-orange-500 mt-1">•</span>
+                                <span>Análisis en tiempo real</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl text-center hover:border-orange-500 transition-all">
+                        <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-bolt text-white text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-orange-600 mb-2">Eficiencia</h4>
+                        <p class="text-sm text-gray-600">Reducción de errores y tiempo</p>
+                    </div>
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl text-center hover:border-orange-500 transition-all">
+                        <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-orange-600 mb-2">Rentabilidad</h4>
+                        <p class="text-sm text-gray-600">Ahorro $1,500-$2,500/mes</p>
+                    </div>
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl text-center hover:border-orange-500 transition-all">
+                        <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-check text-white text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-orange-600 mb-2">Experiencia</h4>
+                        <p class="text-sm text-gray-600">Transparencia y conveniencia</p>
+                    </div>
+                    <div class="bg-white border-2 border-orange-200 p-6 rounded-xl text-center hover:border-orange-500 transition-all">
+                        <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-bar text-white text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold text-orange-600 mb-2">Datos</h4>
+                        <p class="text-sm text-gray-600">Decisiones informadas</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-10 rounded-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Reflexión Final</h3>
+                    <p class="text-lg leading-relaxed text-center max-w-4xl mx-auto">
+                        La digitalización de procesos es una necesidad para competir en el mercado actual. Un sistema propio de gestión de pedidos mejora la eficiencia operativa, proporciona control total, elimina comisiones recurrentes y ofrece datos valiosos para la toma de decisiones estratégicas.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Agradecimientos -->
+        <div class="slide w-screen h-screen hidden flex items-center justify-center text-center bg-gradient-to-br from-orange-500 to-orange-600 text-white relative overflow-hidden">
+            <!-- Blob shapes decorativos -->
+            <svg class="absolute top-0 left-0 w-full h-full opacity-20 blob-shape" viewBox="0 0 1200 800" preserveAspectRatio="none">
+                <path d="M0,200 Q300,100 600,200 T1200,200 L1200,0 L0,0 Z" fill="white"/>
+            </svg>
+            <svg class="absolute bottom-0 right-0 w-96 h-96 opacity-15 blob-shape-2" viewBox="0 0 400 400">
+                <path d="M200,200 Q250,150 300,200 T400,200 Q350,250 300,200 T200,200 Q150,150 100,200 T0,200 Q50,250 100,200 T200,200" fill="white"/>
+            </svg>
+            
+            <!-- Círculos decorativos -->
+            <div class="absolute top-20 right-20 w-64 h-64 bg-white bg-opacity-10 rounded-full circle-decorative"></div>
+            <div class="absolute bottom-20 left-20 w-48 h-48 bg-white bg-opacity-10 rounded-full circle-decorative" style="animation-delay: 2s;"></div>
+            
+            <!-- Contenido -->
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold">AGRADECIMIENTOS</h1>
+            </div>
+        </div>
+
+        <!-- Slide 17: Preguntas y Consultas -->
+        <div class="slide w-screen h-screen hidden flex items-center justify-center text-center bg-white relative overflow-hidden">
+            <!-- Decoración de fondo -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-orange-100 rounded-full opacity-30 -mr-48 -mt-48 circle-decorative"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-orange-100 rounded-full opacity-30 -ml-48 -mb-48 circle-decorative" style="animation-delay: 2s;"></div>
+            
+            <!-- Contenido -->
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold text-orange-600 mb-4">PREGUNTAS</h1>
+                <h2 class="text-3xl md:text-4xl font-bold text-orange-500">Y CONSULTAS</h2>
+            </div>
+        </div>
+
+        <!-- Slide 18: Código QR para Acceso -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">DEMO INTERACTIVA</h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-8 md:p-12 rounded-xl shadow-2xl mb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-6 text-center">Escanea el código QR para acceder</h3>
+                    
+                    <div class="bg-white bg-opacity-20 rounded-xl p-6 mb-6 border border-white border-opacity-30">
+                        <label class="text-sm opacity-90 mb-2 block font-semibold">URL del Login:</label>
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <input type="text" id="qr-url-input" placeholder="Ej: http://192.168.43.1:4000/login" 
+                                   class="flex-1 bg-white bg-opacity-30 text-white placeholder-white placeholder-opacity-60 rounded-lg p-3 font-mono text-sm border border-white border-opacity-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50">
+                            <button onclick="generateQRFromURL()" class="bg-white bg-opacity-30 hover:bg-opacity-50 px-6 py-3 rounded-lg transition-all font-semibold whitespace-nowrap">
+                                <i class="fas fa-qrcode mr-2"></i>Generar QR
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <div id="qrcode" class="flex justify-center"></div>
+                        </div>
+                        <div class="text-white text-center md:text-left">
+                            <p class="text-lg md:text-xl mb-4">
+                                <i class="fas fa-mobile-alt text-3xl mb-4 block md:inline-block md:mr-3"></i>
+                                Accede al sistema desde tu dispositivo móvil
+                            </p>
+                            <p class="text-sm md:text-base opacity-90">
+                                Escanea el código QR con la cámara de tu teléfono para ir directamente a la página de login
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-info-circle"></i> Instrucciones
+                    </h4>
+                    <ol class="text-gray-700 space-y-2 ml-6 list-decimal">
+                        <li>Ingresa la URL completa del login (ej: http://192.168.43.1:4000/login)</li>
+                        <li>Haz clic en "Generar QR" para crear el código</li>
+                        <li>Escanea el código QR con tu dispositivo móvil</li>
+                        <li>Usa las credenciales que se mostrarán en los siguientes slides</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Credenciales Cliente -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">CREDENCIALES: CLIENTE</h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-8 md:p-12 rounded-xl shadow-2xl mb-8">
+                    <div class="bg-white bg-opacity-20 rounded-xl p-6 mb-6 border border-white border-opacity-30">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Email:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">cliente@fooddesk.com</code>
+                                    <button onclick="copyToClipboard('cliente@fooddesk.com')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Contraseña:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">abc123</code>
+                                    <button onclick="copyToClipboard('abc123')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-tasks"></i> ¿Qué puedes hacer en la demo?
+                    </h4>
+                    <ul class="text-gray-700 space-y-2 ml-6">
+                        <li>• Navegar por el catálogo de productos</li>
+                        <li>• Realizar un pedido completo</li>
+                        <li>• Ver el estado de tu pedido en tiempo real</li>
+                        <li>• Recibir notificaciones cuando el pedido esté en camino</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: Credenciales Cocina -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">CREDENCIALES: COCINA</h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-8 md:p-12 rounded-xl shadow-2xl mb-8">          
+                    <div class="bg-white bg-opacity-20 rounded-xl p-6 mb-6 border border-white border-opacity-30">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Email:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">cocina@fooddesk.com</code>
+                                    <button onclick="copyToClipboard('cocina@fooddesk.com')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Contraseña:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">abc123</code>
+                                    <button onclick="copyToClipboard('abc123')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-tasks"></i> ¿Qué puedes hacer en la demo?
+                    </h4>
+                    <ul class="text-gray-700 space-y-2 ml-6">
+                        <li>• Ver pedidos nuevos en tiempo real</li>
+                        <li>• Actualizar el estado de preparación</li>
+                        <li>• Ver detalles completos de cada pedido</li>
+                        <li>• Marcar pedidos como "Listo" para delivery</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Credenciales Delivery -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">CREDENCIALES: DELIVERY</h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-8 md:p-12 rounded-xl shadow-2xl mb-8">                    
+                    <div class="bg-white bg-opacity-20 rounded-xl p-6 mb-6 border border-white border-opacity-30">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Email:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">delivery@fooddesk.com</code>
+                                    <button onclick="copyToClipboard('delivery@fooddesk.com')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-sm opacity-90 mb-2 block">Contraseña:</label>
+                                <div class="bg-white bg-opacity-30 rounded-lg p-4 flex items-center justify-between">
+                                    <code class="text-xl font-mono font-bold">abc123</code>
+                                    <button onclick="copyToClipboard('abc123')" class="ml-4 bg-white bg-opacity-30 hover:bg-opacity-50 px-4 py-2 rounded-lg transition-all">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="text-xl font-bold text-orange-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-tasks"></i> ¿Qué puedes hacer en la demo?
+                    </h4>
+                    <ul class="text-gray-700 space-y-2 ml-6">
+                        <li>• Ver pedidos listos para entrega</li>
+                        <li>• Asignar pedidos a tu cuenta</li>
+                        <li>• Ver detalles de entrega (dirección, teléfono)</li>
+                        <li>• Confirmar entrega y notificar al cliente</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: Instrucciones de Demo -->
+        <div class="slide w-screen h-screen hidden bg-white p-12 md:p-16 overflow-y-auto">
+            <h2 class="text-4xl md:text-5xl text-orange-600 mb-12 font-bold text-center">FLUJO DE DEMO COMPLETO</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="space-y-6">
+                    <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl">1</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-orange-600 mb-2">Cliente realiza pedido</h4>
+                                <p class="text-gray-700">Usa las credenciales de Cliente para navegar el catálogo, agregar productos al carrito y realizar un pedido. Selecciona método de pago (efectivo o MercadoPago).</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl">2</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-orange-600 mb-2">Cocina recibe notificación</h4>
+                                <p class="text-gray-700">Con las credenciales de Cocina, verás el nuevo pedido aparecer en tiempo real. Actualiza el estado a "En Preparación" y luego marca como "Listo".</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl">3</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-orange-600 mb-2">Delivery asigna pedido</h4>
+                                <p class="text-gray-700">Usa las credenciales de Delivery para ver los pedidos listos. Asigna un pedido a tu cuenta y actualiza el estado a "En Camino".</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl">4</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-orange-600 mb-2">Cliente recibe notificación</h4>
+                                <p class="text-gray-700">El cliente recibirá una notificación automática cuando el pedido esté en camino. Puedes verificar esto volviendo a la sesión del Cliente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-500">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl">5</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-orange-600 mb-2">Delivery confirma entrega</h4>
+                                <p class="text-gray-700">Finalmente, en la sesión de Delivery, confirma la entrega del pedido. El estado cambiará a "Entregado" y el cliente será notificado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <div class="fixed top-8 right-8 bg-white bg-opacity-90 px-5 py-3 rounded-full shadow-lg font-semibold text-orange-600 z-50">
+        <span id="current-slide">1</span> / <span id="total-slides">22</span>
+    </div>
+
+    <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex gap-4 z-50">
+        <button id="prev-btn" onclick="changeSlide(-1)" class="bg-orange-500 text-white border-none px-6 py-3 rounded-full cursor-pointer text-base font-semibold shadow-lg hover:bg-orange-600 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg">
+            <i class="fas fa-chevron-left"></i> Anterior
+        </button>
+        <button id="next-btn" onclick="changeSlide(1)" class="bg-orange-500 text-white border-none px-6 py-3 rounded-full cursor-pointer text-base font-semibold shadow-lg hover:bg-orange-600 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-lg">
+            Siguiente <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            if (n >= totalSlides) {
+                currentSlide = 0;
+            } else if (n < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = n;
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                slide.classList.add('hidden');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slide.classList.remove('hidden');
+                    
+                    // Limpiar QR cuando se muestra el slide 18 (índice 17)
+                    if (index === 17) {
+                        const qrContainer = document.getElementById('qrcode');
+                        const urlInput = document.getElementById('qr-url-input');
+                        if (qrContainer) {
+                            qrContainer.innerHTML = '';
+                        }
+                        if (urlInput) {
+                            urlInput.value = '';
+                        }
+                    }
+                    
+                    // Animar barras de progreso cuando se muestra el slide
+                    setTimeout(() => {
+                        const progressBars = slide.querySelectorAll('.progress-bar');
+                        progressBars.forEach(bar => {
+                            const targetWidth = bar.style.width || bar.getAttribute('data-width') || '100%';
+                            bar.style.width = '0%';
+                            setTimeout(() => {
+                                bar.style.width = targetWidth;
+                            }, 100);
+                        });
+                    }, 200);
+                }
+            });
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Actualizar estado de botones
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (currentSlide === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+            
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        }
+
+        function changeSlide(direction) {
+            if (direction === -1 && currentSlide === 0) {
+                return;
+            }
+            if (direction === 1 && currentSlide === totalSlides - 1) {
+                return;
+            }
+            showSlide(currentSlide + direction);
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) {
+                    changeSlide(1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    changeSlide(-1);
+                }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Función para generar QR desde URL ingresada
+        function generateQRFromURL() {
+            const urlInput = document.getElementById('qr-url-input');
+            const url = urlInput ? urlInput.value.trim() : '';
+            
+            if (!url) {
+                alert('Por favor, ingresa una URL válida (ej: http://192.168.43.1:4000/login)');
+                return;
+            }
+
+            // Validar que sea una URL HTTP/HTTPS válida
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+                    alert('Por favor, ingresa una URL HTTP o HTTPS válida');
+                    return;
+                }
+            } catch (e) {
+                alert('Por favor, ingresa una URL válida (ej: http://192.168.43.1:4000/login)');
+                return;
+            }
+
+            generateQRCode(url);
+        }
+
+        // Función para generar el código QR
+        function generateQRCode(loginUrl) {
+            const qrContainer = document.getElementById('qrcode');
+            if (!qrContainer || !loginUrl) {
+                return;
+            }
+
+            // Limpiar contenedor
+            qrContainer.innerHTML = '';
+
+            if (typeof QRCode !== 'undefined') {
+                // Generar QR code usando qrcodejs
+                try {
+                    new QRCode(qrContainer, {
+                        text: loginUrl,
+                        width: 256,
+                        height: 256,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                } catch (error) {
+                    console.error('Error generando QR:', error);
+                    // Fallback: mostrar la URL como texto
+                    qrContainer.innerHTML = '<div class="p-4"><p class="text-gray-600 text-sm mb-2">URL del login:</p><p class="text-gray-800 font-mono break-all text-sm">' + loginUrl + '</p></div>';
+                }
+            } else {
+                // Si la librería no está cargada, mostrar la URL
+                qrContainer.innerHTML = '<div class="p-4"><p class="text-gray-600 text-sm mb-2">URL del login:</p><p class="text-gray-800 font-mono break-all text-sm">' + loginUrl + '</p></div>';
+            }
+        }
+
+        // Función para copiar al portapapeles
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Mostrar feedback visual
+                const button = event.target.closest('button');
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.classList.add('bg-green-500');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('bg-green-500');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Credencial copiada al portapapeles');
+                } catch (err) {
+                    alert('No se pudo copiar. Por favor, copia manualmente: ' + text);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Agregar listener para generar QR al presionar Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('qr-url-input');
+            if (urlInput) {
+                urlInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        generateQRFromURL();
+                    }
+                });
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+    </script>
+</body>
+</html>
+

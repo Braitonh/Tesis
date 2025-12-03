@@ -423,14 +423,26 @@
         });
     }
     
+    // Limpiar intervalos anteriores si existen (evita memory leaks cuando Livewire actualiza el DOM)
+    if (window.cocinaIntervaloEstilos) {
+        clearInterval(window.cocinaIntervaloEstilos);
+        window.cocinaIntervaloEstilos = null;
+    }
+    if (window.cocinaIntervaloRefresh) {
+        clearInterval(window.cocinaIntervaloRefresh);
+        window.cocinaIntervaloRefresh = null;
+    }
+    
     // Ejecutar actualización inmediatamente al cargar
     actualizarEstilosPedidos();
     
     // Actualizar estilos cada segundo (1000ms) en tiempo real
-    const intervaloEstilos = setInterval(actualizarEstilosPedidos, 1000);
+    window.cocinaIntervaloEstilos = setInterval(actualizarEstilosPedidos, 1000);
     
     // Re-ejecutar cuando Livewire actualice el DOM
-    if (typeof Livewire !== 'undefined') {
+    // Usar un patrón de inicialización única para evitar múltiples hooks
+    if (typeof Livewire !== 'undefined' && !window.cocinaMorphHookRegistered) {
+        window.cocinaMorphHookRegistered = true;
         Livewire.hook('morph.updated', () => {
             // Pequeño delay para asegurar que el DOM esté completamente actualizado
             setTimeout(actualizarEstilosPedidos, 100);
@@ -438,7 +450,7 @@
     }
     
     // Auto-refresh cada minuto (60 segundos) para actualizar urgencia de pedidos
-    setInterval(() => {
+    window.cocinaIntervaloRefresh = setInterval(() => {
         // Usar Livewire.visit si está disponible para un refresh más suave
         if (typeof Livewire !== 'undefined' && Livewire.visit) {
             Livewire.visit(window.location.href, { 
@@ -450,5 +462,15 @@
             location.reload();
         }
     }, 60000); // 60000 ms = 60 segundos = 1 minuto
+    
+    // Limpiar intervalos cuando la página se descargue
+    window.addEventListener('beforeunload', () => {
+        if (window.cocinaIntervaloEstilos) {
+            clearInterval(window.cocinaIntervaloEstilos);
+        }
+        if (window.cocinaIntervaloRefresh) {
+            clearInterval(window.cocinaIntervaloRefresh);
+        }
+    });
 </script>
 @endpush

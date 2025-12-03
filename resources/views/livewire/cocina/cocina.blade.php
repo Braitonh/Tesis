@@ -84,12 +84,15 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($pedidosEnPreparacion as $pedido)
-                            <div class="@if($pedido->es_urgente) animate-pulse bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                            <div wire:key="pedido-{{ $pedido->id }}"
+                                 class="pedido-card @if($pedido->es_urgente) animate-pulse bg-red-50 border-l-4 border-red-500 @else bg-blue-50 border-l-4 border-blue-500 @endif rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                 data-pedido-id="{{ $pedido->id }}"
+                                 data-updated-at="{{ $pedido->updated_at->timestamp }}">
                                 <div class="flex items-center justify-between mb-3">
-                                    <span class="text-sm font-bold @if($pedido->es_urgente) text-red-800 @else text-blue-800 @endif">
+                                    <span class="pedido-numero text-sm font-bold @if($pedido->es_urgente) text-red-800 @else text-blue-800 @endif">
                                         {{ $pedido->numero_pedido }}
                                     </span>
-                                    <span class="text-xs @if($pedido->es_urgente) text-red-600 @else text-blue-600 @endif font-medium">
+                                    <span class="pedido-tiempo text-xs @if($pedido->es_urgente) text-red-600 @else text-blue-600 @endif font-medium">
                                         {{ $pedido->tiempo_formateado }}
                                     </span>
                                 </div>
@@ -173,7 +176,8 @@
                     </div>
                     <div class="grid md:grid-cols-3 lg:grid-cols-1 gap-4">
                         @foreach($pedidosListos as $pedido)
-                            <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                            <div wire:key="pedido-listo-{{ $pedido->id }}"
+                                 class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="text-sm font-bold text-green-800">
                                         {{ $pedido->numero_pedido }}
@@ -333,6 +337,104 @@
         }, 100); // Verificar cada 100ms
     } else {
         console.log('✅ Echo listeners de cocina inicializados inmediatamente');
+    }
+    
+    // Función para formatear tiempo transcurrido
+    function formatearTiempo(segundos) {
+        if (segundos < 60) {
+            return segundos < 1 ? 'Hace menos de 1 min' : `Hace ${segundos} ${segundos === 1 ? 'segundo' : 'segundos'}`;
+        }
+        
+        const minutos = Math.floor(segundos / 60);
+        const segundosRestantes = segundos % 60;
+        
+        if (minutos < 60) {
+            if (segundosRestantes === 0) {
+                return `Hace ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'}`;
+            }
+            return `Hace ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'} y ${segundosRestantes} ${segundosRestantes === 1 ? 'segundo' : 'segundos'}`;
+        }
+        
+        const horas = Math.floor(minutos / 60);
+        const minutosRestantes = minutos % 60;
+        
+        if (horas < 24) {
+            if (minutosRestantes === 0) {
+                return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+            }
+            return `Hace ${horas} ${horas === 1 ? 'hora' : 'horas'} y ${minutosRestantes} ${minutosRestantes === 1 ? 'minuto' : 'minutos'}`;
+        }
+        
+        const dias = Math.floor(horas / 24);
+        return `Hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
+    }
+    
+    // Función para actualizar estilos de pedidos en tiempo real
+    function actualizarEstilosPedidos() {
+        const pedidosCards = document.querySelectorAll('.pedido-card[data-updated-at]');
+        const ahora = Math.floor(Date.now() / 1000); // Timestamp actual en segundos
+        const umbralUrgencia = 60; // 1 minuto en segundos
+        
+        pedidosCards.forEach(card => {
+            const updatedAt = parseInt(card.getAttribute('data-updated-at'));
+            const segundosTranscurridos = ahora - updatedAt;
+            
+            const tiempoElement = card.querySelector('.pedido-tiempo');
+            const numeroElement = card.querySelector('.pedido-numero');
+            
+            // Actualizar texto del tiempo
+            if (tiempoElement) {
+                tiempoElement.textContent = formatearTiempo(segundosTranscurridos);
+            }
+            
+            // Determinar si es urgente (>= 60 segundos = 1 minuto)
+            const esUrgente = segundosTranscurridos >= umbralUrgencia;
+            
+            // Actualizar clases CSS
+            if (esUrgente) {
+                // Aplicar estilos urgentes (rojo)
+                card.classList.remove('bg-blue-50', 'border-blue-500');
+                card.classList.add('bg-red-50', 'border-red-500', 'animate-pulse');
+                
+                if (tiempoElement) {
+                    tiempoElement.classList.remove('text-blue-600');
+                    tiempoElement.classList.add('text-red-600');
+                }
+                
+                if (numeroElement) {
+                    numeroElement.classList.remove('text-blue-800');
+                    numeroElement.classList.add('text-red-800');
+                }
+            } else {
+                // Aplicar estilos normales (azul)
+                card.classList.remove('bg-red-50', 'border-red-500', 'animate-pulse');
+                card.classList.add('bg-blue-50', 'border-blue-500');
+                
+                if (tiempoElement) {
+                    tiempoElement.classList.remove('text-red-600');
+                    tiempoElement.classList.add('text-blue-600');
+                }
+                
+                if (numeroElement) {
+                    numeroElement.classList.remove('text-red-800');
+                    numeroElement.classList.add('text-blue-800');
+                }
+            }
+        });
+    }
+    
+    // Ejecutar actualización inmediatamente al cargar
+    actualizarEstilosPedidos();
+    
+    // Actualizar estilos cada segundo (1000ms) en tiempo real
+    const intervaloEstilos = setInterval(actualizarEstilosPedidos, 1000);
+    
+    // Re-ejecutar cuando Livewire actualice el DOM
+    if (typeof Livewire !== 'undefined') {
+        Livewire.hook('morph.updated', () => {
+            // Pequeño delay para asegurar que el DOM esté completamente actualizado
+            setTimeout(actualizarEstilosPedidos, 100);
+        });
     }
     
     // Auto-refresh cada minuto (60 segundos) para actualizar urgencia de pedidos

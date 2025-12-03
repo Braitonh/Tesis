@@ -151,6 +151,17 @@ class AdminProductos extends Component
         // Simulate loading time
         usleep(1500000); // 1.5 seconds
 
+        // VALIDACIÓN TEMPRANA: Verificar MIME type ANTES de la validación de Laravel
+        if ($this->imagen_file) {
+            $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            $mimeType = $this->imagen_file->getMimeType();
+            
+            if (!in_array($mimeType, $allowedMimes)) {
+                $this->addError('imagen_file', 'El archivo seleccionado no es una imagen válida. Solo se permiten archivos de imagen (JPEG, PNG, JPG, GIF, WEBP). Tipo de archivo detectado: ' . $mimeType);
+                return;
+            }
+        }
+
         $rules = [
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',
@@ -165,7 +176,34 @@ class AdminProductos extends Component
             'imagen_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
 
-        $this->validate($rules);
+        $messages = [
+            'nombre.required' => 'El campo nombre es obligatorio.',
+            'nombre.string' => 'El campo nombre debe ser un texto.',
+            'nombre.max' => 'El campo nombre no puede tener más de 255 caracteres.',
+            'descripcion.required' => 'El campo descripción es obligatorio.',
+            'descripcion.string' => 'El campo descripción debe ser un texto.',
+            'precio.required' => 'El campo precio es obligatorio.',
+            'precio.numeric' => 'El campo precio debe ser un número.',
+            'precio.min' => 'El campo precio debe ser mayor o igual a 0.',
+            'precio_descuento.numeric' => 'El campo precio de descuento debe ser un número.',
+            'precio_descuento.min' => 'El campo precio de descuento debe ser mayor o igual a 0.',
+            'precio_descuento.lt' => 'El precio de descuento debe ser menor que el precio regular.',
+            'stock.required' => 'El campo stock es obligatorio.',
+            'stock.integer' => 'El campo stock debe ser un número entero.',
+            'stock.min' => 'El campo stock debe ser mayor o igual a 0.',
+            'estado.required' => 'El campo estado es obligatorio.',
+            'estado.in' => 'El estado seleccionado no es válido.',
+            'categoria_id.required' => 'Debe seleccionar una categoría.',
+            'categoria_id.exists' => 'La categoría seleccionada no existe.',
+            'destacado.boolean' => 'El campo destacado debe ser verdadero o falso.',
+            'activo.boolean' => 'El campo activo debe ser verdadero o falso.',
+            'imagen.string' => 'El campo imagen debe ser un texto.',
+            'imagen_file.image' => 'El archivo debe ser una imagen.',
+            'imagen_file.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif o webp.',
+            'imagen_file.max' => 'La imagen no puede pesar más de 2MB.',
+        ];
+
+        $this->validate($rules, $messages);
 
         if ($this->productoId) {
             // Handle image upload if new file is provided

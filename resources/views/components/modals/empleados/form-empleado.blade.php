@@ -95,6 +95,10 @@
                             type="tel"
                             id="telefono"
                             wire:model="telefono"
+                            pattern="[0-9+\s\-()]*"
+                            inputmode="numeric"
+                            onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 43 || event.charCode === 32 || event.charCode === 45 || event.charCode === 40 || event.charCode === 41"
+                            oninput="this.value = this.value.replace(/[^0-9+\s\-()]/g, '')"
                             class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-base transition-all duration-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 @error('telefono') border-red-500 focus:ring-red-500 @enderror"
                             placeholder="+595 123 456 789">
                     </div>
@@ -143,20 +147,6 @@
                     @enderror
                 </div>
 
-                @if(!$empleadoId)
-                <!-- Information about email verification for new employees -->
-                <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
-                        <div>
-                            <h3 class="font-semibold text-blue-800 mb-1 text-sm">Configuración automática</h3>
-                            <p class="text-sm text-blue-700">
-                                Se enviará un email al empleado con un enlace seguro para que cree su contraseña.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endif
 
                 <!-- Submit button -->
                 <button
@@ -178,6 +168,17 @@
                         {{ $empleadoId ? 'Actualizando...' : 'Creando...' }}
                     </span>
 
+                </button>
+
+                <!-- Close button -->
+                <button
+                    type="button"
+                    wire:click="closeModal"
+                    class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg">
+                    <span class="flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i>
+                        Cerrar
+                    </span>
                 </button>
             </form>
 

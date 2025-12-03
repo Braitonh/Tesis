@@ -183,6 +183,18 @@ class AdminPromociones extends Component
     {
         usleep(1500000); // 1.5 seconds
 
+        // VALIDACIÓN TEMPRANA: Verificar MIME type ANTES de la validación de Laravel
+        if ($this->imagen_file) {
+            $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            $mimeType = $this->imagen_file->getMimeType();
+            
+            if (!in_array($mimeType, $allowedMimes)) {
+                $this->addError('imagen_file', 'El archivo seleccionado no es una imagen válida. Solo se permiten archivos de imagen (JPEG, PNG, JPG, GIF, WEBP). Tipo de archivo detectado: ' . $mimeType);
+                $this->activeTab = $this->determinarTabConErrores();
+                return;
+            }
+        }
+
         $rules = [
             'nombre' => 'required|string|max:255',
             'descripcion' => 'required|string',

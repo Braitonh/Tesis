@@ -214,17 +214,9 @@ $currentPath = request()->path();
                         {{ $currentRouteName === 'promociones' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
                         <i class="fas fa-tags mr-2"></i> Promociones
                     </a>
-                    <a href="#" class="block px-3 py-2 text-sm rounded transition-colors duration-200
-                        {{ $currentRouteName === 'admin.analitica' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
-                        <i class="fas fa-chart-bar mr-2"></i> Analítica
-                    </a>
-                    <a href="#" class="block px-3 py-2 text-sm rounded transition-colors duration-200
-                        {{ $currentRouteName === 'admin.usuarios' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
-                        <i class="fas fa-users-cog mr-2"></i> Usuarios
-                    </a>
-                    <a href="#" class="block px-3 py-2 text-sm rounded transition-colors duration-200
-                        {{ $currentRouteName === 'admin.personalizacion' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
-                        <i class="fas fa-palette mr-2"></i> Personalización
+                    <a href="{{ route('registros') }}" class="block px-3 py-2 text-sm rounded transition-colors duration-200
+                        {{ $currentRouteName === 'registros' ? 'bg-orange-100 text-orange-700 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50' }}">
+                        <i class="fas fa-file-alt mr-2"></i> Registros
                     </a>
                 </div>
             @endif

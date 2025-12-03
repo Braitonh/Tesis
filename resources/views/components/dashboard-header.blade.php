@@ -66,24 +66,6 @@
                     <a href="{{ route('register') }}" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg">Registrarse</a>
                 @endauth
             </div>
-
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center">
-                <button 
-                    x-data="{ mobileOpen: false }"
-                    @click="mobileOpen = !mobileOpen"
-                    class="p-2 text-gray-400 hover:text-orange-600 transition-colors duration-300"
-                >
-                    <i class="fas fa-bars text-lg"></i>
-                </button>
-            </div>
         </div>
-    </div>
-
-    <!-- Mobile Navigation Menu -->
-    <div class="md:hidden border-t border-orange-100" x-data="{ mobileOpen: false }" x-show="mobileOpen" x-cloak>
-        @isset($mobileNavigation)
-            {{ $mobileNavigation }}
-        @endisset
     </div>
 </nav>

@@ -57,12 +57,13 @@ class EmpleadoPerfil extends Component
 
         $user = Auth::user();
         
+        // Convert empty strings to null for nullable fields as a best practice
         $user->update([
             'name' => $this->name,
             'email' => $this->email,
             'dni' => $this->dni,
-            'direccion' => $this->direccion,
-            'telefono' => $this->telefono,
+            'direccion' => trim($this->direccion) === '' ? null : $this->direccion,
+            'telefono' => trim($this->telefono) === '' ? null : $this->telefono,
         ]);
 
         session()->flash('message', 'Perfil actualizado correctamente.');
